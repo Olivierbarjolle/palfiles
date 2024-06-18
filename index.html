@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Panoramic Viewer</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <style>
+        #panorama {
+            height: 100vh;
+            width: 100vw;
+            background-color: black;
+        }
+        body, html {
+            margin: 0;
+            padding: 0;
+        }
+        .leaflet-container {
+            background-color: black;
+        }
+    </style>
+</head>
+<body>
+
+<div id="panorama"></div>
+
+<script>
+    var TILE_SIZE = 256;
+    var MAX_ZOOM = 12;
+    var TILES_X = 2891;
+    var TILES_Y = 4;
+    var FADE_DISTANCE = 5 * TILE_SIZE;
+
+    var map = L.map('panorama', {
+        minZoom: 2,
+        maxZoom: MAX_ZOOM,
+        zoom: 2,
+        crs: L.CRS.Simple,
+        doubleClickZoom: false,
+        attributionControl: false,
+        zoomControl: false,
+        inertia: true,
+        inertiaDeceleration: 2000,
+        inertiaMaxSpeed: 1000,
+        inertiaThreshold: 10
+    });
+
+    function setInitialView() {
+        var bounds = new L.LatLngBounds(
+            map.unproject([0, TILE_SIZE * TILES_Y], MAX_ZOOM),
+            map.unproject([TILE_SIZE * TILES_X, 0], MAX_ZOOM)
+        );
+        map.setMaxBounds(bounds);
+        var centerLatLng = map.unproject([(TILE_SIZE * TILES_X) / 2, (TILE_SIZE * TILES_Y) / 2], MAX_ZOOM);
+        map.setView(centerLatLng, 2);
+    }
+
+    setInitialView();
+
+    L.tileLayer('http://192.168.0.48:8000/tiles/tile_z{z}_x{x}_y{y}.jpg', {
+        maxZoom: MAX_ZOOM,
+        noWrap: true,
+    }).addTo(map);
+
+    var audioFiles = [
+        'http://192.168.0.48:8000/audio/1.mp3',
+        'http://192.168.0.48:8000/audio/2.mp3',
+        'http://192.168.0.48:8000/audio/3.mp3',
+        'http://192.168.0.48:8000/audio/4.mp3'
+    ];
+
+    var audioZones = [
+        { start: 177, end: 190, audio: new Audio(audioFiles[0]) },
+        { start: 170, end: 176, audio: new Audio(audioFiles[2]) },
+        { start: 137, end: 169, audio: new Audio(audioFiles[1]) },
+        { start: 58, end: 136, audio: new Audio(audioFiles[3]) },
+        { start: 100, end: 120, audio: new Audio(audioFiles[1]) },
+        { start: 100, end: 110, audio: new Audio(audioFiles[2]) },
+        { start: 80, end: 90, audio: new Audio(audioFiles[1]) },
+        { start: 50, end: 57, audio: new Audio(audioFiles[2]) },
+        { start: 19, end: 56, audio: new Audio(audioFiles[3]) },
+        { start: 8, end: 18, audio: new Audio(audioFiles[2]) },
+        { start: 6, end: 7, audio: new Audio(audioFiles[1]) },
+        { start: -10, end: 5, audio: new Audio(audioFiles[0]) }
+    ];
+
+    audioZones.forEach(function(zone) {
+        zone.audio.loop = true;
+        zone.audio.volume = 0;
+        zone.audio.load();
+        console.log(`Loaded audio file for zone: ${zone.audio.src}`);
+    });
+
+    var audioInitialized = false;
+    var clickHandled = false;
+    var currentCenter, currentZoom;
+
+    function adjustVolume() {
+        var centerLng = map.getCenter().lng * TILE_SIZE;
+        var zoomLevel = map.getZoom();
+        var maxVolume = (zoomLevel - 2) / (MAX_ZOOM - 2);
+
+        audioZones.forEach(function(zone) {
+            var volume = 0;
+            if (centerLng >= (zone.start - FADE_DISTANCE) * TILE_SIZE && centerLng <= (zone.end + FADE_DISTANCE) * TILE_SIZE) {
+                if (centerLng >= zone.start * TILE_SIZE && centerLng <= zone.end * TILE_SIZE) {
+                    volume = maxVolume;
+                } else if (centerLng < zone.start * TILE_SIZE) {
+                    volume = maxVolume * (1 - ((zone.start * TILE_SIZE - centerLng) / FADE_DISTANCE));
+                } else if (centerLng > zone.end * TILE_SIZE) {
+                    volume = maxVolume * (1 - ((centerLng - zone.end * TILE_SIZE) / FADE_DISTANCE));
+                }
+            }
+
+            zone.audio.volume = Math.max(0, volume);
+            console.log(`Zone audio src: ${zone.audio.src}, volume: ${volume}`);
+        });
+    }
+
+    map.on('move', adjustVolume); // Adjust volume continuously as the map moves
+
+    map.on('click', function(e) {
+        if (!clickHandled) {
+            if (!audioInitialized) {
+                audioZones.forEach(function(zone) {
+                    zone.audio.play().catch(error => {
+                        console.error("Audio playback failed:", error);
+                    });
+                });
+                audioInitialized = true;
+            }
+
+            var clickedLatLng = e.latlng;
+            var currentCenter = map.getCenter();
+            var centerLatLng = L.latLng(currentCenter.lat, clickedLatLng.lng);
+            var zoomLevel = MAX_ZOOM - 1;
+
+            // Check if the device is mobile
+            if (/Mobi|Android/i.test(navigator.userAgent)) {
+                zoomLevel -= 1; // Zoom one level less on mobile
+            }
+
+            map.flyTo(centerLatLng, zoomLevel, {
+                animate: true,
+                duration: 4
+            });
+            map.once('moveend', function() {
+                clickHandled = true; // Prevent further interactions
+            });
+            adjustVolume();
+        }
+    });
+
+    // Update volume continuously during the zoom
+    map.on('zoomstart', adjustVolume);
+    map.on('zoomend', adjustVolume);
+    map.on('zoom', adjustVolume); // Adjust volume continuously as the zoom happens
+
+    window.addEventListener('resize', function() {
+        currentCenter = map.getCenter();
+        currentZoom = map.getZoom();
+    });
+
+    window.addEventListener('resizeend', function() {
+        map.setView(currentCenter, currentZoom);
+    });
+
+    // Debounce the resize event to trigger resizeend event
+    (function() {
+        var resizeTimer;
+        window.addEventListener('resize', function() {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(function() {
+                window.dispatchEvent(new Event('resizeend'));
+            }, 250);
+        });
+    })();
+</script>
+
+</body>
+</html>
