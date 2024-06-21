@@ -66,10 +66,16 @@
             .top-text, .bottom-text {
                 font-size: 12px;
             }
+            .top-text .start-text {
+                font-size: 14px;
+            }
         }
         @media (max-height: 600px) {
             .top-text, .bottom-text {
                 font-size: 10px;
+            }
+            .top-text .start-text {
+                font-size: 12px;
             }
         }
     </style>
@@ -81,7 +87,7 @@
     In response to the October 7th attacks by Hamas, the Israeli Defence Forces have responded by inflicting an unimaginable amount of pain and destruction on Gaza, killing at least 37,000 Palestinians, including over 15,000 children. While the International court of justice has concluded that the Israeli government has committed crimes including starvation of civilians as a weapon of war, murder, extermination, and intentional attacks on civilians, many western countries including the United Kingdom have supported this war on Palestinian people.<br><br>
     In response, Londoners have participated in a long series of large pro-Palestinian support marches in a continuous effort since the first national demonstration on October 14, 2023. Despite the media and government narratives vilifying these marches as marginal, troublesome, and hateful in order to continue their unchallenged support of the Israeli government, these marches are a broad cross-section of society unified in peaceful protest. They serve as a testament to the widespread impact of the Gaza conflict on global consciousness.<br><br>
     This project is a linear rendering of the pro-Palestinian march that took place in London on January 13th, 2024 and an ode to the people that call for compassion, humanity, and peace.<br><br>
-    <span style="font-size: 20px;">Click or tap anywhere on the line to start</span>
+    <span class="start-text" style="font-size: 18px; display: block; margin-top: 20px;">Click/tap anywhere on the line below to start</span>
 </div>
 
 <div class="bottom-text" id="bottomText">
@@ -204,7 +210,7 @@
 
             var clickedLatLng = e.latlng;
             var currentCenter = map.getCenter();
-            var centerLatLng = L.latLng(currentCenter.lat, clickedLatLng.lng);
+            var centerLatLng = L.latlng(currentCenter.lat, clickedLatLng.lng);
             var zoomLevel = MAX_ZOOM - 1;
 
             // Check if the device is mobile
