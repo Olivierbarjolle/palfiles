@@ -59,10 +59,10 @@
             font-size: 18px;
         }
         .start-text-english {
-            top: calc(48% - 20px); /* Adjusted to 48% */
+            top: calc(49% - 20px); /* Adjusted to 49% */
         }
         .start-text-arabic {
-            top: calc(48% + 20px); /* Adjusted to 48% */
+            top: calc(49% + 20px); /* Adjusted to 49% */
             direction: rtl;
         }
         .fade-out {
@@ -233,7 +233,7 @@
 
             var clickedLatLng = e.latlng;
             var currentCenter = map.getCenter();
-            var centerLatLng = L.latlng(currentCenter.lat, clickedLatLng.lng);
+            var centerLatLng = L.latLng(currentCenter.lat, clickedLatLng.lng);
             var zoomLevel = MAX_ZOOM - 1;
 
             // Check if the device is mobile
