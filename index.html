@@ -59,10 +59,10 @@
             font-size: 18px;
         }
         .start-text-english {
-            top: calc(48.75% - 10px); /* Adjusted to 48.75% with 10px offset */
+            top: calc(48.75% - 20px); /* Adjusted to 48.75% with 10px offset above */
         }
         .start-text-arabic {
-            top: calc(48.75% + 30px); /* Adjusted to 48.75% with 10px offset */
+            top: calc(48.75% + 40px); /* Adjusted to 48.75% with 10px offset below */
             direction: rtl;
         }
         .fade-out {
@@ -234,7 +234,9 @@
             clickHandled = false;
         } else {
             document.getElementById('topText').classList.remove('fade-in');
+            document.getElementById('topText').classList.add('fade-out');
             document.getElementById('bottomText').classList.remove('fade-in');
+            document.getElementById('bottomText').classList.add('fade-out');
         }
     }
 
@@ -258,7 +260,7 @@
 
             var clickedLatLng = e.latlng;
             var currentCenter = map.getCenter();
-            var centerLatLng = L.latLng(currentCenter.lat, clickedLatLng.lng);
+            var centerLatLng = L.latlng(currentCenter.lat, clickedLatLng.lng);
             var zoomLevel = MAX_ZOOM - 1;
 
             // Check if the device is mobile
