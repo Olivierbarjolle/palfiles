@@ -132,7 +132,7 @@
 
             var clickedLatLng = e.latlng;
             var currentCenter = map.getCenter();
-            var centerLatLng = L.latlng(currentCenter.lat, clickedLatLng.lng);
+            var centerLatLng = L.latLng(currentCenter.lat, clickedLatLng.lng);
             var zoomLevel = MAX_ZOOM - 1;
 
             // Check if the device is mobile
