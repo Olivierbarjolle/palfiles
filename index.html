@@ -94,7 +94,6 @@
 
     var audioInitialized = false;
     var clickHandled = false;
-    var currentCenter, currentZoom;
 
     function adjustVolume() {
         var centerLng = map.getCenter().lng * TILE_SIZE;
@@ -145,10 +144,11 @@
                 animate: true,
                 duration: 4
             });
+
             map.once('moveend', function() {
                 clickHandled = true; // Prevent further interactions
+                adjustVolume(); // Ensure volume is adjusted after moving
             });
-            adjustVolume();
         }
     });
 
@@ -158,8 +158,9 @@
     map.on('zoom', adjustVolume); // Adjust volume continuously as the zoom happens
 
     window.addEventListener('resize', function() {
-        currentCenter = map.getCenter();
-        currentZoom = map.getZoom();
+        var currentCenter = map.getCenter();
+        var currentZoom = map.getZoom();
+        map.setView(currentCenter, currentZoom);
     });
 
     window.addEventListener('resizeend', function() {
