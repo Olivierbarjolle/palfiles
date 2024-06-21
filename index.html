@@ -58,16 +58,16 @@
 
     setInitialView();
 
-    L.tileLayer('http://192.168.0.48:8000/tiles/tile_z{z}_x{x}_y{y}.jpg', {
+    L.tileLayer('https://chipper-sunflower-e51e1a.netlify.app/tiles/tile_z{z}_x{x}_y{y}.jpg', {
         maxZoom: MAX_ZOOM,
         noWrap: true,
     }).addTo(map);
 
     var audioFiles = [
-        'http://192.168.0.48:8000/audio/1.mp3',
-        'http://192.168.0.48:8000/audio/2.mp3',
-        'http://192.168.0.48:8000/audio/3.mp3',
-        'http://192.168.0.48:8000/audio/4.mp3'
+        'https://chipper-sunflower-e51e1a.netlify.app/audio/1.mp3',
+        'https://chipper-sunflower-e51e1a.netlify.app/audio/2.mp3',
+        'https://chipper-sunflower-e51e1a.netlify.app/audio/3.mp3',
+        'https://chipper-sunflower-e51e1a.netlify.app/audio/4.mp3'
     ];
 
     var audioZones = [
@@ -133,7 +133,7 @@
 
             var clickedLatLng = e.latlng;
             var currentCenter = map.getCenter();
-            var centerLatLng = L.latLng(currentCenter.lat, clickedLatLng.lng);
+            var centerLatLng = L.latlng(currentCenter.lat, clickedLatLng.lng);
             var zoomLevel = MAX_ZOOM - 1;
 
             // Check if the device is mobile
