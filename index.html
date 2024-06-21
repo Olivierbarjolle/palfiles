@@ -59,14 +59,17 @@
             font-size: 18px;
         }
         .start-text-english {
-            top: calc(48.75% - 20px); /* Adjusted to 48.75% */
+            top: calc(48.75% - 10px); /* Adjusted to 48.75% with 10px offset */
         }
         .start-text-arabic {
-            top: calc(48.75% + 20px); /* Adjusted to 48.75% */
+            top: calc(48.75% + 30px); /* Adjusted to 48.75% with 10px offset */
             direction: rtl;
         }
         .fade-out {
-            animation: fadeOut 1.5s forwards; /* Animation speed doubled */
+            animation: fadeOut 1.5s forwards;
+        }
+        .fade-in {
+            animation: fadeIn 1.5s forwards;
         }
         @keyframes fadeOut {
             from {
@@ -75,6 +78,15 @@
             to {
                 opacity: 0;
                 display: none;
+            }
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+                display: block;
             }
         }
         @media (max-height: 800px) {
@@ -213,6 +225,19 @@
         });
     }
 
+    function handleZoomEnd() {
+        if (map.getZoom() === map.getMinZoom()) {
+            document.getElementById('topText').classList.remove('fade-out');
+            document.getElementById('topText').classList.add('fade-in');
+            document.getElementById('bottomText').classList.remove('fade-out');
+            document.getElementById('bottomText').classList.add('fade-in');
+            clickHandled = false;
+        } else {
+            document.getElementById('topText').classList.remove('fade-in');
+            document.getElementById('bottomText').classList.remove('fade-in');
+        }
+    }
+
     map.on('move', adjustVolume); // Adjust volume continuously as the map moves
 
     map.on('click', function(e) {
@@ -256,7 +281,7 @@
     // Update volume continuously during the zoom
     map.on('zoomstart', adjustVolume);
     map.on('zoomend', adjustVolume);
-    map.on('zoom', adjustVolume); // Adjust volume continuously as the zoom happens
+    map.on('zoomend', handleZoomEnd); // Handle zoom end to make text reappear
 
     window.addEventListener('resize', function() {
         var currentCenter = map.getCenter();
