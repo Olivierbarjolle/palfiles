@@ -75,6 +75,9 @@
         .fade-in {
             animation: fadeIn 1.5s forwards;
         }
+        .blink {
+            animation: blink 1.5s steps(1, end) infinite;
+        }
         @keyframes fadeOut {
             from {
                 opacity: 1;
@@ -91,6 +94,11 @@
             to {
                 opacity: 1;
                 display: block;
+            }
+        }
+        @keyframes blink {
+            50% {
+                opacity: 0;
             }
         }
         @media (max-height: 800px) {
@@ -128,17 +136,17 @@
 <body>
 
 <div class="top-text" id="topText">
-    Non-linear Assembly<br><br>
-    In the wake of the October 7th attacks by Hamas, the Israeli Defence Forces have unleashed a devastating campaign on Gaza, killing at least 37,000 Palestinians, including over 15,000 children. The International Court of Justice has condemned the Israeli government's actions, citing crimes such as the starvation of civilians as a weapon of war, murder, extermination, and deliberate attacks on civilians. Despite these findings, numerous Western nations, including the United Kingdom, continue to support this war on the Palestinian people.<br><br>
-    In a powerful counter-movement, Londoners have mobilised in a series of pro-Palestinian marches, beginning with the national demonstration on October 14, 2023. These marches, vilified by parts of the British media and government, actually represent a diverse and peaceful coalition of society. They reflect the impact on global consciousness surrounding the Gaza conflict.<br><br>
+    Non-Linear Assembly<br><br>
+    In the wake of the Hamas attacks on October 7th, the Israeli Defence Forces have unleashed a devastating campaign on Gaza, killing at least 37,000 Palestinians, including over 15,000 children. The International Court of Justice has condemned the Israeli government's actions, citing crimes such as the starvation of civilians as a weapon of war, murder, extermination, and deliberate attacks on civilians. Despite these findings, numerous Western nations, including the United Kingdom, continue to support this war on the Palestinian people.<br><br>
+    In a powerful counter-movement, Londoners have mobilised in a series of fortnightly pro-Palestinian marches. Vilified by parts of the British media and government, these peaceful assemblies actually represent a diverse and peaceful coalition of society. They reflect the impact on global consciousness surrounding the Gaza conflict.<br><br>
     This project is a linear rendering of the pro-Palestinian march that took place in London on January 13, 2024, and an ode to the people that call for compassion, humanity, and peace.
 </div>
 
-<div class="start-text-english" id="startTextEnglish">
+<div class="start-text-english blink" id="startTextEnglish">
     Click/tap anywhere on the line below to start
 </div>
 
-<div class="start-text-arabic" id="startTextArabic">
+<div class="start-text-arabic blink" id="startTextArabic">
     انقر على السطر للبدء
 </div>
 
@@ -319,8 +327,10 @@
         } else {
             document.getElementById('landscape-message').style.display = 'none';
             document.getElementById('panorama').style.display = 'block';
-            document.getElementById('topText').style.display = 'block';
-            document.getElementById('bottomText').style.display = 'block';
+            if (!initialClickHandled && map.getZoom() <= map.getMinZoom() + 2) {
+                document.getElementById('topText').style.display = 'block';
+                document.getElementById('bottomText').style.display = 'block';
+            }
             document.getElementById('startTextEnglish').style.display = 'block';
             document.getElementById('startTextArabic').style.display = 'block';
         }
