@@ -202,6 +202,7 @@
 
     var audioInitialized = false;
     var clickHandled = false;
+    var initialClickHandled = false;
 
     function adjustVolume() {
         var centerLng = map.getCenter().lng * TILE_SIZE;
@@ -243,7 +244,8 @@
     map.on('move', adjustVolume); // Adjust volume continuously as the map moves
 
     map.on('click', function(e) {
-        if (!clickHandled) {
+        if (!initialClickHandled) {
+            initialClickHandled = true;
             document.getElementById('topText').classList.add('fade-out'); // Trigger fade out for top text
             document.getElementById('bottomText').classList.add('fade-out'); // Trigger fade out for bottom text
             document.getElementById('startTextEnglish').classList.add('fade-out'); // Trigger fade out for English start text
