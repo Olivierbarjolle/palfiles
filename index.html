@@ -16,9 +16,10 @@
             height: 100%;
             width: 100%;
             overflow: hidden;
+            background-color: black;
         }
         #panorama {
-            height: 100vh;
+            height: calc(100vh - 20px); /* 20 pixels of black space at the bottom */
             width: 100vw;
             background-color: black;
         }
@@ -41,7 +42,7 @@
         }
         .bottom-text {
             position: absolute;
-            bottom: 10px;
+            bottom: 60px; /* Adjusted for spacing */
             right: 10px;
             color: white;
             background-color: rgba(0, 0, 0, 0.7);
@@ -106,6 +107,14 @@
             }
             .start-text-english, .start-text-arabic {
                 font-size: 12px;
+            }
+        }
+        @media (orientation: landscape) and (max-width: 768px) {
+            #panorama, .top-text, .bottom-text, .start-text-english, .start-text-arabic {
+                display: none;
+            }
+            #landscape-message {
+                display: block;
             }
         }
         #landscape-message {
