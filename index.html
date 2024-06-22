@@ -227,7 +227,7 @@
     }
 
     function handleZoomEnd() {
-        if (map.getZoom() === map.getMinZoom()) {
+        if (map.getZoom() <= map.getMinZoom() + 2) {
             document.getElementById('topText').classList.remove('fade-out');
             document.getElementById('topText').classList.add('fade-in');
             document.getElementById('bottomText').classList.remove('fade-out');
@@ -261,7 +261,8 @@
             }
 
             var clickedLatLng = e.latlng;
-            var centerLatLng = L.latLng(map.getCenter().lat, clickedLatLng.lng);
+            var centerLng = Math.max(0, Math.min(TILE_SIZE * TILES_X, clickedLatLng.lng * TILE_SIZE));
+            var centerLatLng = L.latLng(map.getCenter().lat, map.unproject([centerLng, 0], MAX_ZOOM).lng);
             var zoomLevel = MAX_ZOOM - 1;
 
             // Check if the device is mobile
