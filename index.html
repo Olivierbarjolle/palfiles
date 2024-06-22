@@ -61,6 +61,8 @@
             text-align: center;
             z-index: 1000;
             font-size: 18px;
+            opacity: 0;
+            animation: fadeInOut 2s infinite;
         }
         .start-text-english {
             top: calc(48.75% - 40px); /* Adjusted to 48.75% with -40px offset */
@@ -74,9 +76,6 @@
         }
         .fade-in {
             animation: fadeIn 1.5s forwards;
-        }
-        .blink {
-            animation: blink 1.5s steps(1, end) infinite;
         }
         @keyframes fadeOut {
             from {
@@ -96,9 +95,12 @@
                 display: block;
             }
         }
-        @keyframes blink {
-            50% {
+        @keyframes fadeInOut {
+            0%, 100% {
                 opacity: 0;
+            }
+            50% {
+                opacity: 1;
             }
         }
         @media (max-height: 800px) {
@@ -142,19 +144,12 @@
     This project is a linear rendering of the pro-Palestinian march that took place in London on January 13, 2024, and an ode to the people that call for compassion, humanity, and peace.
 </div>
 
-<div class="start-text-english blink" id="startTextEnglish">
+<div class="start-text-english" id="startTextEnglish">
     Click/tap anywhere on the line below to start
 </div>
 
-<div class="start-text-arabic blink" id="startTextArabic">
+<div class="start-text-arabic" id="startTextArabic">
     انقر على السطر للبدء
-</div>
-
-<div class="bottom-text" id="bottomText">
-    التجمع غير الخطي<br><br>
-    ردًا على هجمات حماس في السابع من تشرين الأول/أكتوبر، ردت قوات الدفاع الإسرائيلية بإلحاق قدر لا يمكن تصوره من الألم والدمار بغزة، مما أسفر عن مقتل ما لا يقل عن سبعة وثلاثين ألف فلسطيني، بما في ذلك أكثر من خمسة عشر طفلاً. وبينما خلصت محكمة العدل الدولية إلى أن الحكومة الإسرائيلية ارتكبت جرائم بما في ذلك تجويع المدنيين كسلاح في الحرب، والقتل والإبادة، والهجمات المتعمدة على المدنيين، فقد دعمت العديد من الدول الغربية، بما في ذلك المملكة المتحدة، هذه الحرب على الشعب الفلسطيني.<br><br>
-    ردًا على ذلك، شارك سكان لندن في سلسلة طويلة من مسيرات الدعم الكبيرة المؤيدة للفلسطينيين في جهد متواصل منذ المظاهرة الوطنية الأولى في الرابع عشر من أكتوبر عام ألفين وثلاثة وعشرين. على الرغم من الروايات الإعلامية والحكومية التي تشوه هذه المسيرات باعتبارها هامشية ومزعجة وبغيضة من أجل مواصلة دعمها بلا منازع للحكومة الإسرائيلية، فإن هذه المسيرات تمثل شريحة واسعة من المجتمع متحدة في الاحتجاج السلمي. وهي بمثابة شهادة على التأثير الواسع النطاق للصراع في غزة على الوعي العالمي.<br><br>
-    هذا المشروع عبارة عن عرض مكتوب للمسيرة المؤيدة للفلسطينيين التي جرت في لندن في الثالث عشر من يناير عام ألفين وأربعة وعشرين، وقصيدة للشعب الذي يدعو إلى الرحمة والإنسانية والسلام.
 </div>
 
 <div id="panorama"></div>
