@@ -109,23 +109,26 @@
             }
         }
         @media (orientation: landscape) and (max-width: 768px) {
-            #panorama::before {
-                content: "Please rotate your device to portrait mode";
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                color: white;
-                font-size: 20px;
-                text-align: center;
-                z-index: 1000;
-                background-color: rgba(0, 0, 0, 0.7);
-                padding: 20px;
-                border-radius: 10px;
-            }
-            #panorama {
+            #panorama, .top-text, .bottom-text, .start-text-english, .start-text-arabic {
                 display: none;
             }
+            #landscape-message {
+                display: block;
+            }
+        }
+        #landscape-message {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 20px;
+            text-align: center;
+            z-index: 1000;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            border-radius: 10px;
         }
     </style>
 </head>
@@ -154,6 +157,8 @@
 </div>
 
 <div id="panorama"></div>
+
+<div id="landscape-message">Portrait mode only</div>
 
 <script>
     var TILE_SIZE = 256;
