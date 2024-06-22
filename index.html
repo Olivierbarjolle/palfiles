@@ -109,14 +109,6 @@
                 font-size: 12px;
             }
         }
-        @media (orientation: landscape) and (max-width: 768px) {
-            #panorama, .top-text, .bottom-text, .start-text-english, .start-text-arabic {
-                display: none;
-            }
-            #landscape-message {
-                display: block;
-            }
-        }
         #landscape-message {
             display: none;
             position: absolute;
@@ -316,12 +308,21 @@
     map.on('zoomend', handleZoomEnd); // Handle zoom end to make text reappear
 
     function checkOrientation() {
-        if (window.innerHeight < window.innerWidth) {
+        var isMobile = /Mobi|Android/i.test(navigator.userAgent);
+        if (isMobile && window.innerHeight < window.innerWidth) {
             document.getElementById('landscape-message').style.display = 'block';
             document.getElementById('panorama').style.display = 'none';
+            document.getElementById('topText').style.display = 'none';
+            document.getElementById('bottomText').style.display = 'none';
+            document.getElementById('startTextEnglish').style.display = 'none';
+            document.getElementById('startTextArabic').style.display = 'none';
         } else {
             document.getElementById('landscape-message').style.display = 'none';
             document.getElementById('panorama').style.display = 'block';
+            document.getElementById('topText').style.display = 'block';
+            document.getElementById('bottomText').style.display = 'block';
+            document.getElementById('startTextEnglish').style.display = 'block';
+            document.getElementById('startTextArabic').style.display = 'block';
         }
     }
 
