@@ -19,7 +19,7 @@
             background-color: black;
         }
         #panorama {
-            height: calc(100vh - 20px); /* Added margin at the bottom */
+            height: 100vh;
             width: 100vw;
             background-color: black;
         }
@@ -298,7 +298,7 @@
 
             // Check if the device is mobile
             if (/Mobi|Android/i.test(navigator.userAgent)) {
-                zoomLevel += 1; // Zoom in 1 more increment on mobile
+                zoomLevel -= 1; // Zoom one level less on mobile
             }
 
             map.flyTo(centerLatLng, zoomLevel, {
