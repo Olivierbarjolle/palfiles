@@ -28,7 +28,7 @@
         }
         .top-text {
             position: absolute;
-            top: 20px; /* Halved top margin */
+            top: 10px; /* Halved top margin */
             left: 10px; /* Halved side margin */
             color: white;
             background-color: rgba(0, 0, 0, 0.7);
@@ -42,7 +42,7 @@
         }
         .bottom-text {
             position: absolute;
-            bottom: 40px; /* Increased for bottom margin */
+            bottom: 80px; /* Increased for bottom margin */
             right: 10px; /* Halved side margin */
             color: white;
             background-color: rgba(0, 0, 0, 0.7);
@@ -227,7 +227,7 @@
         zone.audio.loop = true;
         zone.audio.volume = 0;
         zone.audio.load();
-        console.log(Loaded audio file for zone: ${zone.audio.src});
+        console.log(`Loaded audio file for zone: ${zone.audio.src}`);
     });
 
     var audioInitialized = false;
@@ -252,7 +252,7 @@
             }
 
             zone.audio.volume = Math.max(0, volume);
-            console.log(Zone audio src: ${zone.audio.src}, volume: ${volume});
+            console.log(`Zone audio src: ${zone.audio.src}, volume: ${volume}`);
         });
     }
 
