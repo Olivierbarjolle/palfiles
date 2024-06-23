@@ -258,7 +258,7 @@
 
     function handleZoomEnd() {
         var isMobile = /Mobi|Android/i.test(navigator.userAgent);
-        if (!isMobile && map.getZoom() <= map.getMinZoom() + 2) {
+        if (map.getZoom() <= map.getMinZoom() + 2) {
             document.getElementById('topText').classList.remove('fade-out');
             document.getElementById('topText').classList.add('fade-in');
             document.getElementById('bottomText').classList.remove('fade-out');
