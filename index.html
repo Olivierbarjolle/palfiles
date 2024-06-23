@@ -13,14 +13,12 @@
             margin: 0;
             padding: 0;
             font-family: 'Monument Grotesk', sans-serif;
-            height: 100vh;  /* standard definition (as fallback) */
-            height: 100dvh; /* dynamic vh will make the trick on iOS */
+            height: 100dvh;  /* dynamic vh will make the trick on iOS */
             width: 100%;
             overflow: hidden;
             background-color: black;
         }
         #panorama {
-            height: 100vh;  /* standard definition (as fallback) */
             height: 100dvh; /* dynamic vh will make the trick on iOS */
             width: 100vw;
             background-color: black;
@@ -30,7 +28,7 @@
         }
         .top-text {
             position: absolute;
-            top: 10px;
+            top: 30px;  /* Add margin to avoid white space issue */
             left: 10px;
             color: white;
             background-color: rgba(0, 0, 0, 0.7);
@@ -44,7 +42,7 @@
         }
         .bottom-text {
             position: absolute;
-            bottom: 40px;
+            bottom: 10px;  /* Adjust for visibility above the tab bar */
             right: 10px;
             color: white;
             background-color: rgba(0, 0, 0, 0.7);
@@ -362,19 +360,6 @@
             }, 250);
         });
     })();
-
-    function isSafariOnApple() {
-        return /^((?!chrome|android).)*safari/i.test(navigator.userAgent) && /iPad|iPhone|iPod/.test(navigator.platform);
-    }
-
-    function adjustContentForSafari() {
-        if (isSafariOnApple() && /Mobi|Android/i.test(navigator.userAgent)) {
-            document.getElementById('panorama').style.height = 'calc(100dvh - 20px)';
-            document.getElementById('topText').style.borderTop = '20px solid white';
-        }
-    }
-
-    adjustContentForSafari();
 
     // Initial check
     checkOrientation();
