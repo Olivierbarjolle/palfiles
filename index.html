@@ -361,6 +361,22 @@
         });
     })();
 
+    function isSafariOnApple() {
+        return /^((?!chrome|android).)*safari/i.test(navigator.userAgent) && /iPad|iPhone|iPod/.test(navigator.platform);
+    }
+
+    function adjustTextPositionForSafari() {
+        if (isSafariOnApple()) {
+            var englishText = document.getElementById('startTextEnglish');
+            var arabicText = document.getElementById('startTextArabic');
+
+            englishText.style.top = 'calc(38.75% - 40px)'; // 10% higher
+            arabicText.style.top = 'calc(38.75% + 40px)'; // 10% higher
+        }
+    }
+
+    adjustTextPositionForSafari();
+
     // Initial check
     checkOrientation();
 </script>
