@@ -134,7 +134,10 @@
             border-radius: 10px;
         }
         .safari-adjustment {
-            transform: translateY(-2%);
+            transform: translateY(-4%);
+        }
+        .safari-adjustment .top-text {
+            border-top: 20px solid white;
         }
     </style>
 </head>
@@ -369,11 +372,12 @@
     }
 
     function adjustContentForSafari() {
-        if (isSafariOnApple()) {
+        if (isSafariOnApple() && /Mobi|Android/i.test(navigator.userAgent)) {
             var body = document.body;
             var html = document.documentElement;
             body.classList.add('safari-adjustment');
             html.classList.add('safari-adjustment');
+            document.getElementById('topText').classList.add('safari-adjustment');
         }
     }
 
