@@ -28,8 +28,8 @@
         }
         .top-text {
             position: absolute;
-            top: 20px; /* Adjusted top margin */
-            left: 10px; /* Adjusted side margin */
+            top: 20px;
+            left: 10px;
             color: white;
             background-color: rgba(0, 0, 0, 0.7);
             padding: 10px;
@@ -37,13 +37,13 @@
             text-align: left;
             width: 80%;
             z-index: 1000;
-            font-size: 14px; /* Adjusted font size */
+            font-size: 14px;
             display: block;
         }
         .bottom-text {
             position: absolute;
-            bottom: 40px; /* Adjusted bottom margin */
-            right: 10px; /* Adjusted side margin */
+            bottom: 40px;
+            right: 10px;
             color: white;
             background-color: rgba(0, 0, 0, 0.7);
             padding: 10px;
@@ -51,7 +51,7 @@
             text-align: right;
             width: 80%;
             z-index: 1000;
-            font-size: 14px; /* Adjusted font size */
+            font-size: 14px;
             direction: rtl;
         }
         .start-text-english, .start-text-arabic {
@@ -60,15 +60,15 @@
             width: 100%;
             text-align: center;
             z-index: 1000;
-            font-size: 22px; /* Increased by 4 units */
+            font-size: 22px;
             opacity: 0;
             animation: fadeInOut 2s infinite;
         }
         .start-text-english {
-            top: calc(48.75% - 40px); /* Adjusted top offset */
+            top: calc(48.75% - 40px);
         }
         .start-text-arabic {
-            top: calc(48.75% + 40px); /* Adjusted top offset */
+            top: calc(48.75% + 40px);
             direction: rtl;
         }
         .fade-out {
@@ -108,7 +108,7 @@
                 font-size: 12px;
             }
             .start-text-english, .start-text-arabic {
-                font-size: 18px; /* Increased by 4 units */
+                font-size: 18px;
             }
         }
         @media (max-height: 600px) {
@@ -116,7 +116,7 @@
                 font-size: 10px;
             }
             .start-text-english, .start-text-arabic {
-                font-size: 16px; /* Increased by 4 units */
+                font-size: 16px;
             }
         }
         #landscape-message {
@@ -170,6 +170,11 @@
     var TILES_Y = 4;
     var FADE_DISTANCE = 5 * TILE_SIZE;
 
+    var originalBounds = {
+        x: TILE_SIZE * TILES_X,
+        y: TILE_SIZE * TILES_Y
+    };
+
     var map = L.map('panorama', {
         minZoom: 1,
         maxZoom: MAX_ZOOM,
@@ -185,14 +190,31 @@
     });
 
     function setInitialView() {
+        updateBounds();
         var bounds = new L.LatLngBounds(
-            map.unproject([0, TILE_SIZE * TILES_Y], MAX_ZOOM),
-            map.unproject([TILE_SIZE * TILES_X, 0], MAX_ZOOM)
+            map.unproject([0, originalBounds.y], MAX_ZOOM),
+            map.unproject([originalBounds.x, 0], MAX_ZOOM)
         );
         map.setMaxBounds(bounds);
-        var centerLatLng = map.unproject([(TILE_SIZE * TILES_X) / 2, (TILE_SIZE * TILES_Y) / 2], MAX_ZOOM);
+        var centerLatLng = map.unproject([originalBounds.x / 2, originalBounds.y / 2], MAX_ZOOM);
         map.setView(centerLatLng, 1);
     }
+
+    function updateBounds() {
+        var zoomLevel = map.getZoom();
+        if (zoomLevel === 1) {
+            originalBounds.x = TILE_SIZE * TILES_X * 4;
+        } else if (zoomLevel === 2) {
+            originalBounds.x = TILE_SIZE * TILES_X * 2;
+        } else {
+            originalBounds.x = TILE_SIZE * TILES_X;
+        }
+    }
+
+    map.on('zoomend', function() {
+        updateBounds();
+        setInitialView();
+    });
 
     setInitialView();
 
@@ -292,8 +314,8 @@
             }
 
             var clickedLatLng = e.latlng;
-            var centerLng = Math.max(0, Math.min(TILE_SIZE * TILES_X, map.project(clickedLatLng, MAX_ZOOM).x));
-            var centerLatLng = map.unproject([centerLng, (TILE_SIZE * TILES_Y) / 2], MAX_ZOOM);
+            var centerLng = Math.max(0, Math.min(originalBounds.x, map.project(clickedLatLng, MAX_ZOOM).x));
+            var centerLatLng = map.unproject([centerLng, originalBounds.y / 2], MAX_ZOOM);
             var zoomLevel = MAX_ZOOM - 1;
 
             // Check if the device is mobile
