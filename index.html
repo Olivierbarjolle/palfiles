@@ -185,37 +185,34 @@
     });
 
     function setInitialView() {
-        var bounds = new L.LatLngBounds(
-            map.unproject([0, TILE_SIZE * TILES_Y], MAX_ZOOM),
-            map.unproject([TILE_SIZE * TILES_X, 0], MAX_ZOOM)
-        );
+        var bounds = getBounds(map.getZoom());
         map.setMaxBounds(bounds);
-        var centerLatLng = map.unproject([(TILE_SIZE * TILES_X) / 2, (TILE_SIZE * TILES_Y) / 2], MAX_ZOOM);
+        var centerLatLng = map.unproject([(bounds.getEast() - bounds.getWest()) / 2, (bounds.getNorth() - bounds.getSouth()) / 2], MAX_ZOOM);
         map.setView(centerLatLng, 1);
     }
 
-    function updateBounds(zoomLevel) {
+    function getBounds(zoomLevel) {
         if (zoomLevel === 1) {
-            map.options.maxBounds = new L.LatLngBounds(
-                map.unproject([0, TILE_SIZE * TILES_Y * 4], MAX_ZOOM),
+            return new L.LatLngBounds(
+                map.unproject([0, TILE_SIZE * TILES_Y], MAX_ZOOM),
                 map.unproject([TILE_SIZE * TILES_X * 4, 0], MAX_ZOOM)
             );
         } else if (zoomLevel === 2) {
-            map.options.maxBounds = new L.LatLngBounds(
-                map.unproject([0, TILE_SIZE * TILES_Y * 2], MAX_ZOOM),
+            return new L.LatLngBounds(
+                map.unproject([0, TILE_SIZE * TILES_Y], MAX_ZOOM),
                 map.unproject([TILE_SIZE * TILES_X * 2, 0], MAX_ZOOM)
             );
         } else {
-            map.options.maxBounds = new L.LatLngBounds(
+            return new L.LatLngBounds(
                 map.unproject([0, TILE_SIZE * TILES_Y], MAX_ZOOM),
                 map.unproject([TILE_SIZE * TILES_X, 0], MAX_ZOOM)
             );
         }
-        map.setView(map.getCenter(), zoomLevel, { animate: false });
     }
 
     map.on('zoomend', function() {
-        updateBounds(map.getZoom());
+        var bounds = getBounds(map.getZoom());
+        map.setMaxBounds(bounds);
     });
 
     setInitialView();
