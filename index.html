@@ -13,22 +13,33 @@
             margin: 0;
             padding: 0;
             font-family: 'Monument Grotesk', sans-serif;
-            height: 100dvh;  /* dynamic vh will make the trick on iOS */
+            height: 100%;
             width: 100%;
             overflow: hidden;
             background-color: black;
         }
+
+        .App {
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            text-align: center;
+            color: white;
+        }
+
         #panorama {
-            height: 100dvh; /* dynamic vh will make the trick on iOS */
-            width: 100vw;
+            height: 100%;
+            width: 100%;
             background-color: black;
         }
+        
         .leaflet-container {
             background-color: black;
         }
+        
         .top-text {
             position: absolute;
-            top: 30px;  /* Add margin to avoid white space issue */
+            top: 10px;
             left: 10px;
             color: white;
             background-color: rgba(0, 0, 0, 0.7);
@@ -40,9 +51,10 @@
             font-size: 14px;
             display: block;
         }
+        
         .bottom-text {
             position: absolute;
-            bottom: 10px;  /* Adjust for visibility above the tab bar */
+            bottom: 40px;
             right: 10px;
             color: white;
             background-color: rgba(0, 0, 0, 0.7);
@@ -54,6 +66,7 @@
             font-size: 14px;
             direction: rtl;
         }
+        
         .start-text-english, .start-text-arabic {
             position: absolute;
             color: white;
@@ -64,19 +77,24 @@
             opacity: 0;
             animation: fadeInOut 2s infinite;
         }
+        
         .start-text-english {
             top: calc(48.75% - 40px);
         }
+        
         .start-text-arabic {
             top: calc(48.75% + 40px);
             direction: rtl;
         }
+        
         .fade-out {
             animation: fadeOut 1.5s forwards;
         }
+        
         .fade-in {
             animation: fadeIn 1.5s forwards;
         }
+        
         @keyframes fadeOut {
             from {
                 opacity: 1;
@@ -86,6 +104,7 @@
                 display: none;
             }
         }
+        
         @keyframes fadeIn {
             from {
                 opacity: 0;
@@ -95,6 +114,7 @@
                 display: block;
             }
         }
+        
         @keyframes fadeInOut {
             0%, 100% {
                 opacity: 0;
@@ -103,22 +123,27 @@
                 opacity: 1;
             }
         }
+        
         @media (max-height: 800px) {
             .top-text, .bottom-text {
                 font-size: 12px;
             }
+            
             .start-text-english, .start-text-arabic {
                 font-size: 18px;
             }
         }
+        
         @media (max-height: 600px) {
             .top-text, .bottom-text {
                 font-size: 10px;
             }
+            
             .start-text-english, .start-text-arabic {
                 font-size: 16px;
             }
         }
+        
         #landscape-message {
             display: none;
             position: absolute;
@@ -137,31 +162,33 @@
 </head>
 <body>
 
-<div class="top-text" id="topText">
-    Non-Linear Assembly<br><br>
-    In the wake of the Hamas attacks on October 7th, the Israeli Defence Forces have unleashed a devastating campaign on Gaza, killing at least 37,000 Palestinians, including over 15,000 children. The International Court of Justice has condemned the Israeli government's actions, citing crimes such as the starvation of civilians as a weapon of war, murder, extermination, and deliberate attacks on civilians. Despite these findings, numerous Western nations, including the United Kingdom, continue to support this war on the Palestinian people.<br><br>
-    In a powerful counter-movement, Londoners have mobilised in a series of fortnightly pro-Palestinian marches. Vilified by parts of the British media and government, these peaceful assemblies actually represent a diverse and peaceful coalition of society. They reflect the impact on global consciousness surrounding the Gaza conflict.<br><br>
-    This project is a linear rendering of the pro-Palestinian march that took place in London on January 13, 2024, and an ode to the people that call for compassion, humanity, and peace.
+<div class="App">
+    <div class="top-text" id="topText">
+        Non-Linear Assembly<br><br>
+        In the wake of the Hamas attacks on October 7th, the Israeli Defence Forces have unleashed a devastating campaign on Gaza, killing at least 37,000 Palestinians, including over 15,000 children. The International Court of Justice has condemned the Israeli government's actions, citing crimes such as the starvation of civilians as a weapon of war, murder, extermination, and deliberate attacks on civilians. Despite these findings, numerous Western nations, including the United Kingdom, continue to support this war on the Palestinian people.<br><br>
+        In a powerful counter-movement, Londoners have mobilised in a series of fortnightly pro-Palestinian marches. Vilified by parts of the British media and government, these peaceful assemblies actually represent a diverse and peaceful coalition of society. They reflect the impact on global consciousness surrounding the Gaza conflict.<br><br>
+        This project is a linear rendering of the pro-Palestinian march that took place in London on January 13, 2024, and an ode to the people that call for compassion, humanity, and peace.
+    </div>
+
+    <div class="start-text-english" id="startTextEnglish">
+        Click/tap anywhere on the line below to start
+    </div>
+
+    <div class="start-text-arabic" id="startTextArabic">
+        انقر على السطر للبدء
+    </div>
+
+    <div class="bottom-text" id="bottomText">
+        التجمع غير الخطي<br><br>
+        ردًا على هجمات حماس في السابع من تشرين الأول/أكتوبر، ردت قوات الدفاع الإسرائيلية بإلحاق قدر لا يمكن تصوره من الألم والدمار بغزة، مما أسفر عن مقتل ما لا يقل عن سبعة وثلاثين ألف فلسطيني، بما في ذلك أكثر من خمسة عشر طفلاً. وبينما خلصت محكمة العدل الدولية إلى أن الحكومة الإسرائيلية ارتكبت جرائم بما في ذلك تجويع المدنيين كسلاح في الحرب، والقتل والإبادة، والهجمات المتعمدة على المدنيين، فقد دعمت العديد من الدول الغربية، بما في ذلك المملكة المتحدة، هذه الحرب على الشعب الفلسطيني.<br><br>
+        ردًا على ذلك، شارك سكان لندن في سلسلة طويلة من مسيرات الدعم الكبيرة المؤيدة للفلسطينيين في جهد متواصل منذ المظاهرة الوطنية الأولى في الرابع عشر من أكتوبر عام ألفين وثلاثة وعشرين. على الرغم من الروايات الإعلامية والحكومية التي تشوه هذه المسيرات باعتبارها هامشية ومزعجة وبغيضة من أجل مواصلة دعمها بلا منازع للحكومة الإسرائيلية، فإن هذه المسيرات تمثل شريحة واسعة من المجتمع متحدة في الاحتجاج السلمي. وهي بمثابة شهادة على التأثير الواسع النطاق للصراع في غزة على الوعي العالمي.<br><br>
+        هذا المشروع عبارة عن عرض مكتوب للمسيرة المؤيدة للفلسطينيين التي جرت في لندن في الثالث عشر من يناير عام ألفين وأربعة وعشرين، وقصيدة للشعب الذي يدعو إلى الرحمة والإنسانية والسلام.
+    </div>
+
+    <div id="panorama"></div>
+
+    <div id="landscape-message">Portrait mode only</div>
 </div>
-
-<div class="start-text-english" id="startTextEnglish">
-    Click/tap anywhere on the line below to start
-</div>
-
-<div class="start-text-arabic" id="startTextArabic">
-    انقر على السطر للبدء
-</div>
-
-<div class="bottom-text" id="bottomText">
-    التجمع غير الخطي<br><br>
-    ردًا على هجمات حماس في السابع من تشرين الأول/أكتوبر، ردت قوات الدفاع الإسرائيلية بإلحاق قدر لا يمكن تصوره من الألم والدمار بغزة، مما أسفر عن مقتل ما لا يقل عن سبعة وثلاثين ألف فلسطيني، بما في ذلك أكثر من خمسة عشر طفلاً. وبينما خلصت محكمة العدل الدولية إلى أن الحكومة الإسرائيلية ارتكبت جرائم بما في ذلك تجويع المدنيين كسلاح في الحرب، والقتل والإبادة، والهجمات المتعمدة على المدنيين، فقد دعمت العديد من الدول الغربية، بما في ذلك المملكة المتحدة، هذه الحرب على الشعب الفلسطيني.<br><br>
-    ردًا على ذلك، شارك سكان لندن في سلسلة طويلة من مسيرات الدعم الكبيرة المؤيدة للفلسطينيين في جهد متواصل منذ المظاهرة الوطنية الأولى في الرابع عشر من أكتوبر عام ألفين وثلاثة وعشرين. على الرغم من الروايات الإعلامية والحكومية التي تشوه هذه المسيرات باعتبارها هامشية ومزعجة وبغيضة من أجل مواصلة دعمها بلا منازع للحكومة الإسرائيلية، فإن هذه المسيرات تمثل شريحة واسعة من المجتمع متحدة في الاحتجاج السلمي. وهي بمثابة شهادة على التأثير الواسع النطاق للصراع في غزة على الوعي العالمي.<br><br>
-    هذا المشروع عبارة عن عرض مكتوب للمسيرة المؤيدة للفلسطينيين التي جرت في لندن في الثالث عشر من يناير عام ألفين وأربعة وعشرين، وقصيدة للشعب الذي يدعو إلى الرحمة والإنسانية والسلام.
-</div>
-
-<div id="panorama"></div>
-
-<div id="landscape-message">Portrait mode only</div>
 
 <script>
     var TILE_SIZE = 256;
