@@ -28,8 +28,8 @@
         }
         .top-text {
             position: absolute;
-            top: 20px; /* Halved top margin */
-            left: 10px; /* Halved side margin */
+            top: 20px; /* Adjusted top margin */
+            left: 10px; /* Adjusted side margin */
             color: white;
             background-color: rgba(0, 0, 0, 0.7);
             padding: 10px;
@@ -37,13 +37,13 @@
             text-align: left;
             width: 80%;
             z-index: 1000;
-            font-size: 14px; /* Smaller by 1 increment */
+            font-size: 14px; /* Adjusted font size */
             display: block;
         }
         .bottom-text {
             position: absolute;
-            bottom: 40px; /* Increased for bottom margin */
-            right: 10px; /* Halved side margin */
+            bottom: 40px; /* Adjusted bottom margin */
+            right: 10px; /* Adjusted side margin */
             color: white;
             background-color: rgba(0, 0, 0, 0.7);
             padding: 10px;
@@ -51,7 +51,7 @@
             text-align: right;
             width: 80%;
             z-index: 1000;
-            font-size: 14px; /* Smaller by 1 increment */
+            font-size: 14px; /* Adjusted font size */
             direction: rtl;
         }
         .start-text-english, .start-text-arabic {
@@ -65,10 +65,10 @@
             animation: fadeInOut 2s infinite;
         }
         .start-text-english {
-            top: calc(48.75% - 40px); /* Adjusted to 48.75% with -40px offset */
+            top: calc(48.75% - 40px); /* Adjusted top offset */
         }
         .start-text-arabic {
-            top: calc(48.75% + 40px); /* Adjusted to 48.75% with 40px offset */
+            top: calc(48.75% + 40px); /* Adjusted top offset */
             direction: rtl;
         }
         .fade-out {
@@ -171,9 +171,9 @@
     var FADE_DISTANCE = 5 * TILE_SIZE;
 
     var map = L.map('panorama', {
-        minZoom: 2,
+        minZoom: 1,
         maxZoom: MAX_ZOOM,
-        zoom: 2,
+        zoom: 1,
         crs: L.CRS.Simple,
         doubleClickZoom: false,
         attributionControl: false,
@@ -191,7 +191,7 @@
         );
         map.setMaxBounds(bounds);
         var centerLatLng = map.unproject([(TILE_SIZE * TILES_X) / 2, (TILE_SIZE * TILES_Y) / 2], MAX_ZOOM);
-        map.setView(centerLatLng, 2);
+        map.setView(centerLatLng, 1);
     }
 
     setInitialView();
