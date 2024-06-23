@@ -28,8 +28,8 @@
         }
         .top-text {
             position: absolute;
-            top: 10px; /* Halved top margin */
-            left: 10px; /* Halved side margin */
+            top: 10px;
+            left: 10px;
             color: white;
             background-color: rgba(0, 0, 0, 0.7);
             padding: 10px;
@@ -37,13 +37,13 @@
             text-align: left;
             width: 80%;
             z-index: 1000;
-            font-size: 14px; /* Smaller by 1 increment */
+            font-size: 2.5vw; /* Use viewport width for responsive scaling */
             display: block;
         }
         .bottom-text {
             position: absolute;
-            bottom: 80px; /* Increased for bottom margin */
-            right: 10px; /* Halved side margin */
+            bottom: 60px; /* Adjusted for spacing */
+            right: 10px;
             color: white;
             background-color: rgba(0, 0, 0, 0.7);
             padding: 10px;
@@ -51,7 +51,7 @@
             text-align: right;
             width: 80%;
             z-index: 1000;
-            font-size: 14px; /* Smaller by 1 increment */
+            font-size: 2.5vw; /* Use viewport width for responsive scaling */
             direction: rtl;
         }
         .start-text-english, .start-text-arabic {
@@ -60,7 +60,7 @@
             width: 100%;
             text-align: center;
             z-index: 1000;
-            font-size: 18px;
+            font-size: 3vw; /* Use viewport width for responsive scaling */
             opacity: 0;
             animation: fadeInOut 2s infinite;
         }
@@ -105,18 +105,18 @@
         }
         @media (max-height: 800px) {
             .top-text, .bottom-text {
-                font-size: 12px;
+                font-size: 2vw; /* Smaller for shorter screens */
             }
             .start-text-english, .start-text-arabic {
-                font-size: 14px;
+                font-size: 2.5vw; /* Smaller for shorter screens */
             }
         }
         @media (max-height: 600px) {
             .top-text, .bottom-text {
-                font-size: 10px;
+                font-size: 1.5vw; /* Smaller for even shorter screens */
             }
             .start-text-english, .start-text-arabic {
-                font-size: 12px;
+                font-size: 2vw; /* Smaller for even shorter screens */
             }
         }
         #landscape-message {
@@ -126,7 +126,7 @@
             left: 50%;
             transform: translate(-50%, -50%);
             color: white;
-            font-size: 20px;
+            font-size: 4vw; /* Responsive scaling */
             text-align: center;
             z-index: 1000;
             background-color: rgba(0, 0, 0, 0.7);
@@ -258,7 +258,7 @@
 
     function handleZoomEnd() {
         var isMobile = /Mobi|Android/i.test(navigator.userAgent);
-        if (map.getZoom() <= map.getMinZoom() + 2) {
+        if (!isMobile && map.getZoom() <= map.getMinZoom() + 2) {
             document.getElementById('topText').classList.remove('fade-out');
             document.getElementById('topText').classList.add('fade-in');
             document.getElementById('bottomText').classList.remove('fade-out');
