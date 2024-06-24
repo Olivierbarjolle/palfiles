@@ -9,6 +9,10 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Monument+Grotesk:wght@300;400;500;600;700;800;900&display=swap');
 
+        :root {
+            --vh: 100vh;
+        }
+
         html, body {
             margin: 0;
             padding: 0;
@@ -17,18 +21,21 @@
             width: 100%;
             overflow: hidden;
             background-color: black;
+            min-height: var(--vh);
         }
 
         .App {
             position: relative;
             height: 100%;
             width: 100%;
+            min-height: var(--vh);
         }
 
         #panorama {
             height: 100%;
             width: 100%;
             background-color: black;
+            min-height: var(--vh);
         }
         
         .leaflet-container {
@@ -52,7 +59,7 @@
         
         .bottom-text {
             position: absolute;
-            bottom: 20px; /* Adjusted for visibility above the tab bar */
+            bottom: 20px;
             right: 10px;
             color: white;
             background-color: rgba(0, 0, 0, 0.7);
@@ -155,6 +162,18 @@
             background-color: rgba(0, 0, 0, 0.7);
             padding: 20px;
             border-radius: 10px;
+        }
+
+        @supports (-webkit-touch-callout: none) {
+            html, body {
+                height: -webkit-fill-available;
+            }
+            .App {
+                min-height: -webkit-fill-available;
+            }
+            #panorama {
+                min-height: -webkit-fill-available;
+            }
         }
     </style>
 </head>
@@ -385,6 +404,15 @@
             }, 250);
         });
     })();
+
+    // Update --vh custom property on resize
+    function updateVH() {
+        let vh = window.innerHeight * 0.01;
+        document.documentElement.style.setProperty('--vh', `${vh}px`);
+    }
+
+    window.addEventListener('resize', updateVH);
+    updateVH();
 
     // Function to detect if the browser is Safari on iOS
     function isSafariIOS() {
