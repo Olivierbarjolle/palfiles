@@ -10,14 +10,14 @@
         @import url('https://fonts.googleapis.com/css2?family=Monument+Grotesk:wght@300;400;500;600;700;800;900&display=swap');
 
         :root {
-            --vh: 100vh;
+            --vh: 100vh; /* Fallback for browsers that do not support Custom Properties */
         }
 
         html, body {
             margin: 0;
             padding: 0;
             font-family: 'Monument Grotesk', sans-serif;
-            height: var(--vh);
+            height: calc(var(--vh, 1vh) * 100);
             width: 100%;
             overflow: hidden;
             background-color: black;
@@ -392,7 +392,8 @@
 
     // Update --vh custom property on resize
     function updateVH() {
-        document.documentElement.style.setProperty('--vh', `${window.innerHeight}px`);
+        let vh = window.innerHeight * 0.01;
+        document.documentElement.style.setProperty('--vh', `${vh}px`);
     }
 
     window.addEventListener('resize', updateVH);
