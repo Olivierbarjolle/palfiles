@@ -156,25 +156,13 @@
             padding: 20px;
             border-radius: 10px;
         }
-
-        @supports (-webkit-touch-callout: none) {
-            html, body {
-                height: -webkit-fill-available;
-            }
-            .App {
-                min-height: -webkit-fill-available;
-            }
-            #panorama {
-                min-height: -webkit-fill-available;
-            }
-        }
     </style>
 </head>
 <body>
 
 <div class="App">
     <div class="top-text" id="topText">
-        SAFARI TEST Non-Linear Assembly<br><br>
+        Non-Linear Assembly<br><br>
         In the wake of the Hamas attacks on October 7th, the Israeli Defence Forces have unleashed a devastating campaign on Gaza, killing at least 37,000 Palestinians, including over 15,000 children. The International Court of Justice has condemned the Israeli government's actions, citing crimes such as the starvation of civilians as a weapon of war, murder, extermination, and deliberate attacks on civilians. Despite these findings, numerous Western nations, including the United Kingdom, continue to support this war on the Palestinian people.<br><br>
         In a powerful counter-movement, Londoners have mobilised in a series of fortnightly pro-Palestinian marches. Vilified by parts of the British media and government, these peaceful assemblies actually represent a diverse and peaceful coalition of society. They reflect the impact on global consciousness surrounding the Gaza conflict.<br><br>
         This project is a linear rendering of the pro-Palestinian march that took place in London on January 13, 2024, and an ode to the people that call for compassion, humanity, and peace.
@@ -397,6 +385,30 @@
             }, 250);
         });
     })();
+
+    // Function to detect if the browser is Safari on iOS
+    function isSafariIOS() {
+        var ua = navigator.userAgent;
+        return !!ua.match(/iP(ad|od|hone)/i) && !!ua.match(/WebKit/i) && !ua.match(/CriOS/i);
+    }
+
+    // Apply Safari-specific CSS if on Safari iOS
+    if (isSafariIOS()) {
+        document.getElementById('topText').innerHTML = 'SAFARI TEST Non-Linear Assembly<br><br>' + document.getElementById('topText').innerHTML;
+        var safariStyle = document.createElement('style');
+        safariStyle.innerHTML = `
+            html, body {
+                height: -webkit-fill-available;
+            }
+            .App {
+                min-height: -webkit-fill-available;
+            }
+            #panorama {
+                min-height: -webkit-fill-available;
+            }
+        `;
+        document.head.appendChild(safariStyle);
+    }
 
     // Initial check
     checkOrientation();
