@@ -11,13 +11,14 @@
 
         :root {
             --vh: 100vh;
+            --offset: 0px;
         }
 
         html, body {
             margin: 0;
             padding: 0;
             font-family: 'Monument Grotesk', sans-serif;
-            height: calc(var(--vh) - 300px); /* Adjust height for Safari on iOS */
+            height: calc(var(--vh) - var(--offset)); /* Adjust height for Safari on iOS */
             width: 100%;
             overflow: hidden;
             background-color: black;
@@ -26,7 +27,7 @@
         .App {
             display: flex;
             flex-direction: column;
-            height: calc(var(--vh) - 300px); /* Adjust height for Safari on iOS */
+            height: calc(var(--vh) - var(--offset)); /* Adjust height for Safari on iOS */
             width: 100%;
         }
 
@@ -42,7 +43,7 @@
 
         .top-text {
             position: absolute;
-            top: 10px;
+            top: calc(10px + var(--offset));
             left: 10px;
             color: white;
             background-color: rgba(0, 0, 0, 0.7);
@@ -57,7 +58,7 @@
 
         .bottom-text {
             position: absolute;
-            bottom: 10px;
+            bottom: calc(10px + var(--offset));
             right: 10px;
             color: white;
             background-color: rgba(0, 0, 0, 0.7);
@@ -82,11 +83,11 @@
         }
 
         .start-text-english {
-            top: calc(48.75% - 40px);
+            top: calc(48.75% - 40px + var(--offset));
         }
 
         .start-text-arabic {
-            top: calc(48.75% + 40px);
+            top: calc(48.75% + 40px + var(--offset));
             direction: rtl;
         }
 
@@ -409,6 +410,7 @@
     // Apply Safari-specific CSS if on Safari iOS
     if (isSafariIOS()) {
         document.documentElement.style.setProperty('--vh', 'calc(100vh - 300px)'); // Adjust viewport height for Safari on iOS by reducing 300px
+        document.documentElement.style.setProperty('--offset', '300px'); // Adjust offset for Safari on iOS
         document.getElementById('topText').innerHTML = 'SAFARI TEST Non-Linear Assembly<br><br>' + document.getElementById('topText').innerHTML;
     }
 
