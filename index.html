@@ -128,23 +128,25 @@
             }
         }
 
-        @media (max-height: 800px) {
+        /* General Mobile Adjustments */
+        @media (max-width: 768px) {
+            .top-text, .bottom-text {
+                font-size: 18px;
+            }
+
+            .start-text-english, .start-text-arabic {
+                font-size: 30px;
+            }
+        }
+
+        /* Specific adjustments for very small mobile screens */
+        @media (max-width: 400px) {
             .top-text, .bottom-text {
                 font-size: 14px;
             }
 
             .start-text-english, .start-text-arabic {
-                font-size: 22px;
-            }
-        }
-
-        @media (max-height: 600px) {
-            .top-text, .bottom-text {
-                font-size: 12px;
-            }
-
-            .start-text-english, .start-text-arabic {
-                font-size: 20px;
+                font-size: 24px;
             }
         }
 
