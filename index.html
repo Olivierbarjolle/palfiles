@@ -409,19 +409,6 @@
     // Apply Safari-specific CSS if on Safari iOS
     if (isSafariIOS()) {
         document.getElementById('topText').innerHTML = 'SAFARI TEST Non-Linear Assembly<br><br>' + document.getElementById('topText').innerHTML;
-        var safariStyle = document.createElement('style');
-        safariStyle.innerHTML = `
-            html, body {
-                height: -webkit-fill-available;
-            }
-            .App {
-                min-height: -webkit-fill-available;
-            }
-            #panorama {
-                min-height: -webkit-fill-available;
-            }
-        `;
-        document.head.appendChild(safariStyle);
     }
 
     // Initial check
