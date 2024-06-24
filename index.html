@@ -42,7 +42,7 @@
 
         .top-text {
             position: absolute;
-            top: 10px;
+            top: calc(10px + var(--offset));
             left: 10px;
             color: white;
             background-color: rgba(0, 0, 0, 0.7);
@@ -82,11 +82,11 @@
         }
 
         .start-text-english {
-            top: calc(48.75% - 40px);
+            top: calc(48.75% - 40px + var(--offset));
         }
 
         .start-text-arabic {
-            top: calc(48.75% + 40px);
+            top: calc(48.75% + 40px + var(--offset));
             direction: rtl;
         }
 
@@ -408,19 +408,9 @@
 
     // Apply Safari-specific CSS if on Safari iOS
     if (isSafariIOS()) {
-        var safariStyle = document.createElement('style');
-        safariStyle.innerHTML = `
-            html, body {
-                height: -webkit-fill-available;
-            }
-            .App {
-                min-height: -webkit-fill-available;
-            }
-            #panorama {
-                min-height: -webkit-fill-available;
-            }
-        `;
-        document.head.appendChild(safariStyle);
+        document.documentElement.style.setProperty('--offset', '80px'); // Adjust offset for Safari on iOS
+    } else {
+        document.documentElement.style.setProperty('--offset', '0px'); // No offset for other browsers
     }
 
     // Initial check
