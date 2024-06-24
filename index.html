@@ -58,7 +58,7 @@
 
         .bottom-text {
             position: absolute;
-            bottom: 80px;
+            bottom: 80px; /* Increased bottom margin to ensure visibility */
             right: 10px;
             color: white;
             background-color: rgba(0, 0, 0, 0.7);
@@ -409,7 +409,7 @@
 
     // Apply Safari-specific CSS if on Safari iOS
     if (isSafariIOS()) {
-        document.documentElement.style.setProperty('--offset', '80px'); // Adjust offset for Safari on iOS
+        document.documentElement.style.setProperty('--offset', '100px'); // Adjust offset for Safari on iOS
         document.getElementById('topText').innerHTML = 'SAFARI TEST Non-Linear Assembly<br><br>' + document.getElementById('topText').innerHTML;
     } else {
         document.documentElement.style.setProperty('--offset', '0px'); // No offset for other browsers
