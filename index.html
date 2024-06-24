@@ -408,7 +408,7 @@
 
     // Apply Safari-specific CSS if on Safari iOS
     if (isSafariIOS()) {
-        document.documentElement.style.setProperty('--vh', 'calc(100vh - 80px)'); // Adjust viewport height for Safari on iOS
+        document.documentElement.style.setProperty('--vh', 'calc(100vh - 200px)'); // Adjust viewport height for Safari on iOS by reducing 200px
         document.getElementById('topText').innerHTML = 'SAFARI TEST Non-Linear Assembly<br><br>' + document.getElementById('topText').innerHTML;
     }
 
