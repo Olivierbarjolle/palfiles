@@ -124,17 +124,27 @@
         return !!ua.match(/iP(ad|od|hone)/i) && !!ua.match(/WebKit/i) && !ua.match(/CriOS/i);
     }
 
+    function updateViewportHeight() {
+        let vh = window.innerHeight * 0.01;
+        document.documentElement.style.setProperty('--vh', `${vh}px`);
+    }
+
+    function adjustForIOS() {
+        let vh = window.innerHeight * 0.01;
+        document.documentElement.style.setProperty('--vh', `${vh}px`);
+        document.body.style.height = `calc(${vh * 100}px)`;
+        document.getElementById('panorama').style.height = `calc(${vh * 100}px)`;
+        document.getElementById('bottom-marker').style.bottom = `calc(10px + env(safe-area-inset-bottom))`;
+    }
+
     // Apply Safari-specific CSS if on Safari iOS
     if (isSafariIOS()) {
         document.getElementById('safari-marker').style.display = 'block';
-        
-        window.onresize = function() {
-            document.body.style.height = '100dvh';
-            document.getElementById('panorama').style.height = '100dvh';
-            // Re-center the map view to ensure it is properly centered
-            setInitialView();
-        };
-        window.onresize(); // called to initially set the height
+        window.addEventListener('resize', adjustForIOS);
+        adjustForIOS(); // called to initially set the height
+    } else {
+        window.addEventListener('resize', updateViewportHeight);
+        updateViewportHeight();
     }
 </script>
 
