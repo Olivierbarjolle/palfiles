@@ -7,16 +7,19 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <style>
+        :root {
+            --vh: 100vh;
+        }
         body, html {
             margin: 0;
             padding: 0;
-            height: 100%;
+            height: calc(var(--vh) * 1);
             width: 100%;
             overflow: hidden;
             background-color: black;
         }
         #panorama {
-            height: 100%;
+            height: calc(var(--vh) * 1);
             width: 100%;
             background-color: black;
         }
@@ -41,7 +44,7 @@
             transform: translateX(-50%);
         }
         #middle-marker {
-            top: 50%;
+            top: calc(var(--vh) * 0.5);
             left: 50%;
             transform: translate(-50%, -50%);
         }
@@ -132,13 +135,11 @@
     // Apply Safari-specific CSS if on Safari iOS
     if (isSafariIOS()) {
         document.getElementById('safari-marker').style.display = 'block';
-        document.getElementById('top-marker').style.top = 'calc(10px + env(safe-area-inset-top))';
-        document.getElementById('middle-marker').style.top = 'calc(50% - env(safe-area-inset-bottom) / 2)';
-        document.getElementById('bottom-marker').style.bottom = 'calc(10px + env(safe-area-inset-bottom))';
 
         window.onresize = function() {
-            document.body.style.height = window.innerHeight + 'px';
-            document.getElementById('panorama').style.height = window.innerHeight + 'px';
+            updateViewportHeight();
+            document.body.style.height = 'calc(var(--vh) * 100)';
+            document.getElementById('panorama').style.height = 'calc(var(--vh) * 100)';
             // Re-center the map view to ensure it is properly centered
             setInitialView();
         };
