@@ -23,11 +23,19 @@
         .leaflet-container {
             background-color: black;
         }
+        #safari-marker {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            color: white;
+            z-index: 1000;
+        }
     </style>
 </head>
 <body>
 
 <div id="panorama"></div>
+<div id="safari-marker" style="display: none;">Safari</div>
 
 <script>
     var TILE_SIZE = 256;
@@ -95,16 +103,12 @@
 
     // Apply Safari-specific CSS if on Safari iOS
     if (isSafariIOS()) {
-        var updateViewportHeight = function() {
-            var vh = window.innerHeight * 0.01;
-            document.documentElement.style.setProperty('--vh', `${vh}px`);
+        document.getElementById('safari-marker').style.display = 'block';
+        
+        window.onresize = function() {
+            document.body.style.height = window.innerHeight + 'px';
         };
-
-        // Initial update
-        updateViewportHeight();
-
-        // Update on resize
-        window.addEventListener('resize', updateViewportHeight);
+        window.onresize(); // called to initially set the height
     }
 </script>
 
