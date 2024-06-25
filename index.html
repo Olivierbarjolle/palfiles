@@ -11,14 +11,13 @@
 
         :root {
             --vh: 100vh;
-            --bottom-offset: 0px;
         }
 
         html, body {
             margin: 0;
             padding: 0;
             font-family: 'Monument Grotesk', sans-serif;
-            height: calc(var(--vh) - var(--bottom-offset)); /* Adjust height for Safari on iOS */
+            height: var(--vh, 100vh);
             width: 100%;
             overflow: hidden;
             background-color: black;
@@ -27,14 +26,13 @@
         .App {
             display: flex;
             flex-direction: column;
-            height: 100%;
+            height: var(--vh, 100vh);
             width: 100%;
         }
 
         #panorama {
             flex: 1;
             width: 100%;
-            height: 100%;
             background-color: black;
         }
 
@@ -53,13 +51,13 @@
             text-align: left;
             width: 80%;
             z-index: 1000;
-            font-size: 18px; /* Increased by 2 increments */
+            font-size: 14px;
             display: block;
         }
 
         .bottom-text {
             position: absolute;
-            bottom: 10px;
+            bottom: 40px;
             right: 10px;
             color: white;
             background-color: rgba(0, 0, 0, 0.7);
@@ -68,7 +66,7 @@
             text-align: right;
             width: 80%;
             z-index: 1000;
-            font-size: 18px; /* Increased by 2 increments */
+            font-size: 14px;
             direction: rtl;
         }
 
@@ -78,17 +76,17 @@
             width: 100%;
             text-align: center;
             z-index: 1000;
-            font-size: 26px;
+            font-size: 22px;
             opacity: 0;
             animation: fadeInOut 2s infinite;
         }
 
         .start-text-english {
-            top: calc(50% - 40px); /* Centered without bottom offset */
+            top: calc(48.75% - 40px);
         }
 
         .start-text-arabic {
-            top: calc(50% + 40px); /* Centered without bottom offset */
+            top: calc(48.75% + 40px);
             direction: rtl;
         }
 
@@ -131,21 +129,21 @@
 
         @media (max-height: 800px) {
             .top-text, .bottom-text {
-                font-size: 16px; /* Increased by 2 increments */
+                font-size: 12px;
             }
 
             .start-text-english, .start-text-arabic {
-                font-size: 22px; /* Increased by 2 increments */
+                font-size: 18px;
             }
         }
 
         @media (max-height: 600px) {
             .top-text, .bottom-text {
-                font-size: 14px; /* Increased by 2 increments */
+                font-size: 10px;
             }
 
             .start-text-english, .start-text-arabic {
-                font-size: 20px; /* Increased by 2 increments */
+                font-size: 16px;
             }
         }
 
@@ -410,9 +408,19 @@
 
     // Apply Safari-specific CSS if on Safari iOS
     if (isSafariIOS()) {
-        document.documentElement.style.setProperty('--vh', '100vh'); // Keep viewport height as is
-        document.documentElement.style.setProperty('--bottom-offset', '250px'); // Adjust bottom offset for Safari on iOS
-        document.getElementById('topText').innerHTML = 'SAFARI TEST Non-Linear Assembly<br><br>' + document.getElementById('topText').innerHTML;
+        var safariStyle = document.createElement('style');
+        safariStyle.innerHTML = `
+            html, body {
+                height: -webkit-fill-available;
+            }
+            .App {
+                min-height: -webkit-fill-available;
+            }
+            #panorama {
+                min-height: -webkit-fill-available;
+            }
+        `;
+        document.head.appendChild(safariStyle);
     }
 
     // Initial check
