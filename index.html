@@ -130,6 +130,8 @@
     function updateViewportHeight() {
         let vh = window.innerHeight * 0.01;
         document.documentElement.style.setProperty('--vh', `${vh}px`);
+        // Re-center the map view to ensure it is properly centered
+        setInitialView();
     }
 
     // Apply Safari-specific CSS if on Safari iOS
@@ -138,11 +140,6 @@
 
         window.onresize = function() {
             updateViewportHeight();
-            // Adjust markers to ensure the bottom marker is visible above the URL bar
-            document.getElementById('middle-marker').style.top = 'calc(50% - env(safe-area-inset-bottom) / 2)';
-            document.getElementById('bottom-marker').style.bottom = 'calc(10px + env(safe-area-inset-bottom))';
-            // Re-center the map view to ensure it is properly centered
-            setInitialView();
         };
         window.onresize(); // called to initially set the height
     }
