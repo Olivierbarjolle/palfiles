@@ -27,14 +27,14 @@
         .App {
             display: flex;
             flex-direction: column;
-            height: calc(var(--vh) - var(--bottom-offset)); /* Adjust height for Safari on iOS */
+            height: 100%;
             width: 100%;
         }
 
         #panorama {
             flex: 1;
             width: 100%;
-            height: calc(100% - var(--bottom-offset)); /* Adjust height to account for bottom offset */
+            height: 100%;
             background-color: black;
         }
 
@@ -59,7 +59,7 @@
 
         .bottom-text {
             position: absolute;
-            bottom: calc(10px + var(--bottom-offset));
+            bottom: 10px;
             right: 10px;
             color: white;
             background-color: rgba(0, 0, 0, 0.7);
@@ -84,11 +84,11 @@
         }
 
         .start-text-english {
-            top: calc(50% - 40px - var(--bottom-offset) / 2); /* Centered considering bottom offset */
+            top: calc(50% - 40px); /* Centered without bottom offset */
         }
 
         .start-text-arabic {
-            top: calc(50% + 40px - var(--bottom-offset) / 2); /* Centered considering bottom offset */
+            top: calc(50% + 40px); /* Centered without bottom offset */
             direction: rtl;
         }
 
