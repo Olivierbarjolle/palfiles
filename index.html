@@ -83,11 +83,11 @@
         }
 
         .start-text-english {
-            top: calc(49% - 40px - var(--bottom-offset) / 2);
+            top: calc(50% - 40px - var(--bottom-offset) / 2); /* Centered considering bottom offset */
         }
 
         .start-text-arabic {
-            top: calc(49% + 40px - var(--bottom-offset) / 2);
+            top: calc(50% + 40px - var(--bottom-offset) / 2); /* Centered considering bottom offset */
             direction: rtl;
         }
 
@@ -410,7 +410,7 @@
     // Apply Safari-specific CSS if on Safari iOS
     if (isSafariIOS()) {
         document.documentElement.style.setProperty('--vh', '100vh'); // Keep viewport height as is
-        document.documentElement.style.setProperty('--bottom-offset', '300px'); // Adjust bottom offset for Safari on iOS
+        document.documentElement.style.setProperty('--bottom-offset', '250px'); // Adjust bottom offset for Safari on iOS
         document.getElementById('topText').innerHTML = 'SAFARI TEST Non-Linear Assembly<br><br>' + document.getElementById('topText').innerHTML;
     }
 
