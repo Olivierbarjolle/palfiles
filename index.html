@@ -69,9 +69,17 @@
             initialClickHandled = true;
 
             var clickedLatLng = e.latlng;
-            var centerLng = Math.max(0, Math.min(TILE_SIZE * TILES_X, map.project(clickedLatLng, MAX_ZOOM).x));
-            var centerLatLng = map.unproject([centerLng, (TILE_SIZE * TILES_Y) / 2], MAX_ZOOM);
-            var zoomLevel = MAX_ZOOM - 1;
+            var centerX = Math.max(0, Math.min(TILE_SIZE * TILES_X, map.project(clickedLatLng, MAX_ZOOM).x));
+
+            // Ensure centerX is within the bounds of the image
+            if (centerX < TILE_SIZE) {
+                centerX = TILE_SIZE / 2;
+            } else if (centerX > TILE_SIZE * (TILES_X - 1)) {
+                centerX = TILE_SIZE * (TILES_X - 1.5);
+            }
+
+            var centerLatLng = map.unproject([centerX, (TILE_SIZE * TILES_Y) / 2], MAX_ZOOM);
+            var zoomLevel = MAX_ZOOM;
 
             map.flyTo(centerLatLng, zoomLevel, {
                 animate: true,
