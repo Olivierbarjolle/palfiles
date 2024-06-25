@@ -53,7 +53,7 @@
             text-align: left;
             width: 80%;
             z-index: 1000;
-            font-size: 16px; /* Increased by 2 increments */
+            font-size: 18px; /* Increased by 2 increments */
             display: block;
         }
 
@@ -68,7 +68,7 @@
             text-align: right;
             width: 80%;
             z-index: 1000;
-            font-size: 16px; /* Increased by 2 increments */
+            font-size: 18px; /* Increased by 2 increments */
             direction: rtl;
         }
 
@@ -78,7 +78,7 @@
             width: 100%;
             text-align: center;
             z-index: 1000;
-            font-size: 24px;
+            font-size: 26px;
             opacity: 0;
             animation: fadeInOut 2s infinite;
         }
@@ -411,7 +411,7 @@
     // Apply Safari-specific CSS if on Safari iOS
     if (isSafariIOS()) {
         document.documentElement.style.setProperty('--vh', '100vh'); // Keep viewport height as is
-        document.documentElement.style.setProperty('--bottom-offset', '240px'); // Adjust bottom offset for Safari on iOS
+        document.documentElement.style.setProperty('--bottom-offset', '250px'); // Adjust bottom offset for Safari on iOS
         document.getElementById('topText').innerHTML = 'SAFARI TEST Non-Linear Assembly<br><br>' + document.getElementById('topText').innerHTML;
     }
 
