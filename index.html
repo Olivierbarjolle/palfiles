@@ -127,12 +127,13 @@
     // Apply Safari-specific CSS if on Safari iOS
     if (isSafariIOS()) {
         document.getElementById('safari-marker').style.display = 'block';
-        
+        document.getElementById('bottom-marker').style.bottom = '60px'; // Adjust this value as needed to be above the URL bar
+
         window.onresize = function() {
             document.body.style.height = window.innerHeight + 'px';
             document.getElementById('panorama').style.height = window.innerHeight + 'px';
             // Adjust markers to ensure the bottom marker is visible above the URL bar
-            document.getElementById('bottom-marker').style.bottom = 'calc(10px + env(safe-area-inset-bottom))';
+            document.getElementById('bottom-marker').style.bottom = 'calc(60px + env(safe-area-inset-bottom))';
             // Re-center the map view to ensure it is properly centered
             setInitialView();
         };
