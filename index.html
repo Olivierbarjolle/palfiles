@@ -61,6 +61,24 @@
         maxZoom: MAX_ZOOM,
         noWrap: true,
     }).addTo(map);
+
+    var initialClickHandled = false;
+
+    map.on('click', function(e) {
+        if (!initialClickHandled) {
+            initialClickHandled = true;
+
+            var clickedLatLng = e.latlng;
+            var centerLng = Math.max(0, Math.min(TILE_SIZE * TILES_X, map.project(clickedLatLng, MAX_ZOOM).x));
+            var centerLatLng = map.unproject([centerLng, (TILE_SIZE * TILES_Y) / 2], MAX_ZOOM);
+            var zoomLevel = MAX_ZOOM - 1;
+
+            map.flyTo(centerLatLng, zoomLevel, {
+                animate: true,
+                duration: 4
+            });
+        }
+    });
 </script>
 
 </body>
