@@ -133,11 +133,13 @@
 
             // Adjust markers to ensure the bottom marker is visible above the URL bar
             document.getElementById('middle-marker').style.top = `calc(${vh}px / 2)`;
-            document.getElementById('bottom-marker').style.bottom = '10px';
+            document.getElementById('bottom-marker').style.bottom = '300px'; // This should ensure it's visible
 
             // Adjust the map view to ensure it is properly centered
-            var centerLatLng = map.unproject([(TILE_SIZE * TILES_X) / 2, (TILE_SIZE * TILES_Y) / 2], MAX_ZOOM);
-            map.setView(centerLatLng, map.getZoom());
+            setTimeout(function() {
+                var centerLatLng = map.unproject([(TILE_SIZE * TILES_X) / 2, (TILE_SIZE * TILES_Y) / 2], MAX_ZOOM);
+                map.setView(centerLatLng, map.getZoom());
+            }, 100); // Delay to ensure height is set before centering
         }
 
         window.addEventListener('resize', adjustForIOS);
