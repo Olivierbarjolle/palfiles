@@ -78,6 +78,8 @@
             text-align: center;
             z-index: 1000;
             font-size: 26px;
+            opacity: 0;
+            animation: fadeInOut 2s infinite;
         }
 
         .start-text-english {
@@ -87,6 +89,78 @@
         .start-text-arabic {
             top: calc(55% - var(--bottom-offset) / 2);
             direction: rtl;
+        }
+
+        .fade-out {
+            animation: fadeOut 1.5s forwards;
+        }
+
+        .fade-in {
+            animation: fadeIn 1.5s forwards;
+        }
+
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+            }
+            to {
+                opacity: 0;
+                display: none;
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+                display: block;
+            }
+        }
+
+        @keyframes fadeInOut {
+            0%, 100% {
+                opacity: 0;
+            }
+            50% {
+                opacity: 1;
+            }
+        }
+
+        @media (max-height: 800px) {
+            .top-text, .bottom-text {
+                font-size: 16px;
+            }
+
+            .start-text-english, .start-text-arabic {
+                font-size: 22px;
+            }
+        }
+
+        @media (max-height: 600px) {
+            .top-text, .bottom-text {
+                font-size: 14px;
+            }
+
+            .start-text-english, .start-text-arabic {
+                font-size: 20px;
+            }
+        }
+
+        #landscape-message {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 20px;
+            text-align: center;
+            z-index: 1000;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            border-radius: 10px;
         }
     </style>
 </head>
@@ -158,21 +232,120 @@
         noWrap: true,
     }).addTo(map);
 
-    map.on('click', function(e) {
-        var clickedLatLng = e.latlng;
-        var centerLng = Math.max(0, Math.min(TILE_SIZE * TILES_X, map.project(clickedLatLng, MAX_ZOOM).x));
-        var centerLatLng = map.unproject([centerLng, (TILE_SIZE * TILES_Y) / 2], MAX_ZOOM);
-        var zoomLevel = MAX_ZOOM - 1;
+    var audioFiles = [
+        'https://chipper-sunflower-e51e1a.netlify.app/audio/1.mp3',
+        'https://chipper-sunflower-e51e1a.netlify.app/audio/2.mp3',
+        'https://chipper-sunflower-e51e1a.netlify.app/audio/3.mp3',
+        'https://chipper-sunflower-e51e1a.netlify.app/audio/4.mp3'
+    ];
 
-        if (/Mobi|Android/i.test(navigator.userAgent)) {
-            zoomLevel -= 1;
-        }
+    var audioZones = [
+        { start: 177, end: 190, audio: new Audio(audioFiles[0]) },
+        { start: 170, end: 176, audio: new Audio(audioFiles[2]) },
+        { start: 137, end: 169, audio: new Audio(audioFiles[1]) },
+        { start: 58, end: 136, audio: new Audio(audioFiles[3]) },
+        { start: 100, end: 120, audio: new Audio(audioFiles[1]) },
+        { start: 100, end: 110, audio: new Audio(audioFiles[2]) },
+        { start: 80, end: 90, audio: new Audio(audioFiles[1]) },
+        { start: 50, end: 57, audio: new Audio(audioFiles[2]) },
+        { start: 19, end: 56, audio: new Audio(audioFiles[3]) },
+        { start: 8, end: 18, audio: new Audio(audioFiles[2]) },
+        { start: 6, end: 7, audio: new Audio(audioFiles[1]) },
+        { start: -10, end: 5, audio: new Audio(audioFiles[0]) }
+    ];
 
-        map.flyTo(centerLatLng, zoomLevel, {
-            animate: true,
-            duration: 4
-        });
+    audioZones.forEach(function(zone) {
+        zone.audio.loop = true;
+        zone.audio.volume = 0;
+        zone.audio.load();
+        console.log(`Loaded audio file for zone: ${zone.audio.src}`);
     });
+
+    var audioInitialized = false;
+    var initialClickHandled = false;
+
+    function adjustVolume() {
+        var centerLng = map.getCenter().lng * TILE_SIZE;
+        var zoomLevel = map.getZoom();
+        var maxVolume = (zoomLevel - 2) / (MAX_ZOOM - 2);
+
+        audioZones.forEach(function(zone) {
+            var volume = 0;
+            if (centerLng >= (zone.start - FADE_DISTANCE) * TILE_SIZE && centerLng <= (zone.end + FADE_DISTANCE) * TILE_SIZE) {
+                if (centerLng >= zone.start * TILE_SIZE && centerLng <= zone.end * TILE_SIZE) {
+                    volume = maxVolume;
+                } else if (centerLng < zone.start * TILE_SIZE) {
+                    volume = maxVolume * (1 - ((zone.start * TILE_SIZE - centerLng) / FADE_DISTANCE));
+                } else if (centerLng > zone.end * TILE_SIZE) {
+                    volume = maxVolume * (1 - ((centerLng - zone.end * TILE_SIZE) / FADE_DISTANCE));
+                }
+            }
+
+            zone.audio.volume = Math.max(0, volume);
+            console.log(`Zone audio src: ${zone.audio.src}, volume: ${volume}`);
+        });
+    }
+
+    function handleZoomEnd() {
+        var isMobile = /Mobi|Android/i.test(navigator.userAgent);
+        if (map.getZoom() <= map.getMinZoom() + 2) {
+            document.getElementById('topText').classList.remove('fade-out');
+            document.getElementById('topText').classList.add('fade-in');
+            document.getElementById('bottomText').classList.remove('fade-out');
+            document.getElementById('bottomText').classList.add('fade-in');
+            initialClickHandled = false;
+        } else {
+            document.getElementById('topText').classList.remove('fade-in');
+            document.getElementById('topText').classList.add('fade-out');
+            document.getElementById('bottomText').classList.remove('fade-in');
+            document.getElementById('bottomText').classList.add('fade-out');
+        }
+    }
+
+    map.on('move', adjustVolume); // Adjust volume continuously as the map moves
+
+    map.on('click', function(e) {
+        if (!initialClickHandled) {
+            initialClickHandled = true;
+            document.getElementById('topText').classList.add('fade-out'); // Trigger fade out for top text
+            document.getElementById('bottomText').classList.add('fade-out'); // Trigger fade out for bottom text
+            document.getElementById('startTextEnglish').classList.add('fade-out'); // Trigger fade out for English start text
+            document.getElementById('startTextArabic').classList.add('fade-out'); // Trigger fade out for Arabic start text
+
+            if (!audioInitialized) {
+                audioZones.forEach(function(zone) {
+                    zone.audio.play().catch(error => {
+                        console.error("Audio playback failed:", error);
+                    });
+                });
+                audioInitialized = true;
+            }
+
+            var clickedLatLng = e.latlng;
+            var centerLng = Math.max(0, Math.min(TILE_SIZE * TILES_X, map.project(clickedLatLng, MAX_ZOOM).x));
+            var centerLatLng = map.unproject([centerLng, (TILE_SIZE * TILES_Y) / 2], MAX_ZOOM);
+            var zoomLevel = MAX_ZOOM - 1;
+
+            // Check if the device is mobile
+            if (/Mobi|Android/i.test(navigator.userAgent)) {
+                zoomLevel -= 1; // Zoom one level less on mobile
+            }
+
+            map.flyTo(centerLatLng, zoomLevel, {
+                animate: true,
+                duration: 4
+            });
+
+            map.once('moveend', function() {
+                adjustVolume(); // Ensure volume is adjusted after moving
+            });
+        }
+    });
+
+    // Update volume continuously during the zoom
+    map.on('zoomstart', adjustVolume);
+    map.on('zoomend', adjustVolume);
+    map.on('zoomend', handleZoomEnd); // Handle zoom end to make text reappear
 
     function checkOrientation() {
         var isMobile = /Mobi|Android/i.test(navigator.userAgent);
@@ -193,8 +366,38 @@
         }
     }
 
-    window.addEventListener('resize', checkOrientation);
-    checkOrientation();
+    window.addEventListener('resize', function() {
+        var currentCenter = map.getCenter();
+        var currentZoom = map.getZoom();
+        map.setView(currentCenter, currentZoom);
+        checkOrientation();
+    });
+
+    window.addEventListener('resizeend', function() {
+        var currentCenter = map.getCenter();
+        var currentZoom = map.getZoom();
+        map.setView(currentCenter, currentZoom);
+    });
+
+    // Debounce the resize event to trigger resizeend event
+    (function() {
+        var resizeTimer;
+        window.addEventListener('resize', function() {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(function() {
+                window.dispatchEvent(new Event('resizeend'));
+            }, 250);
+        });
+    })();
+
+    // Update --vh custom property on resize
+    function updateVH() {
+        let vh = window.innerHeight * 0.01;
+        document.documentElement.style.setProperty('--vh', `${vh}px`);
+    }
+
+    window.addEventListener('resize', updateVH);
+    updateVH();
 
     // Function to detect if the browser is Safari on iOS
     function isSafariIOS() {
@@ -207,6 +410,9 @@
         document.documentElement.style.setProperty('--bottom-offset', '250px');
         document.getElementById('topText').innerHTML = 'SAFARI TEST Non-Linear Assembly<br><br>' + document.getElementById('topText').innerHTML;
     }
+
+    // Initial check
+    checkOrientation();
 </script>
 
 </body>
