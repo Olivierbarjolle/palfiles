@@ -32,7 +32,10 @@
         }
 
         #panorama {
-            flex: 1;
+            position: absolute;
+            top: calc(50% - var(--bottom-offset) / 2); /* Centered considering bottom offset */
+            left: 0;
+            height: calc(100% - var(--bottom-offset));
             width: 100%;
             background-color: black;
         }
