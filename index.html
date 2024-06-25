@@ -144,16 +144,21 @@
 
         window.addEventListener('resize', adjustForIOS);
         adjustForIOS(); // called to initially set the height
-    }
 
-    // Adjust for orientation changes
-    window.addEventListener('orientationchange', function() {
-        setTimeout(function() {
-            adjustForIOS();
-            var centerLatLng = map.unproject([(TILE_SIZE * TILES_X) / 2, (TILE_SIZE * TILES_Y) / 2], MAX_ZOOM);
-            map.setView(centerLatLng, map.getZoom());
-        }, 200); // Delay to ensure height is set before centering
-    });
+        // Simulate orientation change to trigger recalculating view settings
+        function simulateOrientationChange() {
+            document.body.style.height = `${window.innerHeight - 240}px`;
+            document.getElementById('panorama').style.height = `${window.innerHeight - 240}px`;
+            setTimeout(() => {
+                document.body.style.height = `${window.innerHeight}px`;
+                document.getElementById('panorama').style.height = `${window.innerHeight}px`;
+                adjustForIOS();
+            }, 200);
+        }
+
+        // Trigger the simulation on initial load
+        simulateOrientationChange();
+    }
 </script>
 
 </body>
