@@ -107,6 +107,9 @@
         
         window.onresize = function() {
             document.body.style.height = window.innerHeight + 'px';
+            document.getElementById('panorama').style.height = window.innerHeight + 'px';
+            // Re-center the map view to ensure it is properly centered
+            setInitialView();
         };
         window.onresize(); // called to initially set the height
     }
