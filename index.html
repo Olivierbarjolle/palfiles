@@ -10,13 +10,13 @@
         body, html {
             margin: 0;
             padding: 0;
-            height: 100%;
+            height: 100dvh; /* Use dynamic viewport height */
             width: 100%;
             overflow: hidden;
             background-color: black;
         }
         #panorama {
-            height: 100%;
+            height: 100dvh; /* Use dynamic viewport height */
             width: 100%;
             background-color: black;
         }
@@ -129,10 +129,8 @@
         document.getElementById('safari-marker').style.display = 'block';
         
         window.onresize = function() {
-            document.body.style.height = window.innerHeight + 'px';
-            document.getElementById('panorama').style.height = window.innerHeight + 'px';
-            // Adjust markers to ensure the bottom marker is visible above the URL bar
-            document.getElementById('bottom-marker').style.bottom = 'calc(10px + env(safe-area-inset-bottom))';
+            document.body.style.height = '100dvh';
+            document.getElementById('panorama').style.height = '100dvh';
             // Re-center the map view to ensure it is properly centered
             setInitialView();
         };
