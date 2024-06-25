@@ -127,13 +127,13 @@
         document.getElementById('safari-marker').style.display = 'block';
 
         function adjustForIOS() {
-            let vh = window.innerHeight - 300; // Reduce height by 300px
+            let vh = window.innerHeight - 240; // Reduce height by 240px
             document.body.style.height = `${vh}px`;
             document.getElementById('panorama').style.height = `${vh}px`;
 
             // Adjust markers to ensure the bottom marker is visible above the URL bar
             document.getElementById('middle-marker').style.top = `calc(${vh}px / 2)`;
-            document.getElementById('bottom-marker').style.bottom = '300px'; // This should ensure it's visible
+            document.getElementById('bottom-marker').style.bottom = '240px'; // This should ensure it's visible
 
             // Adjust the map view to ensure it is properly centered
             setTimeout(function() {
@@ -145,6 +145,15 @@
         window.addEventListener('resize', adjustForIOS);
         adjustForIOS(); // called to initially set the height
     }
+
+    // Adjust for orientation changes
+    window.addEventListener('orientationchange', function() {
+        setTimeout(function() {
+            adjustForIOS();
+            var centerLatLng = map.unproject([(TILE_SIZE * TILES_X) / 2, (TILE_SIZE * TILES_Y) / 2], MAX_ZOOM);
+            map.setView(centerLatLng, map.getZoom());
+        }, 200); // Delay to ensure height is set before centering
+    });
 </script>
 
 </body>
