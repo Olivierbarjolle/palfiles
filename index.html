@@ -3,129 +3,37 @@
 <head>
     <title>Panoramic Viewer</title>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Monument+Grotesk:wght@300;400;500;600;700;800;900&display=swap');
-
-        :root {
-            --vh: 100vh;
-            --bottom-offset: 0px;
-        }
-
-        html, body {
+        body, html {
             margin: 0;
             padding: 0;
-            font-family: 'Monument Grotesk', sans-serif;
-            height: calc(var(--vh) - var(--bottom-offset));
+            height: 100%;
             width: 100%;
             overflow: hidden;
             background-color: black;
         }
-
-        .App {
-            display: flex;
-            flex-direction: column;
+        #panorama {
             height: 100%;
             width: 100%;
-        }
-
-        #panorama {
-            flex: 1;
-            width: 100%;
-            height: calc(100% - var(--bottom-offset));
             background-color: black;
         }
-
         .leaflet-container {
             background-color: black;
-        }
-
-        .top-text {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            color: white;
-            background-color: rgba(0, 0, 0, 0.7);
-            padding: 10px;
-            border-radius: 5px;
-            text-align: left;
-            width: 80%;
-            z-index: 1000;
-            font-size: 18px;
-        }
-
-        .bottom-text {
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
-            color: white;
-            background-color: rgba(0, 0, 0, 0.7);
-            padding: 10px;
-            border-radius: 5px;
-            text-align: right;
-            width: 80%;
-            z-index: 1000;
-            font-size: 18px;
-            direction: rtl;
-        }
-
-        .start-text-english, .start-text-arabic {
-            position: absolute;
-            color: white;
-            width: 100%;
-            text-align: center;
-            z-index: 1000;
-            font-size: 26px;
-        }
-
-        .start-text-english {
-            top: calc(50% - 40px - var(--bottom-offset) / 2); /* Centered considering bottom offset */
-        }
-
-        .start-text-arabic {
-            top: calc(50% + 40px - var(--bottom-offset) / 2); /* Centered considering bottom offset */
-            direction: rtl;
         }
     </style>
 </head>
 <body>
 
-<div class="App">
-    <div class="top-text" id="topText">
-        Non-Linear Assembly<br><br>
-        In the wake of the Hamas attacks on October 7th, the Israeli Defence Forces have unleashed a devastating campaign on Gaza, killing at least 37,000 Palestinians, including over 15,000 children. The International Court of Justice has condemned the Israeli government's actions, citing crimes such as the starvation of civilians as a weapon of war, murder, extermination, and deliberate attacks on civilians. Despite these findings, numerous Western nations, including the United Kingdom, continue to support this war on the Palestinian people.<br><br>
-        In a powerful counter-movement, Londoners have mobilised in a series of fortnightly pro-Palestinian marches. Vilified by parts of the British media and government, these peaceful assemblies actually represent a diverse and peaceful coalition of society. They reflect the impact on global consciousness surrounding the Gaza conflict.<br><br>
-        This project is a linear rendering of the pro-Palestinian march that took place in London on January 13, 2024, and an ode to the people that call for compassion, humanity, and peace.
-    </div>
-
-    <div class="start-text-english" id="startTextEnglish">
-        Click/tap anywhere on the line below to start
-    </div>
-
-    <div class="start-text-arabic" id="startTextArabic">
-        انقر على السطر للبدء
-    </div>
-
-    <div class="bottom-text" id="bottomText">
-        التجمع غير الخطي<br><br>
-        ردًا على هجمات حماس في السابع من تشرين الأول/أكتوبر، ردت قوات الدفاع الإسرائيلية بإلحاق قدر لا يمكن تصوره من الألم والدمار بغزة، مما أسفر عن مقتل ما لا يقل عن سبعة وثلاثين ألف فلسطيني، بما في ذلك أكثر من خمسة عشر طفلاً. وبينما خلصت محكمة العدل الدولية إلى أن الحكومة الإسرائيلية ارتكبت جرائم بما في ذلك تجويع المدنيين كسلاح في الحرب، والقتل والإبادة، والهجمات المتعمدة على المدنيين، فقد دعمت العديد من الدول الغربية، بما في ذلك المملكة المتحدة، هذه الحرب على الشعب الفلسطيني.<br><br>
-        ردًا على ذلك، شارك سكان لندن في سلسلة طويلة من مسيرات الدعم الكبيرة المؤيدة للفلسطينيين في جهد متواصل منذ المظاهرة الوطنية الأولى في الرابع عشر من أكتوبر عام ألفين وثلاثة وعشرين. على الرغم من الروايات الإعلامية والحكومية التي تشوه هذه المسيرات باعتبارها هامشية ومزعجة وبغيضة من أجل مواصلة دعمها بلا منازع للحكومة الإسرائيلية، فإن هذه المسيرات تمثل شريحة واسعة من المجتمع متحدة في الاحتجاج السلمي. وهي بمثابة شهادة على التأثير الواسع النطاق للصراع في غزة على الوعي العالمي.<br><br>
-        هذا المشروع عبارة عن عرض مكتوب للمسيرة المؤيدة للفلسطينيين التي جرت في لندن في الثالث عشر من يناير عام ألفين وأربعة وعشرين، وقصيدة للشعب الذي يدعو إلى الرحمة والإنسانية والسلام.
-    </div>
-
-    <div id="panorama"></div>
-
-    <div id="landscape-message">Portrait mode only</div>
-</div>
+<div id="panorama"></div>
 
 <script>
     var TILE_SIZE = 256;
     var MAX_ZOOM = 12;
     var TILES_X = 2891;
     var TILES_Y = 4;
-    var FADE_DISTANCE = 5 * TILE_SIZE;
 
     var map = L.map('panorama', {
         minZoom: 2,
@@ -134,11 +42,7 @@
         crs: L.CRS.Simple,
         doubleClickZoom: false,
         attributionControl: false,
-        zoomControl: false,
-        inertia: true,
-        inertiaDeceleration: 2000,
-        inertiaMaxSpeed: 1000,
-        inertiaThreshold: 10
+        zoomControl: false
     });
 
     function setInitialView() {
@@ -157,188 +61,6 @@
         maxZoom: MAX_ZOOM,
         noWrap: true,
     }).addTo(map);
-
-    var audioFiles = [
-        'https://chipper-sunflower-e51e1a.netlify.app/audio/1.mp3',
-        'https://chipper-sunflower-e51e1a.netlify.app/audio/2.mp3',
-        'https://chipper-sunflower-e51e1a.netlify.app/audio/3.mp3',
-        'https://chipper-sunflower-e51e1a.netlify.app/audio/4.mp3'
-    ];
-
-    var audioZones = [
-        { start: 177, end: 190, audio: new Audio(audioFiles[0]) },
-        { start: 170, end: 176, audio: new Audio(audioFiles[2]) },
-        { start: 137, end: 169, audio: new Audio(audioFiles[1]) },
-        { start: 58, end: 136, audio: new Audio(audioFiles[3]) },
-        { start: 100, end: 120, audio: new Audio(audioFiles[1]) },
-        { start: 100, end: 110, audio: new Audio(audioFiles[2]) },
-        { start: 80, end: 90, audio: new Audio(audioFiles[1]) },
-        { start: 50, end: 57, audio: new Audio(audioFiles[2]) },
-        { start: 19, end: 56, audio: new Audio(audioFiles[3]) },
-        { start: 8, end: 18, audio: new Audio(audioFiles[2]) },
-        { start: 6, end: 7, audio: new Audio(audioFiles[1]) },
-        { start: -10, end: 5, audio: new Audio(audioFiles[0]) }
-    ];
-
-    audioZones.forEach(function(zone) {
-        zone.audio.loop = true;
-        zone.audio.volume = 0;
-        zone.audio.load();
-        console.log(`Loaded audio file for zone: ${zone.audio.src}`);
-    });
-
-    var audioInitialized = false;
-    var initialClickHandled = false;
-
-    function adjustVolume() {
-        var centerLng = map.getCenter().lng * TILE_SIZE;
-        var zoomLevel = map.getZoom();
-        var maxVolume = (zoomLevel - 2) / (MAX_ZOOM - 2);
-
-        audioZones.forEach(function(zone) {
-            var volume = 0;
-            if (centerLng >= (zone.start - FADE_DISTANCE) * TILE_SIZE && centerLng <= (zone.end + FADE_DISTANCE) * TILE_SIZE) {
-                if (centerLng >= zone.start * TILE_SIZE && centerLng <= zone.end * TILE_SIZE) {
-                    volume = maxVolume;
-                } else if (centerLng < zone.start * TILE_SIZE) {
-                    volume = maxVolume * (1 - ((zone.start * TILE_SIZE - centerLng) / FADE_DISTANCE));
-                } else if (centerLng > zone.end * TILE_SIZE) {
-                    volume = maxVolume * (1 - ((centerLng - zone.end * TILE_SIZE) / FADE_DISTANCE));
-                }
-            }
-
-            zone.audio.volume = Math.max(0, volume);
-            console.log(`Zone audio src: ${zone.audio.src}, volume: ${volume}`);
-        });
-    }
-
-    function handleZoomEnd() {
-        var isMobile = /Mobi|Android/i.test(navigator.userAgent);
-        if (map.getZoom() <= map.getMinZoom() + 2) {
-            document.getElementById('topText').classList.remove('fade-out');
-            document.getElementById('topText').classList.add('fade-in');
-            document.getElementById('bottomText').classList.remove('fade-out');
-            document.getElementById('bottomText').classList.add('fade-in');
-            initialClickHandled = false;
-        } else {
-            document.getElementById('topText').classList.remove('fade-in');
-            document.getElementById('topText').classList.add('fade-out');
-            document.getElementById('bottomText').classList.remove('fade-in');
-            document.getElementById('bottomText').classList.add('fade-out');
-        }
-    }
-
-    map.on('move', adjustVolume); // Adjust volume continuously as the map moves
-
-    map.on('click', function(e) {
-        if (!initialClickHandled) {
-            initialClickHandled = true;
-            document.getElementById('topText').classList.add('fade-out'); // Trigger fade out for top text
-            document.getElementById('bottomText').classList.add('fade-out'); // Trigger fade out for bottom text
-            document.getElementById('startTextEnglish').classList.add('fade-out'); // Trigger fade out for English start text
-            document.getElementById('startTextArabic').classList.add('fade-out'); // Trigger fade out for Arabic start text
-
-            if (!audioInitialized) {
-                audioZones.forEach(function(zone) {
-                    zone.audio.play().catch(error => {
-                        console.error("Audio playback failed:", error);
-                    });
-                });
-                audioInitialized = true;
-            }
-
-            var clickedLatLng = e.latlng;
-            var centerLng = Math.max(0, Math.min(TILE_SIZE * TILES_X, map.project(clickedLatLng, MAX_ZOOM).x));
-            var centerLatLng = map.unproject([centerLng, (TILE_SIZE * TILES_Y) / 2], MAX_ZOOM);
-            var zoomLevel = MAX_ZOOM - 1;
-
-            // Check if the device is mobile
-            if (/Mobi|Android/i.test(navigator.userAgent)) {
-                zoomLevel -= 1; // Zoom one level less on mobile
-            }
-
-            map.flyTo(centerLatLng, zoomLevel, {
-                animate: true,
-                duration: 4
-            });
-
-            map.once('moveend', function() {
-                adjustVolume(); // Ensure volume is adjusted after moving
-            });
-        }
-    });
-
-    // Update volume continuously during the zoom
-    map.on('zoomstart', adjustVolume);
-    map.on('zoomend', adjustVolume);
-    map.on('zoomend', handleZoomEnd); // Handle zoom end to make text reappear
-
-    function checkOrientation() {
-        var isMobile = /Mobi|Android/i.test(navigator.userAgent);
-        if (isMobile && window.innerHeight < window.innerWidth) {
-            document.getElementById('landscape-message').style.display = 'block';
-            document.getElementById('panorama').style.display = 'none';
-            document.getElementById('topText').style.display = 'none';
-            document.getElementById('bottomText').style.display = 'none';
-            document.getElementById('startTextEnglish').style.display = 'none';
-            document.getElementById('startTextArabic').style.display = 'none';
-        } else {
-            document.getElementById('landscape-message').style.display = 'none';
-            document.getElementById('panorama').style.display = 'block';
-            document.getElementById('topText').style.display = 'block';
-            document.getElementById('bottomText').style.display = 'block';
-            document.getElementById('startTextEnglish').style.display = 'block';
-            document.getElementById('startTextArabic').style.display = 'block';
-        }
-    }
-
-    window.addEventListener('resize', function() {
-        var currentCenter = map.getCenter();
-        var currentZoom = map.getZoom();
-        map.setView(currentCenter, currentZoom);
-        checkOrientation();
-    });
-
-    window.addEventListener('resizeend', function() {
-        var currentCenter = map.getCenter();
-        var currentZoom = map.getZoom();
-        map.setView(currentCenter, currentZoom);
-    });
-
-    // Debounce the resize event to trigger resizeend event
-    (function() {
-        var resizeTimer;
-        window.addEventListener('resize', function() {
-            clearTimeout(resizeTimer);
-            resizeTimer = setTimeout(function() {
-                window.dispatchEvent(new Event('resizeend'));
-            }, 250);
-        });
-    })();
-
-    // Update --vh custom property on resize
-    function updateVH() {
-        let vh = window.innerHeight * 0.01;
-        document.documentElement.style.setProperty('--vh', `${vh}px`);
-    }
-
-    window.addEventListener('resize', updateVH);
-    updateVH();
-
-    // Function to detect if the browser is Safari on iOS
-    function isSafariIOS() {
-        var ua = navigator.userAgent;
-        return !!ua.match(/iP(ad|od|hone)/i) && !!ua.match(/WebKit/i) && !ua.match(/CriOS/i);
-    }
-
-    // Apply Safari-specific CSS if on Safari iOS
-    if (isSafariIOS()) {
-        document.documentElement.style.setProperty('--bottom-offset', '250px');
-        document.getElementById('topText').innerHTML = 'SAFARI TEST Non-Linear Assembly<br><br>' + document.getElementById('topText').innerHTML;
-    }
-
-    // Initial check
-    checkOrientation();
 </script>
 
 </body>
