@@ -30,12 +30,22 @@
             color: white;
             z-index: 1000;
         }
+        #test-marker {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            z-index: 1000;
+            display: none;
+        }
     </style>
 </head>
 <body>
 
 <div id="panorama"></div>
 <div id="safari-marker" style="display: none;">Safari</div>
+<div id="test-marker">Test</div>
 
 <script>
     var TILE_SIZE = 256;
@@ -104,6 +114,7 @@
     // Apply Safari-specific CSS if on Safari iOS
     if (isSafariIOS()) {
         document.getElementById('safari-marker').style.display = 'block';
+        document.getElementById('test-marker').style.display = 'block';
         
         window.onresize = function() {
             document.body.style.height = window.innerHeight + 'px';
