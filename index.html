@@ -30,14 +30,25 @@
             color: white;
             z-index: 1000;
         }
-        #test-marker {
+        #top-marker, #middle-marker, #bottom-marker {
             position: absolute;
+            color: white;
+            z-index: 1000;
+        }
+        #top-marker {
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        #middle-marker {
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            color: white;
-            z-index: 1000;
-            display: none;
+        }
+        #bottom-marker {
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
         }
     </style>
 </head>
@@ -45,7 +56,9 @@
 
 <div id="panorama"></div>
 <div id="safari-marker" style="display: none;">Safari</div>
-<div id="test-marker">Test</div>
+<div id="top-marker">Top</div>
+<div id="middle-marker">Middle</div>
+<div id="bottom-marker">Bottom</div>
 
 <script>
     var TILE_SIZE = 256;
@@ -114,11 +127,12 @@
     // Apply Safari-specific CSS if on Safari iOS
     if (isSafariIOS()) {
         document.getElementById('safari-marker').style.display = 'block';
-        document.getElementById('test-marker').style.display = 'block';
         
         window.onresize = function() {
             document.body.style.height = window.innerHeight + 'px';
             document.getElementById('panorama').style.height = window.innerHeight + 'px';
+            // Adjust markers to ensure the bottom marker is visible above the URL bar
+            document.getElementById('bottom-marker').style.bottom = 'calc(10px + env(safe-area-inset-bottom))';
             // Re-center the map view to ensure it is properly centered
             setInitialView();
         };
