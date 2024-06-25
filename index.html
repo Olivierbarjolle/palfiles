@@ -86,6 +86,26 @@
             });
         }
     });
+
+    // Function to detect if the browser is Safari on iOS
+    function isSafariIOS() {
+        var ua = navigator.userAgent;
+        return !!ua.match(/iP(ad|od|hone)/i) && !!ua.match(/WebKit/i) && !ua.match(/CriOS/i);
+    }
+
+    // Apply Safari-specific CSS if on Safari iOS
+    if (isSafariIOS()) {
+        var updateViewportHeight = function() {
+            var vh = window.innerHeight * 0.01;
+            document.documentElement.style.setProperty('--vh', `${vh}px`);
+        };
+
+        // Initial update
+        updateViewportHeight();
+
+        // Update on resize
+        window.addEventListener('resize', updateViewportHeight);
+    }
 </script>
 
 </body>
