@@ -126,7 +126,7 @@
     // Apply Safari-specific CSS if on Safari iOS
     if (isSafariIOS()) {
         document.getElementById('safari-marker').style.display = 'block';
-
+        
         function adjustForIOS() {
             let vh = window.innerHeight - 240; // Reduce height by 240px
             document.body.style.height = `${vh}px`;
@@ -137,28 +137,19 @@
             document.getElementById('bottom-marker').style.bottom = '240px'; // This should ensure it's visible
 
             // Adjust the map view to ensure it is properly centered
-            setTimeout(function() {
-                var centerLatLng = map.unproject([(TILE_SIZE * TILES_X) / 2, (TILE_SIZE * TILES_Y) / 2], MAX_ZOOM);
-                map.setView(centerLatLng, map.getZoom());
-            }, 100); // Delay to ensure height is set before centering
+            var centerLatLng = map.unproject([(TILE_SIZE * TILES_X) / 2, (TILE_SIZE * TILES_Y) / 2], MAX_ZOOM);
+            map.setView(centerLatLng, map.getZoom());
         }
 
         window.addEventListener('resize', adjustForIOS);
         adjustForIOS(); // called to initially set the height
 
-        // Simulate orientation change to trigger recalculating view settings
-        function simulateOrientationChange() {
-            document.body.style.height = `${window.innerHeight - 240}px`;
-            document.getElementById('panorama').style.height = `${window.innerHeight - 240}px`;
-            setTimeout(() => {
-                document.body.style.height = `${window.innerHeight}px`;
-                document.getElementById('panorama').style.height = `${window.innerHeight}px`;
-                adjustForIOS();
-            }, 200);
+        // Force recalculation
+        function forceRecalculation() {
+            window.dispatchEvent(new Event('resize'));
         }
 
-        // Trigger the simulation on initial load
-        simulateOrientationChange();
+        forceRecalculation();
     }
 </script>
 
