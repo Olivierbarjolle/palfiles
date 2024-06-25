@@ -134,6 +134,10 @@
             document.getElementById('panorama').style.height = `${vh}px`;
             // Adjust the middle marker
             document.getElementById('middle-marker').style.top = `calc(${vh}px / 2)`;
+
+            // Adjust the map view to ensure it is properly centered
+            var centerLatLng = map.unproject([(TILE_SIZE * TILES_X) / 2, (TILE_SIZE * TILES_Y) / 2], MAX_ZOOM);
+            map.setView(centerLatLng, map.getZoom());
         }
 
         window.addEventListener('resize', adjustForIOS);
