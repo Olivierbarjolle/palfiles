@@ -41,12 +41,10 @@
             transform: translateX(-50%);
         }
         #middle-marker {
-            top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%);
+            transform: translateX(-50%);
         }
         #bottom-marker {
-            bottom: 10px;
             left: 50%;
             transform: translateX(-50%);
         }
@@ -132,8 +130,11 @@
             let vh = window.innerHeight - 300; // Reduce height by 300px
             document.body.style.height = `${vh}px`;
             document.getElementById('panorama').style.height = `${vh}px`;
-            // Adjust the middle marker
+
+            // Adjust markers to ensure the bottom marker is visible above the URL bar
             document.getElementById('middle-marker').style.top = `calc(${vh}px / 2)`;
+            document.getElementById('bottom-marker').style.bottom = '10px';
+            document.getElementById('bottom-marker').style.transform = 'translateX(-50%)';
 
             // Adjust the map view to ensure it is properly centered
             var centerLatLng = map.unproject([(TILE_SIZE * TILES_X) / 2, (TILE_SIZE * TILES_Y) / 2], MAX_ZOOM);
