@@ -45,9 +45,23 @@
             transform: translate(-50%, -50%);
         }
         #bottom-marker {
-            bottom: 10px;
+            bottom: 240px; /* Adjusted for the URL bar */
             left: 50%;
             transform: translateX(-50%);
+        }
+        #landscape-message {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 20px;
+            text-align: center;
+            z-index: 1000;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            border-radius: 10px;
         }
     </style>
 </head>
@@ -58,6 +72,7 @@
 <div id="top-marker">Top</div>
 <div id="middle-marker">Middle</div>
 <div id="bottom-marker">Bottom</div>
+<div id="landscape-message">Portrait mode only</div>
 
 <script>
     var TILE_SIZE = 256;
@@ -151,6 +166,20 @@
 
         forceRecalculation();
     }
+
+    // Display landscape message
+    function checkOrientation() {
+        if (window.innerHeight < window.innerWidth) {
+            document.getElementById('landscape-message').style.display = 'block';
+            document.getElementById('panorama').style.display = 'none';
+        } else {
+            document.getElementById('landscape-message').style.display = 'none';
+            document.getElementById('panorama').style.display = 'block';
+        }
+    }
+
+    window.addEventListener('resize', checkOrientation);
+    checkOrientation(); // Initial check
 </script>
 
 </body>
