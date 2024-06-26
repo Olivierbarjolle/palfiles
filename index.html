@@ -41,6 +41,7 @@
             transform: translateX(-50%);
         }
         #middle-marker {
+            top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
         }
@@ -87,7 +88,9 @@
         crs: L.CRS.Simple,
         doubleClickZoom: false,
         attributionControl: false,
-        zoomControl: false
+        zoomControl: false,
+        // Locking the y-axis
+        maxBoundsViscosity: 1.0
     });
 
     function setInitialView() {
