@@ -52,7 +52,7 @@
             text-align: right;
             width: 80%;
             direction: rtl;
-            bottom: 10px; /* Set initial bottom position */
+            bottom: calc(10px + 240px); /* Adjust bottom position */
         }
 
         .start-text-english, .start-text-arabic {
@@ -256,7 +256,7 @@
             map.setView(centerLatLng, map.getZoom());
 
             // Adjust bottom text position
-            document.getElementById('bottomText').style.bottom = `calc(10px + env(safe-area-inset-bottom))`;
+            document.getElementById('bottomText').style.bottom = `calc(10px + 240px)`;
         }
 
         window.addEventListener('resize', adjustForIOS);
@@ -310,6 +310,50 @@
 
     window.addEventListener('resize', adjustTextSize);
     adjustTextSize(); // Initial check
+
+    // Add double-tap drag up and down to zoom in and out on mobile
+    if (isMobile()) {
+        let lastTap = 0;
+        let initialY = null;
+        let isZooming = false;
+
+        function isMobile() {
+            return /Mobi|Android/i.test(navigator.userAgent);
+        }
+
+        function onDoubleTapDragStart(event) {
+            const now = Date.now();
+            if (now - lastTap <= 300) {
+                initialY = event.touches[0].clientY;
+                isZooming = true;
+                event.preventDefault();
+            }
+            lastTap = now;
+        }
+
+        function onDoubleTapDragMove(event) {
+            if (isZooming) {
+                const currentY = event.touches[0].clientY;
+                const deltaY = initialY - currentY;
+                const zoomLevel = map.getZoom() + deltaY * 0.01;
+                map.setZoom(zoomLevel);
+                initialY = currentY;
+                event.preventDefault();
+            }
+        }
+
+        function onDoubleTapDragEnd(event) {
+            if (isZooming) {
+                isZooming = false;
+                initialY = null;
+                event.preventDefault();
+            }
+        }
+
+        map.getContainer().addEventListener('touchstart', onDoubleTapDragStart, { passive: false });
+        map.getContainer().addEventListener('touchmove', onDoubleTapDragMove, { passive: false });
+        map.getContainer().addEventListener('touchend', onDoubleTapDragEnd, { passive: false });
+    }
 </script>
 
 </body>
