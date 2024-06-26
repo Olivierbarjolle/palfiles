@@ -314,14 +314,14 @@
     adjustTextSize(); // Initial check
 
     // Add double-tap drag up and down to zoom in and out on mobile
-    function isMobile() {
-        return /Mobi|Android/i.test(navigator.userAgent);
-    }
-
     if (isMobile()) {
         let lastTap = 0;
         let initialY = null;
         let isZooming = false;
+
+        function isMobile() {
+            return /Mobi|Android/i.test(navigator.userAgent);
+        }
 
         function onDoubleTapDragStart(event) {
             const now = Date.now();
