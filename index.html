@@ -41,11 +41,12 @@
             transform: translateX(-50%);
         }
         #middle-marker {
+            top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
         }
         #bottom-marker {
-            bottom: 240px; /* Adjusted for the URL bar */
+            bottom: 10px;
             left: 50%;
             transform: translateX(-50%);
         }
@@ -143,13 +144,9 @@
         document.getElementById('safari-marker').style.display = 'block';
         
         function adjustForIOS() {
-            let vh = window.innerHeight - 240; // Reduce height by 240px
+            let vh = window.innerHeight;
             document.body.style.height = `${vh}px`;
             document.getElementById('panorama').style.height = `${vh}px`;
-
-            // Adjust markers to ensure the bottom marker is visible above the URL bar
-            document.getElementById('middle-marker').style.top = `calc(${vh}px / 2)`;
-            document.getElementById('bottom-marker').style.bottom = '240px'; // This should ensure it's visible
 
             // Adjust the map view to ensure it is properly centered
             var centerLatLng = map.unproject([(TILE_SIZE * TILES_X) / 2, (TILE_SIZE * TILES_Y) / 2], MAX_ZOOM);
@@ -172,9 +169,17 @@
         if (window.innerHeight < window.innerWidth) {
             document.getElementById('landscape-message').style.display = 'block';
             document.getElementById('panorama').style.display = 'none';
+            document.getElementById('safari-marker').style.display = 'none';
+            document.getElementById('top-marker').style.display = 'none';
+            document.getElementById('middle-marker').style.display = 'none';
+            document.getElementById('bottom-marker').style.display = 'none';
         } else {
             document.getElementById('landscape-message').style.display = 'none';
             document.getElementById('panorama').style.display = 'block';
+            document.getElementById('safari-marker').style.display = 'block';
+            document.getElementById('top-marker').style.display = 'block';
+            document.getElementById('middle-marker').style.display = 'block';
+            document.getElementById('bottom-marker').style.display = 'block';
         }
     }
 
