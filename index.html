@@ -38,6 +38,8 @@
             z-index: 1000;
             font-size: 18px;
             transition: font-size 0.2s ease-in-out;
+            max-height: 45%; /* Restrict max height */
+            overflow-y: auto; /* Allow scrolling if content overflows */
         }
 
         .top-text {
@@ -52,7 +54,7 @@
             text-align: right;
             width: 80%;
             direction: rtl;
-            bottom: calc(10px + 240px); /* Adjust bottom position */
+            bottom: 10px;
         }
 
         .start-text-english, .start-text-arabic {
