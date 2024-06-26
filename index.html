@@ -52,6 +52,7 @@
             text-align: right;
             width: 80%;
             direction: rtl;
+            bottom: 10px; /* Set initial bottom position */
         }
 
         .start-text-english, .start-text-arabic {
@@ -255,7 +256,7 @@
             map.setView(centerLatLng, map.getZoom());
 
             // Adjust bottom text position
-            document.getElementById('bottomText').style.bottom = `${window.innerHeight - vh + 10}px`;
+            document.getElementById('bottomText').style.bottom = `calc(10px + env(safe-area-inset-bottom))`;
         }
 
         window.addEventListener('resize', adjustForIOS);
