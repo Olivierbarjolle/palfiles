@@ -36,7 +36,7 @@
             padding: 10px;
             border-radius: 5px;
             z-index: 1000;
-            font-size: 18px;
+            font-size: 17px; /* Reduced by 1 point */
             transition: font-size 0.2s ease-in-out;
             max-height: 45%; /* Restrict max height */
             overflow-y: auto; /* Allow scrolling if content overflows */
@@ -63,7 +63,7 @@
             width: 100%;
             text-align: center;
             z-index: 1000;
-            font-size: 26px;
+            font-size: 25px; /* Reduced by 1 point */
             opacity: 0;
             animation: fadeInOut 2s infinite;
         }
@@ -298,12 +298,12 @@
     // Adjust text size based on window size
     function adjustTextSize() {
         var isMobile = /Mobi|Android/i.test(navigator.userAgent);
-        var textSize = 18;
+        var textSize = 17; // Reduced by 1 point
         if (window.innerWidth < 600 || window.innerHeight < 600) {
-            textSize = 14;
+            textSize = 13; // Reduced by 1 point
         }
         if (isMobile) {
-            textSize = 16;
+            textSize = 15; // Reduced by 1 point
         }
         document.querySelectorAll('.top-text, .bottom-text').forEach(function(el) {
             el.style.fontSize = textSize + 'px';
@@ -314,14 +314,14 @@
     adjustTextSize(); // Initial check
 
     // Add double-tap drag up and down to zoom in and out on mobile
+    function isMobile() {
+        return /Mobi|Android/i.test(navigator.userAgent);
+    }
+
     if (isMobile()) {
         let lastTap = 0;
         let initialY = null;
         let isZooming = false;
-
-        function isMobile() {
-            return /Mobi|Android/i.test(navigator.userAgent);
-        }
 
         function onDoubleTapDragStart(event) {
             const now = Date.now();
