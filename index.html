@@ -41,7 +41,6 @@
             transform: translateX(-50%);
         }
         #middle-marker {
-            top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
         }
@@ -145,6 +144,9 @@
         
         function adjustForIOS() {
             let vh = window.innerHeight;
+            if (window.innerHeight > window.innerWidth) {
+                vh -= 240; // Reduce height by 240px for portrait mode
+            }
             document.body.style.height = `${vh}px`;
             document.getElementById('panorama').style.height = `${vh}px`;
 
