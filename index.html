@@ -29,14 +29,6 @@
             background-color: black;
         }
 
-        #safari-marker {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            color: white;
-            z-index: 1000;
-        }
-
         .top-text, .bottom-text {
             position: absolute;
             color: white;
@@ -45,6 +37,7 @@
             border-radius: 5px;
             z-index: 1000;
             font-size: 18px;
+            transition: font-size 0.2s ease-in-out;
         }
 
         .top-text {
@@ -74,13 +67,11 @@
         }
 
         .start-text-english {
-            top: 50%;
-            transform: translateY(-40px);
+            top: calc(48% - 40px);
         }
 
         .start-text-arabic {
-            top: 50%;
-            transform: translateY(40px);
+            top: calc(48% + 40px);
             direction: rtl;
         }
 
@@ -140,7 +131,6 @@
 <body>
 
 <div id="panorama"></div>
-<div id="safari-marker" style="display: none;">Safari</div>
 <div class="top-text" id="topText">
     Non-Linear Assembly<br><br>
     In the wake of the Hamas attacks on October 7th, the Israeli Defence Forces have unleashed a devastating campaign on Gaza, killing at least 37,000 Palestinians, including over 15,000 children. The International Court of Justice has condemned the Israeli government's actions, citing crimes such as the starvation of civilians as a weapon of war, murder, extermination, and deliberate attacks on civilians. Despite these findings, numerous Western nations, including the United Kingdom, continue to support this war on the Palestinian people.<br><br>
@@ -249,8 +239,6 @@
 
     // Apply Safari-specific CSS if on Safari iOS
     if (isSafariIOS()) {
-        document.getElementById('safari-marker').style.display = 'block';
-        
         function adjustForIOS() {
             let vh = window.innerHeight;
             if (window.innerHeight > window.innerWidth) {
@@ -266,6 +254,9 @@
             // Adjust the map view to ensure it is properly centered
             var centerLatLng = map.unproject([(TILE_SIZE * TILES_X) / 2, (TILE_SIZE * TILES_Y) / 2], MAX_ZOOM);
             map.setView(centerLatLng, map.getZoom());
+
+            // Adjust bottom text position
+            document.getElementById('bottomText').style.bottom = `${window.innerHeight - vh + 10}px`;
         }
 
         window.addEventListener('resize', adjustForIOS);
@@ -279,12 +270,12 @@
         forceRecalculation();
     }
 
-    // Display landscape message
+    // Display landscape message only on mobile devices
     function checkOrientation() {
-        if (window.innerHeight < window.innerWidth) {
+        var isMobile = /Mobi|Android/i.test(navigator.userAgent);
+        if (isMobile && window.innerHeight < window.innerWidth) {
             document.getElementById('landscape-message').style.display = 'block';
             document.getElementById('panorama').style.display = 'none';
-            document.getElementById('safari-marker').style.display = 'none';
             document.getElementById('topText').style.display = 'none';
             document.getElementById('bottomText').style.display = 'none';
             document.getElementById('startTextEnglish').style.display = 'none';
@@ -292,7 +283,6 @@
         } else {
             document.getElementById('landscape-message').style.display = 'none';
             document.getElementById('panorama').style.display = 'block';
-            document.getElementById('safari-marker').style.display = 'block';
             document.getElementById('topText').style.display = 'block';
             document.getElementById('bottomText').style.display = 'block';
             document.getElementById('startTextEnglish').style.display = 'block';
@@ -302,6 +292,24 @@
 
     window.addEventListener('resize', checkOrientation);
     checkOrientation(); // Initial check
+
+    // Adjust text size based on window size
+    function adjustTextSize() {
+        var isMobile = /Mobi|Android/i.test(navigator.userAgent);
+        var textSize = 18;
+        if (window.innerWidth < 600 || window.innerHeight < 600) {
+            textSize = 14;
+        }
+        if (isMobile) {
+            textSize = 16;
+        }
+        document.querySelectorAll('.top-text, .bottom-text').forEach(function(el) {
+            el.style.fontSize = textSize + 'px';
+        });
+    }
+
+    window.addEventListener('resize', adjustTextSize);
+    adjustTextSize(); // Initial check
 </script>
 
 </body>
