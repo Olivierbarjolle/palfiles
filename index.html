@@ -68,15 +68,6 @@
             animation: fadeInOut 2s infinite;
         }
 
-        .start-text-english {
-            top: calc(48.5% - 40px);
-        }
-
-        .start-text-arabic {
-            top: calc(48.5% + 40px);
-            direction: rtl;
-        }
-
         .fade-out {
             animation: fadeOut 1.5s forwards;
         }
@@ -254,8 +245,8 @@
             map.setView(centerLatLng, map.getZoom());
 
             // Adjust start text position
-            document.getElementById('startTextEnglish').style.top = `calc(48.5% - 40px)`;
-            document.getElementById('startTextArabic').style.top = `calc(48.5% + 40px)`;
+            document.getElementById('startTextEnglish').style.top = `calc(${vh * 0.485}px - 40px)`;
+            document.getElementById('startTextArabic').style.top = `calc(${vh * 0.485}px + 40px)`;
 
             // Adjust text positions
             document.getElementById('bottomText').style.bottom = `calc(10px + 240px)`;
