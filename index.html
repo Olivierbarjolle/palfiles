@@ -38,7 +38,7 @@
             z-index: 1000;
             font-size: 17px; /* Reduced by 1 point */
             transition: font-size 0.2s ease-in-out;
-            max-height: 45%; /* Restrict max height */
+            max-height: 40%; /* Restrict max height */
             overflow-y: auto; /* Allow scrolling if content overflows */
         }
 
@@ -307,6 +307,17 @@
         }
         document.querySelectorAll('.top-text, .bottom-text').forEach(function(el) {
             el.style.fontSize = textSize + 'px';
+        });
+
+        var startTextSize = 25; // Reduced by 1 point
+        if (window.innerWidth < 600 || window.innerHeight < 600) {
+            startTextSize = 20; // Reduced by 1 point
+        }
+        if (isMobile) {
+            startTextSize = 22; // Reduced by 1 point
+        }
+        document.querySelectorAll('.start-text-english, .start-text-arabic').forEach(function(el) {
+            el.style.fontSize = startTextSize + 'px';
         });
     }
 
