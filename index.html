@@ -249,20 +249,16 @@
             document.body.style.height = `${vh}px`;
             document.getElementById('panorama').style.height = `${vh}px`;
 
-            // Adjust markers to ensure they are correctly positioned
-            document.getElementById('middle-marker').style.top = `${vh / 2}px`;
-            document.getElementById('bottom-marker').style.top = `${vh - 20}px`;
-
             // Adjust the map view to ensure it is properly centered
             var centerLatLng = map.unproject([(TILE_SIZE * TILES_X) / 2, (TILE_SIZE * TILES_Y) / 2], MAX_ZOOM);
             map.setView(centerLatLng, map.getZoom());
 
-            // Adjust bottom text position
-            document.getElementById('bottomText').style.bottom = `calc(10px + 240px)`;
-
             // Adjust start text position
-            document.getElementById('startTextEnglish').style.top = `calc(${vh * 0.485}px - 40px)`;
-            document.getElementById('startTextArabic').style.top = `calc(${vh * 0.485}px + 40px)`;
+            document.getElementById('startTextEnglish').style.top = `calc(48.5% - 40px)`;
+            document.getElementById('startTextArabic').style.top = `calc(48.5% + 40px)`;
+
+            // Adjust text positions
+            document.getElementById('bottomText').style.bottom = `calc(10px + 240px)`;
         }
 
         window.addEventListener('resize', adjustForIOS);
@@ -329,14 +325,14 @@
     adjustTextSize(); // Initial check
 
     // Add double-tap drag up and down to zoom in and out on mobile
+    function isMobile() {
+        return /Mobi|Android/i.test(navigator.userAgent);
+    }
+
     if (isMobile()) {
         let lastTap = 0;
         let initialY = null;
         let isZooming = false;
-
-        function isMobile() {
-            return /Mobi|Android/i.test(navigator.userAgent);
-        }
 
         function onDoubleTapDragStart(event) {
             const now = Date.now();
