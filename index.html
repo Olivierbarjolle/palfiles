@@ -36,7 +36,7 @@
             padding: 10px;
             border-radius: 5px;
             z-index: 1000;
-            font-size: 17px; /* Reduced by 1 point */
+            font-size: 16px; /* Initial font size */
             transition: font-size 0.2s ease-in-out;
             max-height: 40%; /* Restrict max height */
             overflow-y: auto; /* Allow scrolling if content overflows */
@@ -63,7 +63,7 @@
             width: 100%;
             text-align: center;
             z-index: 1000;
-            font-size: 25px; /* Reduced by 1 point */
+            font-size: 24px; /* Initial font size */
             opacity: 0;
             animation: fadeInOut 2s infinite;
         }
@@ -249,10 +249,6 @@
             document.body.style.height = `${vh}px`;
             document.getElementById('panorama').style.height = `${vh}px`;
 
-            // Adjust markers to ensure they are correctly positioned
-            document.getElementById('middle-marker').style.top = `${vh / 2}px`;
-            document.getElementById('bottom-marker').style.top = `${vh - 20}px`;
-
             // Adjust the map view to ensure it is properly centered
             var centerLatLng = map.unproject([(TILE_SIZE * TILES_X) / 2, (TILE_SIZE * TILES_Y) / 2], MAX_ZOOM);
             map.setView(centerLatLng, map.getZoom());
@@ -298,23 +294,23 @@
     // Adjust text size based on window size
     function adjustTextSize() {
         var isMobile = /Mobi|Android/i.test(navigator.userAgent);
-        var textSize = 17; // Reduced by 1 point
+        var textSize = 16; // Adjusted font size
         if (window.innerWidth < 600 || window.innerHeight < 600) {
-            textSize = 13; // Reduced by 1 point
+            textSize = 13; // Adjusted font size
         }
         if (isMobile) {
-            textSize = 15; // Reduced by 1 point
+            textSize = 15; // Adjusted font size
         }
         document.querySelectorAll('.top-text, .bottom-text').forEach(function(el) {
             el.style.fontSize = textSize + 'px';
         });
 
-        var startTextSize = 25; // Reduced by 1 point
+        var startTextSize = 24; // Adjusted font size
         if (window.innerWidth < 600 || window.innerHeight < 600) {
-            startTextSize = 20; // Reduced by 1 point
+            startTextSize = 20; // Adjusted font size
         }
         if (isMobile) {
-            startTextSize = 22; // Reduced by 1 point
+            startTextSize = 22; // Adjusted font size
         }
         document.querySelectorAll('.start-text-english, .start-text-arabic').forEach(function(el) {
             el.style.fontSize = startTextSize + 'px';
