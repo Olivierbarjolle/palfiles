@@ -258,6 +258,14 @@
 
             // Adjust text positions
             document.getElementById('bottomText').style.bottom = `calc(10px + 240px)`;
+
+            // Reapply text sizes
+            document.querySelectorAll('.top-text, .bottom-text').forEach(function(el) {
+                el.style.fontSize = '14px';
+            });
+            document.querySelectorAll('.start-text-english, .start-text-arabic').forEach(function(el) {
+                el.style.fontSize = '22px';
+            });
         }
 
         window.addEventListener('resize', adjustForIOS);
