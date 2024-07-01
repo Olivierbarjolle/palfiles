@@ -267,6 +267,7 @@
         // Force recalculation
         function forceRecalculation() {
             window.dispatchEvent(new Event('resize'));
+            adjustTextSize();
         }
 
         forceRecalculation();
@@ -297,6 +298,7 @@
                 document.getElementById('startTextEnglish').classList.add('fade-out');
                 document.getElementById('startTextArabic').classList.add('fade-out');
             }
+            adjustTextSize(); // Recalculate text size when switching back to portrait mode
         }
     }
 
