@@ -216,11 +216,25 @@
         console.log(`Loaded audio file for zone: ${zone.audio.src}`);
     });
 
+    var audioInitialized = false;
+
+    function initializeAudio() {
+        audioZones.forEach(function(zone) {
+            zone.audio.play().catch(error => {
+                console.error("Audio playback failed:", error);
+            });
+        });
+        audioInitialized = true;
+    }
+
     var initialClickHandled = false;
 
     map.on('click', function(e) {
         if (!initialClickHandled) {
             initialClickHandled = true;
+            if (!audioInitialized) {
+                initializeAudio();
+            }
 
             var clickedLatLng = e.latlng;
             var clickedPoint = map.project(clickedLatLng, MAX_ZOOM);
@@ -244,13 +258,6 @@
             document.getElementById('bottomText').classList.add('fade-out');
             document.getElementById('startTextEnglish').classList.add('fade-out');
             document.getElementById('startTextArabic').classList.add('fade-out');
-
-            // Play audio
-            audioZones.forEach(function(zone) {
-                zone.audio.play().catch(error => {
-                    console.error("Audio playback failed:", error);
-                });
-            });
         }
     });
 
