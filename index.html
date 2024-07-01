@@ -187,6 +187,35 @@
         noWrap: true,
     }).addTo(map);
 
+    var audioFiles = [
+        'https://chipper-sunflower-e51e1a.netlify.app/audio/1.mp3',
+        'https://chipper-sunflower-e51e1a.netlify.app/audio/2.mp3',
+        'https://chipper-sunflower-e51e1a.netlify.app/audio/3.mp3',
+        'https://chipper-sunflower-e51e1a.netlify.app/audio/4.mp3'
+    ];
+
+    var audioZones = [
+        { start: 177, end: 190, audio: new Audio(audioFiles[0]) },
+        { start: 170, end: 176, audio: new Audio(audioFiles[2]) },
+        { start: 137, end: 169, audio: new Audio(audioFiles[1]) },
+        { start: 58, end: 136, audio: new Audio(audioFiles[3]) },
+        { start: 100, end: 120, audio: new Audio(audioFiles[1]) },
+        { start: 100, end: 110, audio: new Audio(audioFiles[2]) },
+        { start: 80, end: 90, audio: new Audio(audioFiles[1]) },
+        { start: 50, end: 57, audio: new Audio(audioFiles[2]) },
+        { start: 19, end: 56, audio: new Audio(audioFiles[3]) },
+        { start: 8, end: 18, audio: new Audio(audioFiles[2]) },
+        { start: 6, end: 7, audio: new Audio(audioFiles[1]) },
+        { start: -10, end: 5, audio: new Audio(audioFiles[0]) }
+    ];
+
+    audioZones.forEach(function(zone) {
+        zone.audio.loop = true;
+        zone.audio.volume = 0;
+        zone.audio.load();
+        console.log(`Loaded audio file for zone: ${zone.audio.src}`);
+    });
+
     var initialClickHandled = false;
 
     map.on('click', function(e) {
@@ -258,14 +287,6 @@
 
             // Adjust text positions
             document.getElementById('bottomText').style.bottom = `calc(10px + 240px)`;
-
-            // Reapply text sizes
-            document.querySelectorAll('.top-text, .bottom-text').forEach(function(el) {
-                el.style.fontSize = '14px';
-            });
-            document.querySelectorAll('.start-text-english, .start-text-arabic').forEach(function(el) {
-                el.style.fontSize = '22px';
-            });
         }
 
         window.addEventListener('resize', adjustForIOS);
@@ -384,6 +405,29 @@
         map.getContainer().addEventListener('touchmove', onDoubleTapDragMove, { passive: false });
         map.getContainer().addEventListener('touchend', onDoubleTapDragEnd, { passive: false });
     }
+
+    function adjustVolume() {
+        var centerLng = map.getCenter().lng * TILE_SIZE;
+        var zoomLevel = map.getZoom();
+        var maxVolume = (zoomLevel - 2) / (MAX_ZOOM - 2);
+
+        audioZones.forEach(function(zone) {
+            var volume = 0;
+            if (centerLng >= (zone.start - FADE_DISTANCE) * TILE_SIZE && centerLng <= (zone.end + FADE_DISTANCE) * TILE_SIZE) {
+                if (centerLng >= zone.start * TILE_SIZE && centerLng <= zone.end * TILE_SIZE) {
+                    volume = maxVolume;
+                } else if (centerLng < zone.start * TILE_SIZE) {
+                    volume = maxVolume * (1 - ((zone.start * TILE_SIZE - centerLng) / FADE_DISTANCE));
+                } else if (centerLng > zone.end * TILE_SIZE) {
+                    volume = maxVolume * (1 - ((centerLng - zone.end * TILE_SIZE) / FADE_DISTANCE));
+                }
+            }
+            zone.audio.volume = Math.max(0, volume);
+            console.log(`Zone audio src: ${zone.audio.src}, volume: ${volume}`);
+        });
+    }
+
+    map.on('move', adjustVolume); // Adjust volume continuously as the map moves
 </script>
 
 </body>
