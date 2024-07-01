@@ -69,10 +69,10 @@
             animation: fadeInOut 2s infinite;
         }
         .start-text-english {
-            top: calc(48.75% - 40px);
+            top: calc(48.75% - var(--bottom-offset) / 2 - 40px);
         }
         .start-text-arabic {
-            top: calc(48.75% + 40px);
+            top: calc(48.75% - var(--bottom-offset) / 2 + 40px);
             direction: rtl;
         }
         .fade-out {
