@@ -306,23 +306,23 @@
     // Adjust text size based on window size
     function adjustTextSize() {
         var isMobile = /Mobi|Android/i.test(navigator.userAgent);
-        var textSize = 14; // Adjusted font size
+        var textSize = 14; // Default font size
         if (window.innerWidth < 600 || window.innerHeight < 600) {
-            textSize = 12; // Adjusted font size
+            textSize = 12; // Smaller font size for smaller windows
         }
         if (isMobile) {
-            textSize = 13; // Adjusted font size
+            textSize = 13; // Default font size for mobile
         }
         document.querySelectorAll('.top-text, .bottom-text').forEach(function(el) {
             el.style.fontSize = textSize + 'px';
         });
 
-        var startTextSize = 22; // Adjusted font size
+        var startTextSize = 22; // Default font size for start text
         if (window.innerWidth < 600 || window.innerHeight < 600) {
-            startTextSize = 19; // Adjusted font size
+            startTextSize = 19; // Smaller font size for smaller windows
         }
         if (isMobile) {
-            startTextSize = 20; // Adjusted font size
+            startTextSize = 20; // Default font size for mobile
         }
         document.querySelectorAll('.start-text-english, .start-text-arabic').forEach(function(el) {
             el.style.fontSize = startTextSize + 'px';
