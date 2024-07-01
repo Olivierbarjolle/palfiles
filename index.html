@@ -276,11 +276,17 @@
         } else {
             document.getElementById('landscape-message').style.display = 'none';
             document.getElementById('panorama').style.display = 'block';
+
             if (!initialClickHandled) {
                 document.getElementById('topText').style.display = 'block';
                 document.getElementById('bottomText').style.display = 'block';
                 document.getElementById('startTextEnglish').style.display = 'block';
                 document.getElementById('startTextArabic').style.display = 'block';
+            } else {
+                document.getElementById('topText').classList.add('fade-out');
+                document.getElementById('bottomText').classList.add('fade-out');
+                document.getElementById('startTextEnglish').classList.add('fade-out');
+                document.getElementById('startTextArabic').classList.add('fade-out');
             }
         }
     }
