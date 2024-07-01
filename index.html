@@ -18,8 +18,12 @@
             overflow: hidden;
             background-color: black;
         }
+        :root {
+            --vh: 100vh;
+            --bottom-offset: 0px;
+        }
         #panorama {
-            height: 100vh;
+            height: calc(var(--vh) - var(--bottom-offset));
             width: 100vw;
             background-color: black;
         }
@@ -28,8 +32,8 @@
         }
         .top-text {
             position: absolute;
-            top: 10px; /* Halved top margin */
-            left: 10px; /* Halved side margin */
+            top: 10px; 
+            left: 10px; 
             color: white;
             background-color: rgba(0, 0, 0, 0.7);
             padding: 10px;
@@ -37,13 +41,13 @@
             text-align: left;
             width: 80%;
             z-index: 1000;
-            font-size: 14px; /* Smaller by 1 increment */
+            font-size: 14px; 
             display: block;
         }
         .bottom-text {
             position: absolute;
-            bottom: calc(40px + var(--bottom-offset, 0px)); /* Increased for bottom margin */
-            right: 10px; /* Halved side margin */
+            bottom: calc(40px + var(--bottom-offset));
+            right: 10px;
             color: white;
             background-color: rgba(0, 0, 0, 0.7);
             padding: 10px;
@@ -51,7 +55,7 @@
             text-align: right;
             width: 80%;
             z-index: 1000;
-            font-size: 14px; /* Smaller by 1 increment */
+            font-size: 14px; 
             direction: rtl;
         }
         .start-text-english, .start-text-arabic {
@@ -60,15 +64,15 @@
             width: 100%;
             text-align: center;
             z-index: 1000;
-            font-size: 22px; /* Increased by 4 units */
+            font-size: 22px;
             opacity: 0;
             animation: fadeInOut 2s infinite;
         }
         .start-text-english {
-            top: calc(48.75% - 40px); /* Adjusted to 48.75% with -40px offset */
+            top: calc(48.75% - 40px);
         }
         .start-text-arabic {
-            top: calc(48.75% + 40px); /* Adjusted to 48.75% with 40px offset */
+            top: calc(48.75% + 40px);
             direction: rtl;
         }
         .fade-out {
@@ -108,7 +112,7 @@
                 font-size: 12px;
             }
             .start-text-english, .start-text-arabic {
-                font-size: 18px; /* Increased by 4 units */
+                font-size: 18px;
             }
         }
         @media (max-height: 600px) {
@@ -116,7 +120,7 @@
                 font-size: 10px;
             }
             .start-text-english, .start-text-arabic {
-                font-size: 16px; /* Increased by 4 units */
+                font-size: 16px;
             }
         }
         #landscape-message {
