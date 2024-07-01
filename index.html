@@ -53,7 +53,7 @@
             text-align: right;
             width: 80%;
             direction: rtl;
-            bottom: 10px;
+            bottom: calc(10px + var(--bottom-offset, 0px));
         }
 
         .start-text-english, .start-text-arabic {
@@ -166,8 +166,7 @@
         doubleClickZoom: false,
         attributionControl: false,
         zoomControl: false,
-        // Locking the y-axis
-        maxBoundsViscosity: 1.0
+        maxBoundsViscosity: 1.0 // Locking the y-axis
     });
 
     function setInitialView() {
