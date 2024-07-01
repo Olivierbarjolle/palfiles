@@ -244,6 +244,13 @@
             document.getElementById('bottomText').classList.add('fade-out');
             document.getElementById('startTextEnglish').classList.add('fade-out');
             document.getElementById('startTextArabic').classList.add('fade-out');
+
+            // Play audio
+            audioZones.forEach(function(zone) {
+                zone.audio.play().catch(error => {
+                    console.error("Audio playback failed:", error);
+                });
+            });
         }
     });
 
