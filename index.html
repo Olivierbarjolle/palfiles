@@ -38,7 +38,7 @@
             z-index: 1000;
             max-height: 40%; /* Restrict max height */
             overflow-y: auto; /* Allow scrolling if content overflows */
-            font-size: 14px; /* Initial font size */
+            font-size: 13px; /* Adjusted font size */
         }
 
         .top-text {
@@ -64,7 +64,7 @@
             z-index: 1000;
             opacity: 0;
             animation: fadeInOut 2s infinite;
-            font-size: 22px; /* Initial font size */
+            font-size: 20px; /* Adjusted font size */
         }
 
         .start-text-english {
@@ -349,23 +349,23 @@
     // Adjust text size based on window size
     function adjustTextSize() {
         var isMobile = /Mobi|Android/i.test(navigator.userAgent);
-        var textSize = 14; // Default font size
+        var textSize = 13; // Default font size
         if (window.innerWidth < 600 || window.innerHeight < 600) {
-            textSize = 12; // Smaller font size for smaller windows
+            textSize = 11; // Smaller font size for smaller windows
         }
         if (isMobile) {
-            textSize = 13; // Default font size for mobile
+            textSize = 12; // Default font size for mobile
         }
         document.querySelectorAll('.top-text, .bottom-text').forEach(function(el) {
             el.style.fontSize = textSize + 'px';
         });
 
-        var startTextSize = 22; // Default font size for start text
+        var startTextSize = 20; // Default font size for start text
         if (window.innerWidth < 600 || window.innerHeight < 600) {
-            startTextSize = 19; // Smaller font size for smaller windows
+            startTextSize = 18; // Smaller font size for smaller windows
         }
         if (isMobile) {
-            startTextSize = 20; // Default font size for mobile
+            startTextSize = 19; // Default font size for mobile
         }
         document.querySelectorAll('.start-text-english, .start-text-arabic').forEach(function(el) {
             el.style.fontSize = startTextSize + 'px';
