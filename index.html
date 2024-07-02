@@ -3,7 +3,7 @@
 <head>
     <title>Panoramic Viewer</title>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, viewport-fit=cover, width=device-width, height=device-height, user-scalable=no, orientation=portrait">
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <style>
@@ -318,6 +318,7 @@
         setTimeout(() => {
             map.invalidateSize();
             map.setView(currentView.center, currentView.zoom);
+            adjustTextSize();  // Ensure text size adjustment after orientation change
         }, 300);
     });
 
