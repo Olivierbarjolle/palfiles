@@ -3,7 +3,7 @@
 <head>
     <title>Panoramic Viewer</title>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, viewport-fit=cover, width=device-width, height=device-height, user-scalable=no, orientation=portrait">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <style>
@@ -36,7 +36,7 @@
             padding: 10px;
             border-radius: 5px;
             z-index: 1000;
-            font-size: 14px; /* Fixed font size */
+            font-size: 14px; /* Consistent font size */
             max-height: 40%;
             overflow-y: auto;
         }
@@ -62,7 +62,7 @@
             width: 100%;
             text-align: center;
             z-index: 1000;
-            font-size: 22px; /* Fixed font size */
+            font-size: 22px; /* Consistent font size */
             opacity: 0;
             animation: fadeInOut 2s infinite;
         }
@@ -126,22 +126,6 @@
             background-color: rgba(0, 0, 0, 0.7);
             padding: 20px;
             border-radius: 10px;
-        }
-
-        /* Prevent rotation */
-        @media (orientation: landscape) {
-            body {
-                transform: rotate(-90deg);
-                transform-origin: left top;
-                width: 100vh;
-                height: 100vw;
-                overflow: hidden;
-            }
-
-            #panorama {
-                width: 100vh;
-                height: 100vw;
-            }
         }
     </style>
 </head>
@@ -284,18 +268,22 @@
 
     function checkOrientation() {
         var isMobile = /Mobi|Android/i.test(navigator.userAgent);
-        if (isMobile && window.innerHeight < window.innerWidth) {
-            // Do nothing
-        } else {
-            if (!initialClickHandled) {
+        if (isMobile) {
+            if (window.innerHeight < window.innerWidth) {
+                document.getElementById('landscape-message').style.display = 'none';
+                document.getElementById('panorama').style.display = 'block';
                 document.getElementById('topText').style.display = 'block';
                 document.getElementById('bottomText').style.display = 'block';
                 document.getElementById('startTextEnglish').style.display = 'block';
                 document.getElementById('startTextArabic').style.display = 'block';
             } else {
-                fadeOutText();
+                document.getElementById('landscape-message').style.display = 'none';
+                document.getElementById('panorama').style.display = 'block';
+                document.getElementById('topText').style.display = 'block';
+                document.getElementById('bottomText').style.display = 'block';
+                document.getElementById('startTextEnglish').style.display = 'block';
+                document.getElementById('startTextArabic').style.display = 'block';
             }
-            
             map.setView(currentView.center, currentView.zoom);
         }
     }
@@ -317,11 +305,43 @@
 
     checkOrientation();
 
-    // Lock screen orientation to portrait mode
-    if (screen.orientation && screen.orientation.lock) {
-        screen.orientation.lock('portrait').catch(function(error) {
-            console.error('Orientation lock failed: ', error);
-        });
+    if (isMobile()) {
+        let lastTap = 0;
+        let initialY = null;
+        let isZooming = false;
+
+        function onDoubleTapDragStart(event) {
+            const now = Date.now();
+            if (now - lastTap <= 300) {
+                initialY = event.touches[0].clientY;
+                isZooming = true;
+                event.preventDefault();
+            }
+            lastTap = now;
+        }
+
+        function onDoubleTapDragMove(event) {
+            if (isZooming) {
+                const currentY = event.touches[0].clientY;
+                const deltaY = initialY - currentY;
+                const zoomLevel = map.getZoom() + deltaY * 0.01;
+                map.setZoom(zoomLevel);
+                initialY = currentY;
+                event.preventDefault();
+            }
+        }
+
+        function onDoubleTapDragEnd(event) {
+            if (isZooming) {
+                isZooming = false;
+                initialY = null;
+                event.preventDefault();
+            }
+        }
+
+        map.getContainer().addEventListener('touchstart', onDoubleTapDragStart, { passive: false });
+        map.getContainer().addEventListener('touchmove', onDoubleTapDragMove, { passive: false });
+        map.getContainer().addEventListener('touchend', onDoubleTapDragEnd, { passive: false });
     }
 </script>
 
