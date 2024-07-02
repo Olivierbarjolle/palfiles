@@ -272,6 +272,12 @@
         forceRecalculation();
     }
 
+    // Store the current view before orientation change
+    var currentView = {
+        center: map.getCenter(),
+        zoom: map.getZoom()
+    };
+
     // Display landscape message only on mobile devices
     function checkOrientation() {
         var isMobile = /Mobi|Android/i.test(navigator.userAgent);
@@ -297,10 +303,20 @@
                 document.getElementById('startTextEnglish').classList.add('fade-out');
                 document.getElementById('startTextArabic').classList.add('fade-out');
             }
+            
+            // Restore the previous view after orientation change
+            map.setView(currentView.center, currentView.zoom);
         }
     }
 
-    window.addEventListener('resize', checkOrientation);
+    window.addEventListener('resize', function() {
+        // Store the current view before orientation change
+        currentView = {
+            center: map.getCenter(),
+            zoom: map.getZoom()
+        };
+        checkOrientation();
+    });
     checkOrientation(); // Initial check
 
     // Adjust text size based on window size
