@@ -36,7 +36,7 @@
             padding: 10px;
             border-radius: 5px;
             z-index: 1000;
-            font-size: 14px !important; /* Forced font size */
+            font-size: 14px; /* Fixed font size */
             max-height: 40%;
             overflow-y: auto;
         }
@@ -62,7 +62,7 @@
             width: 100%;
             text-align: center;
             z-index: 1000;
-            font-size: 22px !important; /* Forced font size */
+            font-size: 22px; /* Fixed font size */
             opacity: 0;
             animation: fadeInOut 2s infinite;
         }
@@ -265,16 +265,11 @@
     if (isSafariIOS()) {
         function adjustForIOS() {
             let vh = window.innerHeight;
-            if (window.innerHeight > window.innerWidth) {
-                vh -= 240; // Reduce height by 240px for portrait mode
-            }
             document.body.style.height = `${vh}px`;
             document.getElementById('panorama').style.height = `${vh}px`;
 
             document.getElementById('startTextEnglish').style.top = `calc(${vh * 0.485}px - 40px)`;
             document.getElementById('startTextArabic').style.top = `calc(${vh * 0.485}px + 40px)`;
-
-            document.getElementById('bottomText').style.bottom = `calc(10px + 240px)`;
         }
 
         window.addEventListener('resize', adjustForIOS);
@@ -322,44 +317,18 @@
 
     checkOrientation();
 
-    if (isMobile()) {
-        let lastTap = 0;
-        let initialY = null;
-        let isZooming = false;
+    // Remove dynamic font size adjustment function
+    function forceFontSize() {
+        document.querySelectorAll('.top-text, .bottom-text').forEach(function(el) {
+            el.style.fontSize = '14px';
+        });
 
-        function onDoubleTapDragStart(event) {
-            const now = Date.now();
-            if (now - lastTap <= 300) {
-                initialY = event.touches[0].clientY;
-                isZooming = true;
-                event.preventDefault();
-            }
-            lastTap = now;
-        }
-
-        function onDoubleTapDragMove(event) {
-            if (isZooming) {
-                const currentY = event.touches[0].clientY;
-                const deltaY = initialY - currentY;
-                const zoomLevel = map.getZoom() + deltaY * 0.01;
-                map.setZoom(zoomLevel);
-                initialY = currentY;
-                event.preventDefault();
-            }
-        }
-
-        function onDoubleTapDragEnd(event) {
-            if (isZooming) {
-                isZooming = false;
-                initialY = null;
-                event.preventDefault();
-            }
-        }
-
-        map.getContainer().addEventListener('touchstart', onDoubleTapDragStart, { passive: false });
-        map.getContainer().addEventListener('touchmove', onDoubleTapDragMove, { passive: false });
-        map.getContainer().addEventListener('touchend', onDoubleTapDragEnd, { passive: false });
+        document.querySelectorAll('.start-text-english, .start-text-arabic').forEach(function(el) {
+            el.style.fontSize = '22px';
+        });
     }
+
+    forceFontSize();
 </script>
 
 </body>
