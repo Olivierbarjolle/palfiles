@@ -36,9 +36,10 @@
             padding: 10px;
             border-radius: 5px;
             z-index: 1000;
-            font-size: 14px; /* Consistent font size */
-            max-height: 40%;
-            overflow-y: auto;
+            font-size: 14px; /* Reduced by 1 point */
+            transition: font-size 0.2s ease-in-out;
+            max-height: 40%; /* Restrict max height */
+            overflow-y: auto; /* Allow scrolling if content overflows */
         }
 
         .top-text {
@@ -62,7 +63,7 @@
             width: 100%;
             text-align: center;
             z-index: 1000;
-            font-size: 22px; /* Consistent font size */
+            font-size: 22px; /* Reduced by 1 point */
             opacity: 0;
             animation: fadeInOut 2s infinite;
         }
@@ -166,6 +167,7 @@
         doubleClickZoom: false,
         attributionControl: false,
         zoomControl: false,
+        // Locking the y-axis
         maxBoundsViscosity: 1.0
     });
 
@@ -187,26 +189,8 @@
     }).addTo(map);
 
     var initialClickHandled = false;
-    var currentView = {
-        center: map.getCenter(),
-        zoom: map.getZoom()
-    };
 
-    function fadeOutText() {
-        document.getElementById('topText').classList.add('fade-out');
-        document.getElementById('bottomText').classList.add('fade-out');
-        document.getElementById('startTextEnglish').classList.add('fade-out');
-        document.getElementById('startTextArabic').classList.add('fade-out');
-    }
-
-    function fadeInText() {
-        document.getElementById('topText').classList.add('fade-in');
-        document.getElementById('bottomText').classList.add('fade-in');
-        document.getElementById('topText').classList.remove('fade-out');
-        document.getElementById('bottomText').classList.remove('fade-out');
-    }
-
-    function handleInitialClick(e) {
+    map.on('click', function(e) {
         if (!initialClickHandled) {
             initialClickHandled = true;
 
@@ -227,38 +211,60 @@
                 duration: 4
             });
 
-            fadeOutText();
-        }
-    }
-
-    map.on('click', handleInitialClick);
-
-    map.on('zoomend', function() {
-        if (map.getZoom() <= map.getMinZoom() + 2) {
-            fadeInText();
-        } else {
-            fadeOutText();
+            // Fade out text elements
+            document.getElementById('topText').classList.add('fade-out');
+            document.getElementById('bottomText').classList.add('fade-out');
+            document.getElementById('startTextEnglish').classList.add('fade-out');
+            document.getElementById('startTextArabic').classList.add('fade-out');
         }
     });
 
+    map.on('zoomend', function() {
+        if (map.getZoom() <= map.getMinZoom() + 2) {
+            document.getElementById('topText').classList.remove('fade-out');
+            document.getElementById('topText').classList.add('fade-in');
+            document.getElementById('bottomText').classList.remove('fade-out');
+            document.getElementById('bottomText').classList.add('fade-in');
+        } else {
+            document.getElementById('topText').classList.remove('fade-in');
+            document.getElementById('topText').classList.add('fade-out');
+            document.getElementById('bottomText').classList.remove('fade-in');
+            document.getElementById('bottomText').classList.add('fade-out');
+        }
+    });
+
+    // Function to detect if the browser is Safari on iOS
     function isSafariIOS() {
         var ua = navigator.userAgent;
         return !!ua.match(/iP(ad|od|hone)/i) && !!ua.match(/WebKit/i) && !ua.match(/CriOS/i);
     }
 
+    // Apply Safari-specific CSS if on Safari iOS
     if (isSafariIOS()) {
         function adjustForIOS() {
             let vh = window.innerHeight;
-            document.body.style.height = `${vh}px`;
-            document.getElementById('panorama').style.height = `${vh}px`;
+            if (window.innerHeight > window.innerWidth) {
+                vh -= 240; // Reduce height by 240px for portrait mode
+            }
+            document.body.style.height = ${vh}px;
+            document.getElementById('panorama').style.height = ${vh}px;
 
-            document.getElementById('startTextEnglish').style.top = `calc(${vh * 0.485}px - 40px)`;
-            document.getElementById('startTextArabic').style.top = `calc(${vh * 0.485}px + 40px)`;
+            // Adjust the map view to ensure it is properly centered
+            var centerLatLng = map.unproject([(TILE_SIZE * TILES_X) / 2, (TILE_SIZE * TILES_Y) / 2], MAX_ZOOM);
+            map.setView(centerLatLng, map.getZoom());
+
+            // Adjust start text position
+            document.getElementById('startTextEnglish').style.top = calc(${vh * 0.485}px - 40px);
+            document.getElementById('startTextArabic').style.top = calc(${vh * 0.485}px + 40px);
+
+            // Adjust text positions
+            document.getElementById('bottomText').style.bottom = calc(10px + 240px);
         }
 
         window.addEventListener('resize', adjustForIOS);
-        adjustForIOS();
+        adjustForIOS(); // called to initially set the height
 
+        // Force recalculation
         function forceRecalculation() {
             window.dispatchEvent(new Event('resize'));
         }
@@ -266,44 +272,70 @@
         forceRecalculation();
     }
 
+    // Display landscape message only on mobile devices
     function checkOrientation() {
         var isMobile = /Mobi|Android/i.test(navigator.userAgent);
-        if (isMobile) {
-            if (window.innerHeight < window.innerWidth) {
-                document.getElementById('landscape-message').style.display = 'none';
-                document.getElementById('panorama').style.display = 'block';
+        if (isMobile && window.innerHeight < window.innerWidth) {
+            document.getElementById('landscape-message').style.display = 'block';
+            document.getElementById('panorama').style.display = 'none';
+            document.getElementById('topText').style.display = 'none';
+            document.getElementById('bottomText').style.display = 'none';
+            document.getElementById('startTextEnglish').style.display = 'none';
+            document.getElementById('startTextArabic').style.display = 'none';
+        } else {
+            document.getElementById('landscape-message').style.display = 'none';
+            document.getElementById('panorama').style.display = 'block';
+
+            if (!initialClickHandled) {
                 document.getElementById('topText').style.display = 'block';
                 document.getElementById('bottomText').style.display = 'block';
                 document.getElementById('startTextEnglish').style.display = 'block';
                 document.getElementById('startTextArabic').style.display = 'block';
             } else {
-                document.getElementById('landscape-message').style.display = 'none';
-                document.getElementById('panorama').style.display = 'block';
-                document.getElementById('topText').style.display = 'block';
-                document.getElementById('bottomText').style.display = 'block';
-                document.getElementById('startTextEnglish').style.display = 'block';
-                document.getElementById('startTextArabic').style.display = 'block';
+                document.getElementById('topText').classList.add('fade-out');
+                document.getElementById('bottomText').classList.add('fade-out');
+                document.getElementById('startTextEnglish').classList.add('fade-out');
+                document.getElementById('startTextArabic').classList.add('fade-out');
             }
-            map.setView(currentView.center, currentView.zoom);
         }
     }
 
-    window.addEventListener('resize', function() {
-        currentView = {
-            center: map.getCenter(),
-            zoom: map.getZoom()
-        };
-        setTimeout(() => checkOrientation(), 300);
-    });
+    window.addEventListener('resize', checkOrientation);
+    checkOrientation(); // Initial check
 
-    window.addEventListener('orientationchange', function() {
-        setTimeout(() => {
-            map.invalidateSize();
-            map.setView(currentView.center, currentView.zoom);
-        }, 300);
-    });
+    // Adjust text size based on window size
+    function adjustTextSize() {
+        var isMobile = /Mobi|Android/i.test(navigator.userAgent);
+        var textSize = 14; // Adjusted font size
+        if (window.innerWidth < 600 || window.innerHeight < 600) {
+            textSize = 12; // Adjusted font size
+        }
+        if (isMobile) {
+            textSize = 13; // Adjusted font size
+        }
+        document.querySelectorAll('.top-text, .bottom-text').forEach(function(el) {
+            el.style.fontSize = textSize + 'px';
+        });
 
-    checkOrientation();
+        var startTextSize = 22; // Adjusted font size
+        if (window.innerWidth < 600 || window.innerHeight < 600) {
+            startTextSize = 19; // Adjusted font size
+        }
+        if (isMobile) {
+            startTextSize = 20; // Adjusted font size
+        }
+        document.querySelectorAll('.start-text-english, .start-text-arabic').forEach(function(el) {
+            el.style.fontSize = startTextSize + 'px';
+        });
+    }
+
+    window.addEventListener('resize', adjustTextSize);
+    adjustTextSize(); // Initial check
+
+    // Add double-tap drag up and down to zoom in and out on mobile
+    function isMobile() {
+        return /Mobi|Android/i.test(navigator.userAgent);
+    }
 
     if (isMobile()) {
         let lastTap = 0;
