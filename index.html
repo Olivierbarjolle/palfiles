@@ -23,11 +23,75 @@
         .leaflet-container {
             background-color: black;
         }
+        .hidden {
+            display: none;
+        }
+        .fade-out {
+            animation: fadeOut 1.5s forwards;
+        }
+        .fade-in {
+            animation: fadeIn 1.5s forwards;
+        }
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+            }
+            to {
+                opacity: 0;
+                display: none;
+            }
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+                display: block;
+            }
+        }
+        @keyframes fadeInOut {
+            0%, 100% {
+                opacity: 0;
+            }
+            50% {
+                opacity: 1;
+            }
+        }
+        .start-text {
+            position: absolute;
+            top: calc(50% - 40px); /* Centered vertically */
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            text-align: center;
+            z-index: 1000;
+            font-size: 22px;
+            opacity: 0;
+            animation: fadeInOut 2s infinite;
+        }
+        .landscape-message {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 20px;
+            text-align: center;
+            z-index: 1000;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            border-radius: 10px;
+        }
     </style>
 </head>
 <body>
 
 <div id="panorama"></div>
+<div class="start-text" id="startTextEnglish">Click/tap anywhere on the line below to start</div>
+<div class="start-text" id="startTextArabic" style="top: calc(50% + 40px);">انقر على السطر للبدء</div>
+<div id="landscape-message" class="landscape-message">Portrait mode only</div>
 
 <script>
     var TILE_SIZE = 256;
@@ -62,39 +126,35 @@
         noWrap: true,
     }).addTo(map);
 
-    var currentCenter = map.getCenter(); // Initialize currentCenter with initial center
+    var initialClickHandled = false;
 
-    function checkOrientation() {
-        var isMobile = /Mobi|Android/i.test(navigator.userAgent);
-        if (isMobile && window.innerHeight < window.innerWidth) {
-            document.getElementById('panorama').style.display = 'none';
-        } else {
-            document.getElementById('panorama').style.display = 'block';
-            setInitialView(); // Recenter the map when switching back to portrait mode
+    map.on('click', function(e) {
+        if (!initialClickHandled) {
+            initialClickHandled = true;
+
+            var clickedLatLng = e.latlng;
+            var clickedPoint = map.project(clickedLatLng, MAX_ZOOM);
+            var imageWidth = TILE_SIZE * TILES_X;
+            var viewportWidth = map.getSize().x;
+            
+            var minX = viewportWidth / 2;
+            var maxX = imageWidth - (viewportWidth / 2);
+
+            var centerX = Math.max(minX, Math.min(maxX, clickedPoint.x));
+            var centerLatLng = map.unproject([centerX, (TILE_SIZE * TILES_Y) / 2], MAX_ZOOM);
+            var zoomLevel = MAX_ZOOM;
+
+            map.flyTo(centerLatLng, zoomLevel, {
+                animate: true,
+                duration: 4
+            });
+
+            map.once('moveend', function() {
+                document.getElementById('startTextEnglish').classList.add('fade-out');
+                document.getElementById('startTextArabic').classList.add('fade-out');
+            });
         }
-    }
-
-    window.addEventListener('resize', function() {
-        currentCenter = map.getCenter();
-        var currentZoom = map.getZoom();
-        map.setView(currentCenter, currentZoom);
-        checkOrientation();
     });
-
-    window.addEventListener('resizeend', function() {
-        map.setView(currentCenter, currentZoom);
-    });
-
-    // Debounce the resize event to trigger resizeend event
-    (function() {
-        var resizeTimer;
-        window.addEventListener('resize', function() {
-            clearTimeout(resizeTimer);
-            resizeTimer = setTimeout(function() {
-                window.dispatchEvent(new Event('resizeend'));
-            }, 250);
-        });
-    })();
 
     // Function to detect if the browser is Safari on iOS
     function isSafariIOS() {
@@ -107,11 +167,30 @@
         window.onresize = function() {
             document.body.style.height = window.innerHeight + 'px';
             document.getElementById('panorama').style.height = window.innerHeight + 'px';
-            // Re-center the map view to ensure it is properly centered
             setInitialView();
         };
         window.onresize(); // called to initially set the height
     }
+
+    function checkOrientation() {
+        var isMobile = /Mobi|Android/i.test(navigator.userAgent);
+        if (isMobile && window.innerHeight < window.innerWidth) {
+            document.getElementById('landscape-message').style.display = 'block';
+            document.getElementById('panorama').style.display = 'none';
+            document.getElementById('startTextEnglish').style.display = 'none';
+            document.getElementById('startTextArabic').style.display = 'none';
+        } else {
+            document.getElementById('landscape-message').style.display = 'none';
+            document.getElementById('panorama').style.display = 'block';
+            if (!initialClickHandled) {
+                document.getElementById('startTextEnglish').style.display = 'block';
+                document.getElementById('startTextArabic').style.display = 'block';
+            }
+            setInitialView();
+        }
+    }
+
+    window.addEventListener('resize', checkOrientation);
 
     // Initial check
     checkOrientation();
