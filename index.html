@@ -165,8 +165,8 @@
     // Apply Safari-specific CSS if on Safari iOS
     if (isSafariIOS()) {
         window.onresize = function() {
-            document.body.style.height = window.innerHeight + 'px';
-            document.getElementById('panorama').style.height = window.innerHeight + 'px';
+            var vh = window.innerHeight * 0.01;
+            document.documentElement.style.setProperty('--vh', `${vh}px`);
             setInitialView();
         };
         window.onresize(); // called to initially set the height
