@@ -27,7 +27,7 @@
         .App {
             display: flex;
             flex-direction: column;
-            height: calc(var(--vh) - var(--bottom-offset)); /* Adjust height for Safari on iOS */
+            height: calc(var(--vh) - var(--bottom-offset));
             width: 100%;
         }
 
@@ -79,11 +79,11 @@
         }
 
         .start-text-english {
-            top: calc(48.5% - 40px); /* Adjusted */
+            top: calc(48.5% - 40px);
         }
 
         .start-text-arabic {
-            top: calc(48.5% + 40px); /* Adjusted */
+            top: calc(48.5% + 40px);
             direction: rtl;
         }
 
@@ -367,6 +367,8 @@
     }
 
     window.addEventListener('resize', function() {
+        let vh = window.innerHeight * 0.01;
+        document.documentElement.style.setProperty('--vh', `${vh}px`);
         var currentCenter = map.getCenter();
         var currentZoom = map.getZoom();
         map.setView(currentCenter, currentZoom);
@@ -374,7 +376,9 @@
     });
 
     window.addEventListener('resizeend', function() {
-        map.setView(currentCenter, currentZoom);
+        let vh = window.innerHeight * 0.01;
+        document.documentElement.style.setProperty('--vh', `${vh}px`);
+        map.setView(map.getCenter(), map.getZoom());
     });
 
     // Debounce the resize event to trigger resizeend event
@@ -390,25 +394,6 @@
 
     // Initial check
     checkOrientation();
-
-    function updateVH() {
-        let vh = window.innerHeight * 0.01;
-        document.documentElement.style.setProperty('--vh', `${vh}px`);
-    }
-
-    window.addEventListener('resize', updateVH);
-    updateVH();
-
-    function isSafariIOS() {
-        var ua = navigator.userAgent;
-        return !!ua.match(/iP(ad|od|hone)/i) && !!ua.match(/WebKit/i) && !ua.match(/CriOS/i);
-    }
-
-    if (isSafariIOS()) {
-        document.documentElement.style.setProperty('--vh', '100vh');
-        document.documentElement.style.setProperty('--bottom-offset', '240px');
-        setInitialView();
-    }
 </script>
 
 </body>
