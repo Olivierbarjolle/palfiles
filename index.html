@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Monument+Grotesk:wght@300;400;500;600;700;800;900&display=swap');
+
         body, html {
             margin: 0;
             padding: 0;
@@ -14,24 +16,66 @@
             width: 100%;
             overflow: hidden;
             background-color: black;
+            font-family: 'Monument Grotesk', sans-serif;
         }
+
         #panorama {
             height: 100%;
             width: 100%;
             background-color: black;
         }
+
         .leaflet-container {
             background-color: black;
         }
-        .hidden {
-            display: none;
+
+        .top-text, .bottom-text {
+            position: absolute;
+            color: white;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+            border-radius: 5px;
+            z-index: 1000;
+            font-size: 15px; /* Reduced by 1 point */
+            transition: font-size 0.2s ease-in-out;
+            max-height: 40%; /* Restrict max height */
+            overflow-y: auto; /* Allow scrolling if content overflows */
         }
+
+        .top-text {
+            top: 10px;
+            left: 10px;
+            text-align: left;
+            width: 80%;
+        }
+
+        .bottom-text {
+            right: 10px;
+            text-align: right;
+            width: 80%;
+            direction: rtl;
+            bottom: 10px;
+        }
+
+        .start-text-english, .start-text-arabic {
+            position: absolute;
+            color: white;
+            width: 100%;
+            text-align: center;
+            z-index: 1000;
+            font-size: 23px; /* Reduced by 1 point */
+            opacity: 0;
+            animation: fadeInOut 2s infinite;
+        }
+
         .fade-out {
             animation: fadeOut 1.5s forwards;
         }
+
         .fade-in {
             animation: fadeIn 1.5s forwards;
         }
+
         @keyframes fadeOut {
             from {
                 opacity: 1;
@@ -41,6 +85,7 @@
                 display: none;
             }
         }
+
         @keyframes fadeIn {
             from {
                 opacity: 0;
@@ -50,6 +95,7 @@
                 display: block;
             }
         }
+
         @keyframes fadeInOut {
             0%, 100% {
                 opacity: 0;
@@ -58,19 +104,8 @@
                 opacity: 1;
             }
         }
-        .start-text {
-            position: absolute;
-            top: calc(48.5% - 40px); /* Centered vertically with offset */
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: white;
-            text-align: center;
-            z-index: 1000;
-            font-size: 22px;
-            opacity: 0;
-            animation: fadeInOut 2s infinite;
-        }
-        .landscape-message {
+
+        #landscape-message {
             display: none;
             position: absolute;
             top: 50%;
@@ -89,9 +124,25 @@
 <body>
 
 <div id="panorama"></div>
-<div class="start-text" id="startTextEnglish">Click/tap anywhere on the line below to start</div>
-<div class="start-text" id="startTextArabic" style="top: calc(48.5% + 40px);">انقر على السطر للبدء</div>
-<div id="landscape-message" class="landscape-message">Portrait mode only</div>
+<div class="top-text" id="topText">
+    Non-Linear Assembly<br><br>
+    In the wake of the Hamas attacks on October 7th, the Israeli Defence Forces have unleashed a devastating campaign on Gaza, killing at least 37,000 Palestinians, including over 15,000 children. The International Court of Justice has condemned the Israeli government's actions, citing crimes such as the starvation of civilians as a weapon of war, murder, extermination, and deliberate attacks on civilians. Despite these findings, numerous Western nations, including the United Kingdom, continue to support this war on the Palestinian people.<br><br>
+    In a powerful counter-movement, Londoners have mobilised in a series of fortnightly pro-Palestinian marches. Vilified by parts of the British media and government, these peaceful assemblies actually represent a diverse and peaceful coalition of society. They reflect the impact on global consciousness surrounding the Gaza conflict.<br><br>
+    This project is a linear rendering of the pro-Palestinian march that took place in London on January 13, 2024, and an ode to the people that call for compassion, humanity, and peace.
+</div>
+<div class="bottom-text" id="bottomText">
+    التجمع غير الخطي<br><br>
+    ردًا على هجمات حماس في السابع من تشرين الأول/أكتوبر، ردت قوات الدفاع الإسرائيلية بإلحاق قدر لا يمكن تصوره من الألم والدمار بغزة، مما أسفر عن مقتل ما لا يقل عن سبعة وثلاثين ألف فلسطيني، بما في ذلك أكثر من خمسة عشر طفلاً. وبينما خلصت محكمة العدل الدولية إلى أن الحكومة الإسرائيلية ارتكبت جرائم بما في ذلك تجويع المدنيين كسلاح في الحرب، والقتل والإبادة، والهجمات المتعمدة على المدنيين، فقد دعمت العديد من الدول الغربية، بما في ذلك المملكة المتحدة، هذه الحرب على الشعب الفلسطيني.<br><br>
+    ردًا على ذلك، شارك سكان لندن في سلسلة طويلة من مسيرات الدعم الكبيرة المؤيدة للفلسطينيين في جهد متواصل منذ المظاهرة الوطنية الأولى في الرابع عشر من أكتوبر عام ألفين وثلاثة وعشرين. على الرغم من الروايات الإعلامية والحكومية التي تشوه هذه المسيرات باعتبارها هامشية ومزعجة وبغيضة من أجل مواصلة دعمها بلا منازع للحكومة الإسرائيلية، فإن هذه المسيرات تمثل شريحة واسعة من المجتمع متحدة في الاحتجاج السلمي. وهي بمثابة شهادة على التأثير الواسع النطاق للصراع في غزة على الوعي العالمي.<br><br>
+    هذا المشروع عبارة عن عرض مكتوب للمسيرة المؤيدة للفلسطينيين التي جرت في لندن في الثالث عشر من يناير عام ألفين وأربعة وعشرين، وقصيدة للشعب الذي يدعو إلى الرحمة والإنسانية والسلام.
+</div>
+<div class="start-text-english" id="startTextEnglish">
+    Click/tap anywhere on the line below to start
+</div>
+<div class="start-text-arabic" id="startTextArabic">
+    انقر على السطر للبدء
+</div>
+<div id="landscape-message">Portrait mode only</div>
 
 <script>
     var TILE_SIZE = 256;
@@ -106,7 +157,9 @@
         crs: L.CRS.Simple,
         doubleClickZoom: false,
         attributionControl: false,
-        zoomControl: false
+        zoomControl: false,
+        // Locking the y-axis
+        maxBoundsViscosity: 1.0
     });
 
     function setInitialView() {
@@ -149,10 +202,25 @@
                 duration: 4
             });
 
-            map.once('moveend', function() {
-                document.getElementById('startTextEnglish').classList.add('fade-out');
-                document.getElementById('startTextArabic').classList.add('fade-out');
-            });
+            // Fade out text elements
+            document.getElementById('topText').classList.add('fade-out');
+            document.getElementById('bottomText').classList.add('fade-out');
+            document.getElementById('startTextEnglish').classList.add('fade-out');
+            document.getElementById('startTextArabic').classList.add('fade-out');
+        }
+    });
+
+    map.on('zoomend', function() {
+        if (map.getZoom() <= map.getMinZoom() + 2) {
+            document.getElementById('topText').classList.remove('fade-out');
+            document.getElementById('topText').classList.add('fade-in');
+            document.getElementById('bottomText').classList.remove('fade-out');
+            document.getElementById('bottomText').classList.add('fade-in');
+        } else {
+            document.getElementById('topText').classList.remove('fade-in');
+            document.getElementById('topText').classList.add('fade-out');
+            document.getElementById('bottomText').classList.remove('fade-in');
+            document.getElementById('bottomText').classList.add('fade-out');
         }
     });
 
@@ -164,36 +232,132 @@
 
     // Apply Safari-specific CSS if on Safari iOS
     if (isSafariIOS()) {
-        window.onresize = function() {
-            var vh = window.innerHeight * 0.01;
-            document.documentElement.style.setProperty('--vh', `${vh}px`);
-            setInitialView();
-        };
-        window.onresize(); // called to initially set the height
+        function adjustForIOS() {
+            let vh = window.innerHeight;
+            if (window.innerHeight > window.innerWidth) {
+                vh -= 240; // Reduce height by 240px for portrait mode
+            }
+            document.body.style.height = `${vh}px`;
+            document.getElementById('panorama').style.height = `${vh}px`;
+
+            // Adjust the map view to ensure it is properly centered
+            var centerLatLng = map.unproject([(TILE_SIZE * TILES_X) / 2, (TILE_SIZE * TILES_Y) / 2], MAX_ZOOM);
+            map.setView(centerLatLng, map.getZoom());
+
+            // Adjust start text position
+            document.getElementById('startTextEnglish').style.top = `calc(${vh * 0.485}px - 40px)`;
+            document.getElementById('startTextArabic').style.top = `calc(${vh * 0.485}px + 40px)`;
+
+            // Adjust text positions
+            document.getElementById('bottomText').style.bottom = `calc(10px + 240px)`;
+        }
+
+        window.addEventListener('resize', adjustForIOS);
+        adjustForIOS(); // called to initially set the height
+
+        // Force recalculation
+        function forceRecalculation() {
+            window.dispatchEvent(new Event('resize'));
+        }
+
+        forceRecalculation();
     }
 
+    // Display landscape message only on mobile devices
     function checkOrientation() {
         var isMobile = /Mobi|Android/i.test(navigator.userAgent);
         if (isMobile && window.innerHeight < window.innerWidth) {
             document.getElementById('landscape-message').style.display = 'block';
             document.getElementById('panorama').style.display = 'none';
+            document.getElementById('topText').style.display = 'none';
+            document.getElementById('bottomText').style.display = 'none';
             document.getElementById('startTextEnglish').style.display = 'none';
             document.getElementById('startTextArabic').style.display = 'none';
         } else {
             document.getElementById('landscape-message').style.display = 'none';
             document.getElementById('panorama').style.display = 'block';
-            if (!initialClickHandled) {
-                document.getElementById('startTextEnglish').style.display = 'block';
-                document.getElementById('startTextArabic').style.display = 'block';
-            }
-            setInitialView();
+            document.getElementById('topText').style.display = 'block';
+            document.getElementById('bottomText').style.display = 'block';
+            document.getElementById('startTextEnglish').style.display = 'block';
+            document.getElementById('startTextArabic').style.display = 'block';
         }
     }
 
     window.addEventListener('resize', checkOrientation);
+    checkOrientation(); // Initial check
 
-    // Initial check
-    checkOrientation();
+    // Adjust text size based on window size
+    function adjustTextSize() {
+        var isMobile = /Mobi|Android/i.test(navigator.userAgent);
+        var textSize = 15; // Adjusted font size
+        if (window.innerWidth < 600 || window.innerHeight < 600) {
+            textSize = 12; // Adjusted font size
+        }
+        if (isMobile) {
+            textSize = 14; // Adjusted font size
+        }
+        document.querySelectorAll('.top-text, .bottom-text').forEach(function(el) {
+            el.style.fontSize = textSize + 'px';
+        });
+
+        var startTextSize = 23; // Adjusted font size
+        if (window.innerWidth < 600 || window.innerHeight < 600) {
+            startTextSize = 19; // Adjusted font size
+        }
+        if (isMobile) {
+            startTextSize = 21; // Adjusted font size
+        }
+        document.querySelectorAll('.start-text-english, .start-text-arabic').forEach(function(el) {
+            el.style.fontSize = startTextSize + 'px';
+        });
+    }
+
+    window.addEventListener('resize', adjustTextSize);
+    adjustTextSize(); // Initial check
+
+    // Add double-tap drag up and down to zoom in and out on mobile
+    function isMobile() {
+        return /Mobi|Android/i.test(navigator.userAgent);
+    }
+
+    if (isMobile()) {
+        let lastTap = 0;
+        let initialY = null;
+        let isZooming = false;
+
+        function onDoubleTapDragStart(event) {
+            const now = Date.now();
+            if (now - lastTap <= 300) {
+                initialY = event.touches[0].clientY;
+                isZooming = true;
+                event.preventDefault();
+            }
+            lastTap = now;
+        }
+
+        function onDoubleTapDragMove(event) {
+            if (isZooming) {
+                const currentY = event.touches[0].clientY;
+                const deltaY = initialY - currentY;
+                const zoomLevel = map.getZoom() + deltaY * 0.01;
+                map.setZoom(zoomLevel);
+                initialY = currentY;
+                event.preventDefault();
+            }
+        }
+
+        function onDoubleTapDragEnd(event) {
+            if (isZooming) {
+                isZooming = false;
+                initialY = null;
+                event.preventDefault();
+            }
+        }
+
+        map.getContainer().addEventListener('touchstart', onDoubleTapDragStart, { passive: false });
+        map.getContainer().addEventListener('touchmove', onDoubleTapDragMove, { passive: false });
+        map.getContainer().addEventListener('touchend', onDoubleTapDragEnd, { passive: false });
+    }
 </script>
 
 </body>
