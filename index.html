@@ -66,6 +66,20 @@
                 opacity: 1;
             }
         }
+        #landscape-message {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 20px;
+            text-align: center;
+            z-index: 1000;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            border-radius: 10px;
+        }
     </style>
 </head>
 <body>
@@ -75,12 +89,14 @@
 <div id="startTextEnglish" class="text-box">Click/tap anywhere on the line below to start</div>
 <div id="startTextArabic" class="text-box">انقر على السطر للبدء</div>
 <div id="bottomText" class="text-box">التجمع غير الخطي<br><br>ردًا على هجمات...</div>
+<div id="landscape-message">Portrait mode only</div>
 
 <script>
     var TILE_SIZE = 256;
     var MAX_ZOOM = 12;
     var TILES_X = 2891;
     var TILES_Y = 4;
+    var FADE_DISTANCE = 5 * TILE_SIZE;
 
     var map = L.map('panorama', {
         minZoom: 2,
@@ -113,16 +129,79 @@
         noWrap: true,
     }).addTo(map);
 
+    var audioFiles = [
+        'https://chipper-sunflower-e51e1a.netlify.app/audio/1.mp3',
+        'https://chipper-sunflower-e51e1a.netlify.app/audio/2.mp3',
+        'https://chipper-sunflower-e51e1a.netlify.app/audio/3.mp3',
+        'https://chipper-sunflower-e51e1a.netlify.app/audio/4.mp3'
+    ];
+
+    var audioZones = [
+        { start: 177, end: 190, audio: new Audio(audioFiles[0]) },
+        { start: 170, end: 176, audio: new Audio(audioFiles[2]) },
+        { start: 137, end: 169, audio: new Audio(audioFiles[1]) },
+        { start: 58, end: 136, audio: new Audio(audioFiles[3]) },
+        { start: 100, end: 120, audio: new Audio(audioFiles[1]) },
+        { start: 100, end: 110, audio: new Audio(audioFiles[2]) },
+        { start: 80, end: 90, audio: new Audio(audioFiles[1]) },
+        { start: 50, end: 57, audio: new Audio(audioFiles[2]) },
+        { start: 19, end: 56, audio: new Audio(audioFiles[3]) },
+        { start: 8, end: 18, audio: new Audio(audioFiles[2]) },
+        { start: 6, end: 7, audio: new Audio(audioFiles[1]) },
+        { start: -10, end: 5, audio: new Audio(audioFiles[0]) }
+    ];
+
+    audioZones.forEach(function(zone) {
+        zone.audio.loop = true;
+        zone.audio.volume = 0;
+        zone.audio.load();
+        console.log(`Loaded audio file for zone: ${zone.audio.src}`);
+    });
+
+    var audioInitialized = false;
     var initialClickHandled = false;
+    var currentCenter;
+
+    function adjustVolume() {
+        var centerLng = map.getCenter().lng * TILE_SIZE;
+        var zoomLevel = map.getZoom();
+        var maxVolume = (zoomLevel - 2) / (MAX_ZOOM - 2);
+
+        audioZones.forEach(function(zone) {
+            var volume = 0;
+            if (centerLng >= (zone.start - FADE_DISTANCE) * TILE_SIZE && centerLng <= (zone.end + FADE_DISTANCE) * TILE_SIZE) {
+                if (centerLng >= zone.start * TILE_SIZE && centerLng <= zone.end * TILE_SIZE) {
+                    volume = maxVolume;
+                } else if (centerLng < zone.start * TILE_SIZE) {
+                    volume = maxVolume * (1 - ((zone.start * TILE_SIZE - centerLng) / FADE_DISTANCE));
+                } else if (centerLng > zone.end * TILE_SIZE) {
+                    volume = maxVolume * (1 - ((centerLng - zone.end * TILE_SIZE) / FADE_DISTANCE));
+                }
+            }
+            zone.audio.volume = Math.max(0, volume);
+            console.log(`Zone audio src: ${zone.audio.src}, volume: ${volume}`);
+        });
+    }
+
+    map.on('move', adjustVolume); // Adjust volume continuously as the map moves
 
     map.on('click', function(e) {
         if (!initialClickHandled) {
             initialClickHandled = true;
 
-            document.getElementById('topText').style.display = 'none';
-            document.getElementById('bottomText').style.display = 'none';
-            document.getElementById('startTextEnglish').style.display = 'none';
-            document.getElementById('startTextArabic').style.display = 'none';
+            document.getElementById('topText').classList.add('fade-out'); // Trigger fade out for top text
+            document.getElementById('bottomText').classList.add('fade-out'); // Trigger fade out for bottom text
+            document.getElementById('startTextEnglish').classList.add('fade-out'); // Trigger fade out for English start text
+            document.getElementById('startTextArabic').classList.add('fade-out'); // Trigger fade out for Arabic start text
+
+            if (!audioInitialized) {
+                audioZones.forEach(function(zone) {
+                    zone.audio.play().catch(error => {
+                        console.error("Audio playback failed:", error);
+                    });
+                });
+                audioInitialized = true;
+            }
 
             var clickedLatLng = e.latlng;
             var clickedPoint = map.project(clickedLatLng, MAX_ZOOM);
@@ -140,8 +219,55 @@
                 animate: true,
                 duration: 4
             });
+
+            map.once('moveend', function() {
+                adjustVolume(); // Ensure volume is adjusted after moving
+            });
         }
     });
+
+    function checkOrientation() {
+        var isMobile = /Mobi|Android/i.test(navigator.userAgent);
+        if (isMobile && window.innerHeight < window.innerWidth) {
+            document.getElementById('landscape-message').style.display = 'block';
+            document.getElementById('panorama').style.display = 'none';
+            document.getElementById('topText').style.display = 'none';
+            document.getElementById('bottomText').style.display = 'none';
+            document.getElementById('startTextEnglish').style.display = 'none';
+            document.getElementById('startTextArabic').style.display = 'none';
+        } else {
+            document.getElementById('landscape-message').style.display = 'none';
+            document.getElementById('panorama').style.display = 'block';
+            if (!initialClickHandled && map.getZoom() <= map.getMinZoom() + 2) {
+                document.getElementById('topText').style.display = 'block';
+                document.getElementById('bottomText').style.display = 'block';
+                document.getElementById('startTextEnglish').style.display = 'block';
+                document.getElementById('startTextArabic').style.display = 'block';
+            }
+        }
+    }
+
+    window.addEventListener('resize', function() {
+        currentCenter = map.getCenter();
+        var currentZoom = map.getZoom();
+        map.setView(currentCenter, currentZoom);
+        checkOrientation();
+    });
+
+    window.addEventListener('resizeend', function() {
+        map.setView(currentCenter, currentZoom);
+    });
+
+    // Debounce the resize event to trigger resizeend event
+    (function() {
+        var resizeTimer;
+        window.addEventListener('resize', function() {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(function() {
+                window.dispatchEvent(new Event('resizeend'));
+            }, 250);
+        });
+    })();
 
     // Function to detect if the browser is Safari on iOS
     function isSafariIOS() {
@@ -152,15 +278,16 @@
     // Apply Safari-specific CSS if on Safari iOS
     if (isSafariIOS()) {
         window.onresize = function() {
-            let vh = window.innerHeight * 0.01;
-            document.documentElement.style.setProperty('--vh', `${vh}px`);
-            document.documentElement.style.setProperty('--bottom-offset', '240px'); // Adjust bottom offset for Safari on iOS
-            document.body.style.height = 'calc(var(--vh, 1vh) * 100)';
-            document.getElementById('panorama').style.height = 'calc(var(--vh, 1vh) * 100)';
+            document.body.style.height = window.innerHeight + 'px';
+            document.getElementById('panorama').style.height = window.innerHeight + 'px';
+            // Re-center the map view to ensure it is properly centered
             setInitialView();
         };
-        window.onresize();
+        window.onresize(); // called to initially set the height
     }
+
+    // Initial check
+    checkOrientation();
 </script>
 
 </body>
