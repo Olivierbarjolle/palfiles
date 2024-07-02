@@ -36,10 +36,10 @@
             padding: 10px;
             border-radius: 5px;
             z-index: 1000;
-            font-size: 14px; /* Reduced by 1 point */
+            font-size: 14px;
             transition: font-size 0.2s ease-in-out;
-            max-height: 40%; /* Restrict max height */
-            overflow-y: auto; /* Allow scrolling if content overflows */
+            max-height: 40%;
+            overflow-y: auto;
         }
 
         .top-text {
@@ -63,7 +63,7 @@
             width: 100%;
             text-align: center;
             z-index: 1000;
-            font-size: 22px; /* Reduced by 1 point */
+            font-size: 22px;
             opacity: 0;
             animation: fadeInOut 2s infinite;
         }
@@ -167,7 +167,6 @@
         doubleClickZoom: false,
         attributionControl: false,
         zoomControl: false,
-        // Locking the y-axis
         maxBoundsViscosity: 1.0
     });
 
@@ -189,6 +188,10 @@
     }).addTo(map);
 
     var initialClickHandled = false;
+    var currentView = {
+        center: map.getCenter(),
+        zoom: map.getZoom()
+    };
 
     map.on('click', function(e) {
         if (!initialClickHandled) {
@@ -249,10 +252,6 @@
             document.body.style.height = `${vh}px`;
             document.getElementById('panorama').style.height = `${vh}px`;
 
-            // Adjust the map view to ensure it is properly centered
-            var centerLatLng = map.unproject([(TILE_SIZE * TILES_X) / 2, (TILE_SIZE * TILES_Y) / 2], MAX_ZOOM);
-            map.setView(centerLatLng, map.getZoom());
-
             // Adjust start text position
             document.getElementById('startTextEnglish').style.top = `calc(${vh * 0.485}px - 40px)`;
             document.getElementById('startTextArabic').style.top = `calc(${vh * 0.485}px + 40px)`;
@@ -272,13 +271,6 @@
         forceRecalculation();
     }
 
-    // Store the current view before orientation change
-    var currentView = {
-        center: map.getCenter(),
-        zoom: map.getZoom()
-    };
-
-    // Display landscape message only on mobile devices
     function checkOrientation() {
         var isMobile = /Mobi|Android/i.test(navigator.userAgent);
         if (isMobile && window.innerHeight < window.innerWidth) {
@@ -310,7 +302,6 @@
     }
 
     window.addEventListener('resize', function() {
-        // Store the current view before orientation change
         currentView = {
             center: map.getCenter(),
             zoom: map.getZoom()
@@ -322,23 +313,23 @@
     // Adjust text size based on window size
     function adjustTextSize() {
         var isMobile = /Mobi|Android/i.test(navigator.userAgent);
-        var textSize = 14; // Adjusted font size
+        var textSize = 14;
         if (window.innerWidth < 600 || window.innerHeight < 600) {
-            textSize = 12; // Adjusted font size
+            textSize = 12;
         }
         if (isMobile) {
-            textSize = 13; // Adjusted font size
+            textSize = 13;
         }
         document.querySelectorAll('.top-text, .bottom-text').forEach(function(el) {
             el.style.fontSize = textSize + 'px';
         });
 
-        var startTextSize = 22; // Adjusted font size
+        var startTextSize = 22;
         if (window.innerWidth < 600 || window.innerHeight < 600) {
-            startTextSize = 19; // Adjusted font size
+            startTextSize = 19;
         }
         if (isMobile) {
-            startTextSize = 20; // Adjusted font size
+            startTextSize = 20;
         }
         document.querySelectorAll('.start-text-english, .start-text-arabic').forEach(function(el) {
             el.style.fontSize = startTextSize + 'px';
@@ -349,10 +340,6 @@
     adjustTextSize(); // Initial check
 
     // Add double-tap drag up and down to zoom in and out on mobile
-    function isMobile() {
-        return /Mobi|Android/i.test(navigator.userAgent);
-    }
-
     if (isMobile()) {
         let lastTap = 0;
         let initialY = null;
