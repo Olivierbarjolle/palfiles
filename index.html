@@ -246,19 +246,19 @@
             if (window.innerHeight > window.innerWidth) {
                 vh -= 240; // Reduce height by 240px for portrait mode
             }
-            document.body.style.height = `${vh}px`;
-            document.getElementById('panorama').style.height = `${vh}px`;
+            document.body.style.height = ${vh}px;
+            document.getElementById('panorama').style.height = ${vh}px;
 
             // Adjust the map view to ensure it is properly centered
             var centerLatLng = map.unproject([(TILE_SIZE * TILES_X) / 2, (TILE_SIZE * TILES_Y) / 2], MAX_ZOOM);
             map.setView(centerLatLng, map.getZoom());
 
             // Adjust start text position
-            document.getElementById('startTextEnglish').style.top = `calc(${vh * 0.485}px - 40px)`;
-            document.getElementById('startTextArabic').style.top = `calc(${vh * 0.485}px + 40px)`;
+            document.getElementById('startTextEnglish').style.top = calc(${vh * 0.485}px - 40px);
+            document.getElementById('startTextArabic').style.top = calc(${vh * 0.485}px + 40px);
 
             // Adjust text positions
-            document.getElementById('bottomText').style.bottom = `calc(10px + 240px)`;
+            document.getElementById('bottomText').style.bottom = calc(10px + 240px);
         }
 
         window.addEventListener('resize', adjustForIOS);
@@ -375,168 +375,6 @@
         map.getContainer().addEventListener('touchmove', onDoubleTapDragMove, { passive: false });
         map.getContainer().addEventListener('touchend', onDoubleTapDragEnd, { passive: false });
     }
-
-    // Sound zones
-    var audioFiles = [
-        'https://chipper-sunflower-e51e1a.netlify.app/audio/1.mp3',
-        'https://chipper-sunflower-e51e1a.netlify.app/audio/2.mp3',
-        'https://chipper-sunflower-e51e1a.netlify.app/audio/3.mp3',
-        'https://chipper-sunflower-e51e1a.netlify.app/audio/4.mp3'
-    ];
-
-    var audioZones = [
-        { start: 177, end: 190, audio: new Audio(audioFiles[0]) },
-        { start: 170, end: 176, audio: new Audio(audioFiles[2]) },
-        { start: 137, end: 169, audio: new Audio(audioFiles[1]) },
-        { start: 58, end: 136, audio: new Audio(audioFiles[3]) },
-        { start: 100, end: 120, audio: new Audio(audioFiles[1]) },
-        { start: 100, end: 110, audio: new Audio(audioFiles[2]) },
-        { start: 80, end: 90, audio: new Audio(audioFiles[1]) },
-        { start: 50, end: 57, audio: new Audio(audioFiles[2]) },
-        { start: 19, end: 56, audio: new Audio(audioFiles[3]) },
-        { start: 8, end: 18, audio: new Audio(audioFiles[2]) },
-        { start: 6, end: 7, audio: new Audio(audioFiles[1]) },
-        { start: -10, end: 5, audio: new Audio(audioFiles[0]) }
-    ];
-
-    audioZones.forEach(function(zone) {
-        zone.audio.loop = true;
-        zone.audio.volume = 0;
-        zone.audio.load();
-        console.log(`Loaded audio file for zone: ${zone.audio.src}`);
-    });
-
-    var audioInitialized = false;
-
-    function adjustVolume() {
-        var centerLng = map.getCenter().lng * TILE_SIZE;
-        var zoomLevel = map.getZoom();
-        var maxVolume = (zoomLevel - 2) / (MAX_ZOOM - 2);
-
-        audioZones.forEach(function(zone) {
-            var volume = 0;
-            if (centerLng >= (zone.start - FADE_DISTANCE) * TILE_SIZE && centerLng <= (zone.end + FADE_DISTANCE) * TILE_SIZE) {
-                if (centerLng >= zone.start * TILE_SIZE && centerLng <= zone.end * TILE_SIZE) {
-                    volume = maxVolume;
-                } else if (centerLng < zone.start * TILE_SIZE) {
-                    volume = maxVolume * (1 - ((zone.start * TILE_SIZE - centerLng) / FADE_DISTANCE));
-                } else if (centerLng > zone.end * TILE_SIZE) {
-                    volume = maxVolume * (1 - ((centerLng - zone.end * TILE_SIZE) / FADE_DISTANCE));
-                }
-            }
-
-            zone.audio.volume = Math.max(0, volume);
-            console.log(`Zone audio src: ${zone.audio.src}, volume: ${volume}`);
-        });
-    }
-
-    function handleZoomEnd() {
-        var isMobile = /Mobi|Android/i.test(navigator.userAgent);
-        if (map.getZoom() <= map.getMinZoom() + 2) {
-            document.getElementById('topText').classList.remove('fade-out');
-            document.getElementById('topText').classList.add('fade-in');
-            document.getElementById('bottomText').classList.remove('fade-out');
-            document.getElementById('bottomText').classList.add('fade-in');
-            clickHandled = false;
-        } else {
-            document.getElementById('topText').classList.remove('fade-in');
-            document.getElementById('topText').classList.add('fade-out');
-            document.getElementById('bottomText').classList.remove('fade-in');
-            document.getElementById('bottomText').classList.add('fade-out');
-        }
-    }
-
-    map.on('move', adjustVolume); // Adjust volume continuously as the map moves
-
-    map.on('click', function(e) {
-        if (!initialClickHandled) {
-            initialClickHandled = true;
-            document.getElementById('topText').classList.add('fade-out'); // Trigger fade out for top text
-            document.getElementById('bottomText').classList.add('fade-out'); // Trigger fade out for bottom text
-            document.getElementById('startTextEnglish').classList.add('fade-out'); // Trigger fade out for English start text
-            document.getElementById('startTextArabic').classList.add('fade-out'); // Trigger fade out for Arabic start text
-
-            if (!audioInitialized) {
-                audioZones.forEach(function(zone) {
-                    zone.audio.play().catch(error => {
-                        console.error("Audio playback failed:", error);
-                    });
-                });
-                audioInitialized = true;
-            }
-
-            var clickedLatLng = e.latlng;
-            var centerLng = Math.max(0, Math.min(TILE_SIZE * TILES_X, map.project(clickedLatLng, MAX_ZOOM).x));
-            var centerLatLng = map.unproject([centerLng, (TILE_SIZE * TILES_Y) / 2], MAX_ZOOM);
-            var zoomLevel = MAX_ZOOM - 1;
-
-            // Check if the device is mobile
-            if (/Mobi|Android/i.test(navigator.userAgent)) {
-                zoomLevel -= 1; // Zoom one level less on mobile
-            }
-
-            map.flyTo(centerLatLng, zoomLevel, {
-                animate: true,
-                duration: 4
-            });
-
-            map.once('moveend', function() {
-                clickHandled = true; // Prevent further interactions
-                adjustVolume(); // Ensure volume is adjusted after moving
-            });
-        }
-    });
-
-    // Update volume continuously during the zoom
-    map.on('zoomstart', adjustVolume);
-    map.on('zoomend', adjustVolume);
-    map.on('zoomend', handleZoomEnd); // Handle zoom end to make text reappear
-
-    function checkOrientation() {
-        var isMobile = /Mobi|Android/i.test(navigator.userAgent);
-        if (isMobile && window.innerHeight < window.innerWidth) {
-            document.getElementById('landscape-message').style.display = 'block';
-            document.getElementById('panorama').style.display = 'none';
-            document.getElementById('topText').style.display = 'none';
-            document.getElementById('bottomText').style.display = 'none';
-            document.getElementById('startTextEnglish').style.display = 'none';
-            document.getElementById('startTextArabic').style.display = 'none';
-        } else {
-            document.getElementById('landscape-message').style.display = 'none';
-            document.getElementById('panorama').style.display = 'block';
-            if (!initialClickHandled && map.getZoom() <= map.getMinZoom() + 2) {
-                document.getElementById('topText').style.display = 'block';
-                document.getElementById('bottomText').style.display = 'block';
-                document.getElementById('startTextEnglish').style.display = 'block';
-                document.getElementById('startTextArabic').style.display = 'block';
-            }
-        }
-    }
-
-    window.addEventListener('resize', function() {
-        var currentCenter = map.getCenter();
-        var currentZoom = map.getZoom();
-        map.setView(currentCenter, currentZoom);
-        checkOrientation();
-    });
-
-    window.addEventListener('resizeend', function() {
-        map.setView(currentCenter, currentZoom);
-    });
-
-    // Debounce the resize event to trigger resizeend event
-    (function() {
-        var resizeTimer;
-        window.addEventListener('resize', function() {
-            clearTimeout(resizeTimer);
-            resizeTimer = setTimeout(function() {
-                window.dispatchEvent(new Event('resizeend'));
-            }, 250);
-        });
-    })();
-
-    // Initial check
-    checkOrientation();
 </script>
 
 </body>
