@@ -3,7 +3,7 @@
 <head>
     <title>Panoramic Viewer</title>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, viewport-fit=cover, width=device-width, height=device-height, user-scalable=no, orientation=portrait">
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <style>
@@ -127,6 +127,22 @@
             background-color: rgba(0, 0, 0, 0.7);
             padding: 20px;
             border-radius: 10px;
+        }
+
+        /* Prevent rotation */
+        @media (orientation: landscape) {
+            body {
+                transform: rotate(-90deg);
+                transform-origin: left top;
+                width: 100vh;
+                height: 100vw;
+                overflow: hidden;
+            }
+
+            #panorama {
+                width: 100vh;
+                height: 100vw;
+            }
         }
     </style>
 </head>
@@ -274,16 +290,8 @@
     function checkOrientation() {
         var isMobile = /Mobi|Android/i.test(navigator.userAgent);
         if (isMobile && window.innerHeight < window.innerWidth) {
-            document.getElementById('landscape-message').style.display = 'block';
-            document.getElementById('panorama').style.display = 'none';
-            document.getElementById('topText').style.display = 'none';
-            document.getElementById('bottomText').style.display = 'none';
-            document.getElementById('startTextEnglish').style.display = 'none';
-            document.getElementById('startTextArabic').style.display = 'none';
+            // Do nothing
         } else {
-            document.getElementById('landscape-message').style.display = 'none';
-            document.getElementById('panorama').style.display = 'block';
-
             if (!initialClickHandled) {
                 document.getElementById('topText').style.display = 'block';
                 document.getElementById('bottomText').style.display = 'block';
