@@ -394,6 +394,17 @@
 
     // Initial check
     checkOrientation();
+
+    // Function to detect if the browser is Safari on iOS
+    function isSafariIOS() {
+        var ua = navigator.userAgent;
+        return !!ua.match(/iP(ad|od|hone)/i) && !!ua.match(/WebKit/i) && !ua.match(/CriOS/i);
+    }
+
+    // Apply Safari-specific CSS if on Safari iOS
+    if (isSafariIOS()) {
+        document.documentElement.style.setProperty('--bottom-offset', '240px');
+    }
 </script>
 
 </body>
