@@ -36,7 +36,7 @@
             padding: 10px;
             border-radius: 5px;
             z-index: 1000;
-            font-size: 14px;
+            font-size: 14px !important; /* Forced font size */
             transition: font-size 0.2s ease-in-out;
             max-height: 40%;
             overflow-y: auto;
@@ -63,7 +63,7 @@
             width: 100%;
             text-align: center;
             z-index: 1000;
-            font-size: 22px;
+            font-size: 22px !important; /* Forced font size */
             opacity: 0;
             animation: fadeInOut 2s infinite;
         }
@@ -318,39 +318,24 @@
         setTimeout(() => {
             map.invalidateSize();
             map.setView(currentView.center, currentView.zoom);
-            adjustTextSize();  // Ensure text size adjustment after orientation change
+            forceFontSize();  // Ensure text size adjustment after orientation change
         }, 300);
     });
 
     checkOrientation();
 
-    function adjustTextSize() {
-        var isMobile = /Mobi|Android/i.test(navigator.userAgent);
-        var textSize = 14;
-        if (window.innerWidth < 600 || window.innerHeight < 600) {
-            textSize = 12;
-        }
-        if (isMobile) {
-            textSize = 13;
-        }
+    function forceFontSize() {
         document.querySelectorAll('.top-text, .bottom-text').forEach(function(el) {
-            el.style.fontSize = textSize + 'px';
+            el.style.fontSize = '14px';
         });
 
-        var startTextSize = 22;
-        if (window.innerWidth < 600 || window.innerHeight < 600) {
-            startTextSize = 19;
-        }
-        if (isMobile) {
-            startTextSize = 20;
-        }
         document.querySelectorAll('.start-text-english, .start-text-arabic').forEach(function(el) {
-            el.style.fontSize = startTextSize + 'px';
+            el.style.fontSize = '22px';
         });
     }
 
-    window.addEventListener('resize', adjustTextSize);
-    adjustTextSize();
+    window.addEventListener('resize', forceFontSize);
+    forceFontSize();
 
     if (isMobile()) {
         let lastTap = 0;
