@@ -3,7 +3,7 @@
 <head>
     <title>Panoramic Viewer</title>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, viewport-fit=cover, width=device-width, height=device-height, user-scalable=no, orientation=portrait">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <style>
@@ -209,7 +209,21 @@
         zoom: map.getZoom()
     };
 
-    map.on('click', function(e) {
+    function fadeOutText() {
+        document.getElementById('topText').classList.add('fade-out');
+        document.getElementById('bottomText').classList.add('fade-out');
+        document.getElementById('startTextEnglish').classList.add('fade-out');
+        document.getElementById('startTextArabic').classList.add('fade-out');
+    }
+
+    function fadeInText() {
+        document.getElementById('topText').classList.add('fade-in');
+        document.getElementById('bottomText').classList.add('fade-in');
+        document.getElementById('topText').classList.remove('fade-out');
+        document.getElementById('bottomText').classList.remove('fade-out');
+    }
+
+    function handleInitialClick(e) {
         if (!initialClickHandled) {
             initialClickHandled = true;
 
@@ -230,35 +244,25 @@
                 duration: 4
             });
 
-            // Fade out text elements
-            document.getElementById('topText').classList.add('fade-out');
-            document.getElementById('bottomText').classList.add('fade-out');
-            document.getElementById('startTextEnglish').classList.add('fade-out');
-            document.getElementById('startTextArabic').classList.add('fade-out');
+            fadeOutText();
         }
-    });
+    }
+
+    map.on('click', handleInitialClick);
 
     map.on('zoomend', function() {
         if (map.getZoom() <= map.getMinZoom() + 2) {
-            document.getElementById('topText').classList.remove('fade-out');
-            document.getElementById('topText').classList.add('fade-in');
-            document.getElementById('bottomText').classList.remove('fade-out');
-            document.getElementById('bottomText').classList.add('fade-in');
+            fadeInText();
         } else {
-            document.getElementById('topText').classList.remove('fade-in');
-            document.getElementById('topText').classList.add('fade-out');
-            document.getElementById('bottomText').classList.remove('fade-in');
-            document.getElementById('bottomText').classList.add('fade-out');
+            fadeOutText();
         }
     });
 
-    // Function to detect if the browser is Safari on iOS
     function isSafariIOS() {
         var ua = navigator.userAgent;
         return !!ua.match(/iP(ad|od|hone)/i) && !!ua.match(/WebKit/i) && !ua.match(/CriOS/i);
     }
 
-    // Apply Safari-specific CSS if on Safari iOS
     if (isSafariIOS()) {
         function adjustForIOS() {
             let vh = window.innerHeight;
@@ -268,18 +272,15 @@
             document.body.style.height = `${vh}px`;
             document.getElementById('panorama').style.height = `${vh}px`;
 
-            // Adjust start text position
             document.getElementById('startTextEnglish').style.top = `calc(${vh * 0.485}px - 40px)`;
             document.getElementById('startTextArabic').style.top = `calc(${vh * 0.485}px + 40px)`;
 
-            // Adjust text positions
             document.getElementById('bottomText').style.bottom = `calc(10px + 240px)`;
         }
 
         window.addEventListener('resize', adjustForIOS);
-        adjustForIOS(); // called to initially set the height
+        adjustForIOS();
 
-        // Force recalculation
         function forceRecalculation() {
             window.dispatchEvent(new Event('resize'));
         }
@@ -298,13 +299,9 @@
                 document.getElementById('startTextEnglish').style.display = 'block';
                 document.getElementById('startTextArabic').style.display = 'block';
             } else {
-                document.getElementById('topText').classList.add('fade-out');
-                document.getElementById('bottomText').classList.add('fade-out');
-                document.getElementById('startTextEnglish').classList.add('fade-out');
-                document.getElementById('startTextArabic').classList.add('fade-out');
+                fadeOutText();
             }
             
-            // Restore the previous view after orientation change
             map.setView(currentView.center, currentView.zoom);
         }
     }
@@ -314,19 +311,18 @@
             center: map.getCenter(),
             zoom: map.getZoom()
         };
-        setTimeout(() => checkOrientation(), 300); // Adding a delay to ensure the orientation change is handled
+        setTimeout(() => checkOrientation(), 300);
     });
 
     window.addEventListener('orientationchange', function() {
         setTimeout(() => {
-            map.invalidateSize(); // This helps Leaflet handle the new dimensions correctly
+            map.invalidateSize();
             map.setView(currentView.center, currentView.zoom);
         }, 300);
     });
 
-    checkOrientation(); // Initial check
+    checkOrientation();
 
-    // Adjust text size based on window size
     function adjustTextSize() {
         var isMobile = /Mobi|Android/i.test(navigator.userAgent);
         var textSize = 14;
@@ -353,9 +349,8 @@
     }
 
     window.addEventListener('resize', adjustTextSize);
-    adjustTextSize(); // Initial check
+    adjustTextSize();
 
-    // Add double-tap drag up and down to zoom in and out on mobile
     if (isMobile()) {
         let lastTap = 0;
         let initialY = null;
