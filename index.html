@@ -306,8 +306,16 @@
             center: map.getCenter(),
             zoom: map.getZoom()
         };
-        checkOrientation();
+        setTimeout(() => checkOrientation(), 300); // Adding a delay to ensure the orientation change is handled
     });
+
+    window.addEventListener('orientationchange', function() {
+        setTimeout(() => {
+            map.invalidateSize(); // This helps Leaflet handle the new dimensions correctly
+            map.setView(currentView.center, currentView.zoom);
+        }, 300);
+    });
+
     checkOrientation(); // Initial check
 
     // Adjust text size based on window size
