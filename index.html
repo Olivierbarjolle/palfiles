@@ -3,7 +3,7 @@
 <head>
     <title>Panoramic Viewer</title>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <style>
@@ -12,73 +12,79 @@
         body, html {
             margin: 0;
             padding: 0;
-            font-family: 'Monument Grotesk', sans-serif;
             height: 100%;
             width: 100%;
             overflow: hidden;
             background-color: black;
+            font-family: 'Monument Grotesk', sans-serif;
         }
+
         #panorama {
-            height: 100vh;
-            width: 100vw;
+            height: 100%;
+            width: 100%;
             background-color: black;
         }
+
         .leaflet-container {
             background-color: black;
         }
-        .top-text {
+
+        .top-text, .bottom-text {
             position: absolute;
+            color: white;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+            border-radius: 5px;
+            z-index: 1000;
+            font-size: 14px; /* Reduced by 1 point */
+            transition: font-size 0.2s ease-in-out;
+            max-height: 40%; /* Restrict max height */
+            overflow-y: auto; /* Allow scrolling if content overflows */
+        }
+
+        .top-text {
             top: 10px;
             left: 10px;
-            right: 10px;
-            color: white;
-            background-color: rgba(0, 0, 0, 0.7);
-            padding: 10px;
-            border-radius: 5px;
             text-align: left;
-            width: calc(100% - 20px);
-            z-index: 1000;
-            font-size: 14px; /* Smaller by 1 increment */
-            display: block;
+            width: 80%;
         }
+
         .bottom-text {
-            position: absolute;
-            bottom: 60px; /* Adjusted for spacing */
-            left: 10px;
             right: 10px;
-            color: white;
-            background-color: rgba(0, 0, 0, 0.7);
-            padding: 10px;
-            border-radius: 5px;
             text-align: right;
-            width: calc(100% - 20px);
-            z-index: 1000;
-            font-size: 14px; /* Smaller by 1 increment */
+            width: 80%;
             direction: rtl;
+            bottom: 10px;
         }
+
         .start-text-english, .start-text-arabic {
             position: absolute;
             color: white;
             width: 100%;
             text-align: center;
             z-index: 1000;
-            font-size: 18px;
+            font-size: 22px; /* Reduced by 1 point */
             opacity: 0;
             animation: fadeInOut 2s infinite;
         }
+
         .start-text-english {
-            top: calc(48.75% - 40px); /* Adjusted to 48.75% with -40px offset */
+            top: calc(48.5% - 40px);
         }
+
         .start-text-arabic {
-            top: calc(48.75% + 40px); /* Adjusted to 48.75% with 40px offset */
+            top: calc(48.5% + 40px);
             direction: rtl;
         }
+
         .fade-out {
             animation: fadeOut 1.5s forwards;
         }
+
         .fade-in {
             animation: fadeIn 1.5s forwards;
         }
+
         @keyframes fadeOut {
             from {
                 opacity: 1;
@@ -88,6 +94,7 @@
                 display: none;
             }
         }
+
         @keyframes fadeIn {
             from {
                 opacity: 0;
@@ -97,6 +104,7 @@
                 display: block;
             }
         }
+
         @keyframes fadeInOut {
             0%, 100% {
                 opacity: 0;
@@ -105,22 +113,7 @@
                 opacity: 1;
             }
         }
-        @media (max-height: 800px) {
-            .top-text, .bottom-text {
-                font-size: 12px;
-            }
-            .start-text-english, .start-text-arabic {
-                font-size: 14px;
-            }
-        }
-        @media (max-height: 600px) {
-            .top-text, .bottom-text {
-                font-size: 10px;
-            }
-            .start-text-english, .start-text-arabic {
-                font-size: 12px;
-            }
-        }
+
         #landscape-message {
             display: none;
             position: absolute;
@@ -139,30 +132,25 @@
 </head>
 <body>
 
+<div id="panorama"></div>
 <div class="top-text" id="topText">
     Non-Linear Assembly<br><br>
     In the wake of the Hamas attacks on October 7th, the Israeli Defence Forces have unleashed a devastating campaign on Gaza, killing at least 37,000 Palestinians, including over 15,000 children. The International Court of Justice has condemned the Israeli government's actions, citing crimes such as the starvation of civilians as a weapon of war, murder, extermination, and deliberate attacks on civilians. Despite these findings, numerous Western nations, including the United Kingdom, continue to support this war on the Palestinian people.<br><br>
     In a powerful counter-movement, Londoners have mobilised in a series of fortnightly pro-Palestinian marches. Vilified by parts of the British media and government, these peaceful assemblies actually represent a diverse and peaceful coalition of society. They reflect the impact on global consciousness surrounding the Gaza conflict.<br><br>
     This project is a linear rendering of the pro-Palestinian march that took place in London on January 13, 2024, and an ode to the people that call for compassion, humanity, and peace.
 </div>
-
-<div class="start-text-english" id="startTextEnglish">
-    Click/tap anywhere on the line below to start
-</div>
-
-<div class="start-text-arabic" id="startTextArabic">
-    انقر على السطر للبدء
-</div>
-
 <div class="bottom-text" id="bottomText">
     التجمع غير الخطي<br><br>
     ردًا على هجمات حماس في السابع من تشرين الأول/أكتوبر، ردت قوات الدفاع الإسرائيلية بإلحاق قدر لا يمكن تصوره من الألم والدمار بغزة، مما أسفر عن مقتل ما لا يقل عن سبعة وثلاثين ألف فلسطيني، بما في ذلك أكثر من خمسة عشر طفلاً. وبينما خلصت محكمة العدل الدولية إلى أن الحكومة الإسرائيلية ارتكبت جرائم بما في ذلك تجويع المدنيين كسلاح في الحرب، والقتل والإبادة، والهجمات المتعمدة على المدنيين، فقد دعمت العديد من الدول الغربية، بما في ذلك المملكة المتحدة، هذه الحرب على الشعب الفلسطيني.<br><br>
     ردًا على ذلك، شارك سكان لندن في سلسلة طويلة من مسيرات الدعم الكبيرة المؤيدة للفلسطينيين في جهد متواصل منذ المظاهرة الوطنية الأولى في الرابع عشر من أكتوبر عام ألفين وثلاثة وعشرين. على الرغم من الروايات الإعلامية والحكومية التي تشوه هذه المسيرات باعتبارها هامشية ومزعجة وبغيضة من أجل مواصلة دعمها بلا منازع للحكومة الإسرائيلية، فإن هذه المسيرات تمثل شريحة واسعة من المجتمع متحدة في الاحتجاج السلمي. وهي بمثابة شهادة على التأثير الواسع النطاق للصراع في غزة على الوعي العالمي.<br><br>
     هذا المشروع عبارة عن عرض مكتوب للمسيرة المؤيدة للفلسطينيين التي جرت في لندن في الثالث عشر من يناير عام ألفين وأربعة وعشرين، وقصيدة للشعب الذي يدعو إلى الرحمة والإنسانية والسلام.
 </div>
-
-<div id="panorama"></div>
-
+<div class="start-text-english" id="startTextEnglish">
+    Click/tap anywhere on the line below to start
+</div>
+<div class="start-text-arabic" id="startTextArabic">
+    انقر على السطر للبدء
+</div>
 <div id="landscape-message">Portrait mode only</div>
 
 <script>
@@ -180,10 +168,8 @@
         doubleClickZoom: false,
         attributionControl: false,
         zoomControl: false,
-        inertia: true,
-        inertiaDeceleration: 2000,
-        inertiaMaxSpeed: 1000,
-        inertiaThreshold: 10
+        // Locking the y-axis
+        maxBoundsViscosity: 1.0
     });
 
     function setInitialView() {
@@ -233,7 +219,6 @@
     });
 
     var audioInitialized = false;
-    var clickHandled = false;
     var initialClickHandled = false;
 
     function adjustVolume() {
@@ -256,22 +241,6 @@
             zone.audio.volume = Math.max(0, volume);
             console.log(`Zone audio src: ${zone.audio.src}, volume: ${volume}`);
         });
-    }
-
-    function handleZoomEnd() {
-        var isMobile = /Mobi|Android/i.test(navigator.userAgent);
-        if (!isMobile && map.getZoom() <= map.getMinZoom() + 2) {
-            document.getElementById('topText').classList.remove('fade-out');
-            document.getElementById('topText').classList.add('fade-in');
-            document.getElementById('bottomText').classList.remove('fade-out');
-            document.getElementById('bottomText').classList.add('fade-in');
-            clickHandled = false;
-        } else {
-            document.getElementById('topText').classList.remove('fade-in');
-            document.getElementById('topText').classList.add('fade-out');
-            document.getElementById('bottomText').classList.remove('fade-in');
-            document.getElementById('bottomText').classList.add('fade-out');
-        }
     }
 
     map.on('move', adjustVolume); // Adjust volume continuously as the map moves
@@ -309,17 +278,65 @@
             });
 
             map.once('moveend', function() {
-                clickHandled = true; // Prevent further interactions
                 adjustVolume(); // Ensure volume is adjusted after moving
             });
         }
     });
 
-    // Update volume continuously during the zoom
-    map.on('zoomstart', adjustVolume);
-    map.on('zoomend', adjustVolume);
-    map.on('zoomend', handleZoomEnd); // Handle zoom end to make text reappear
+    map.on('zoomend', function() {
+        if (map.getZoom() <= map.getMinZoom() + 2) {
+            document.getElementById('topText').classList.remove('fade-out');
+            document.getElementById('topText').classList.add('fade-in');
+            document.getElementById('bottomText').classList.remove('fade-out');
+            document.getElementById('bottomText').classList.add('fade-in');
+        } else {
+            document.getElementById('topText').classList.remove('fade-in');
+            document.getElementById('topText').classList.add('fade-out');
+            document.getElementById('bottomText').classList.remove('fade-in');
+            document.getElementById('bottomText').classList.add('fade-out');
+        }
+    });
 
+    // Function to detect if the browser is Safari on iOS
+    function isSafariIOS() {
+        var ua = navigator.userAgent;
+        return !!ua.match(/iP(ad|od|hone)/i) && !!ua.match(/WebKit/i) && !ua.match(/CriOS/i);
+    }
+
+    // Apply Safari-specific CSS if on Safari iOS
+    if (isSafariIOS()) {
+        function adjustForIOS() {
+            let vh = window.innerHeight;
+            if (window.innerHeight > window.innerWidth) {
+                vh -= 240; // Reduce height by 240px for portrait mode
+            }
+            document.body.style.height = `${vh}px`;
+            document.getElementById('panorama').style.height = `${vh}px`;
+
+            // Adjust the map view to ensure it is properly centered
+            var centerLatLng = map.unproject([(TILE_SIZE * TILES_X) / 2, (TILE_SIZE * TILES_Y) / 2], MAX_ZOOM);
+            map.setView(centerLatLng, map.getZoom());
+
+            // Adjust start text position
+            document.getElementById('startTextEnglish').style.top = `calc(${vh * 0.485}px - 40px)`;
+            document.getElementById('startTextArabic').style.top = `calc(${vh * 0.485}px + 40px)`;
+
+            // Adjust text positions
+            document.getElementById('bottomText').style.bottom = `calc(10px + 240px)`;
+        }
+
+        window.addEventListener('resize', adjustForIOS);
+        adjustForIOS(); // called to initially set the height
+
+        // Force recalculation
+        function forceRecalculation() {
+            window.dispatchEvent(new Event('resize'));
+        }
+
+        forceRecalculation();
+    }
+
+    // Display landscape message only on mobile devices
     function checkOrientation() {
         var isMobile = /Mobi|Android/i.test(navigator.userAgent);
         if (isMobile && window.innerHeight < window.innerWidth) {
@@ -332,39 +349,96 @@
         } else {
             document.getElementById('landscape-message').style.display = 'none';
             document.getElementById('panorama').style.display = 'block';
-            if (!initialClickHandled && map.getZoom() <= map.getMinZoom() + 2) {
+
+            if (!initialClickHandled) {
                 document.getElementById('topText').style.display = 'block';
                 document.getElementById('bottomText').style.display = 'block';
                 document.getElementById('startTextEnglish').style.display = 'block';
                 document.getElementById('startTextArabic').style.display = 'block';
+            } else {
+                document.getElementById('topText').classList.add('fade-out');
+                document.getElementById('bottomText').classList.add('fade-out');
+                document.getElementById('startTextEnglish').classList.add('fade-out');
+                document.getElementById('startTextArabic').classList.add('fade-out');
             }
         }
     }
 
-    window.addEventListener('resize', function() {
-        var currentCenter = map.getCenter();
-        var currentZoom = map.getZoom();
-        map.setView(currentCenter, currentZoom);
-        checkOrientation();
-    });
+    window.addEventListener('resize', checkOrientation);
+    checkOrientation(); // Initial check
 
-    window.addEventListener('resizeend', function() {
-        map.setView(currentCenter, currentZoom);
-    });
-
-    // Debounce the resize event to trigger resizeend event
-    (function() {
-        var resizeTimer;
-        window.addEventListener('resize', function() {
-            clearTimeout(resizeTimer);
-            resizeTimer = setTimeout(function() {
-                window.dispatchEvent(new Event('resizeend'));
-            }, 250);
+    // Adjust text size based on window size
+    function adjustTextSize() {
+        var isMobile = /Mobi|Android/i.test(navigator.userAgent);
+        var textSize = 14; // Adjusted font size
+        if (window.innerWidth < 600 || window.innerHeight < 600) {
+            textSize = 12; // Adjusted font size
+        }
+        if (isMobile) {
+            textSize = 13; // Adjusted font size
+        }
+        document.querySelectorAll('.top-text, .bottom-text').forEach(function(el) {
+            el.style.fontSize = textSize + 'px';
         });
-    })();
 
-    // Initial check
-    checkOrientation();
+        var startTextSize = 22; // Adjusted font size
+        if (window.innerWidth < 600 || window.innerHeight < 600) {
+            startTextSize = 19; // Adjusted font size
+        }
+        if (isMobile) {
+            startTextSize = 20; // Adjusted font size
+        }
+        document.querySelectorAll('.start-text-english, .start-text-arabic').forEach(function(el) {
+            el.style.fontSize = startTextSize + 'px';
+        });
+    }
+
+    window.addEventListener('resize', adjustTextSize);
+    adjustTextSize(); // Initial check
+
+    // Add double-tap drag up and down to zoom in and out on mobile
+    function isMobile() {
+        return /Mobi|Android/i.test(navigator.userAgent);
+    }
+
+    if (isMobile()) {
+        let lastTap = 0;
+        let initialY = null;
+        let isZooming = false;
+
+        function onDoubleTapDragStart(event) {
+            const now = Date.now();
+            if (now - lastTap <= 300) {
+                initialY = event.touches[0].clientY;
+                isZooming = true;
+                event.preventDefault();
+            }
+            lastTap = now;
+        }
+
+        function onDoubleTapDragMove(event) {
+            if (isZooming) {
+                const currentY = event.touches[0].clientY;
+                const deltaY = initialY - currentY;
+                const zoomLevel = map.getZoom() + deltaY * 0.01;
+                map.setZoom(zoomLevel);
+                initialY = currentY;
+                event.preventDefault();
+            }
+        }
+
+        function onDoubleTapDragEnd(event) {
+            if (isZooming) {
+                isZooming = false;
+                initialY = null;
+                event.preventDefault();
+            }
+        }
+
+        map.getContainer().addEventListener('touchstart', onDoubleTapDragStart, { passive: false });
+        map.getContainer().addEventListener('touchmove', onDoubleTapDragMove, { passive: false });
+        map.getContainer().addEventListener('touchend', onDoubleTapDragEnd, { passive: false });
+    }
 </script>
 
 </body>
