@@ -28,28 +28,30 @@
         }
         .top-text {
             position: absolute;
-            top: 10px; /* Halved top margin */
-            left: 10px; /* Halved side margin */
+            top: 10px;
+            left: 10px;
+            right: 10px;
             color: white;
             background-color: rgba(0, 0, 0, 0.7);
             padding: 10px;
             border-radius: 5px;
             text-align: left;
-            width: 80%;
+            width: calc(100% - 20px);
             z-index: 1000;
             font-size: 14px; /* Smaller by 1 increment */
             display: block;
         }
         .bottom-text {
             position: absolute;
-            bottom: 80px; /* Increased for bottom margin */
-            right: 10px; /* Halved side margin */
+            bottom: 60px; /* Adjusted for spacing */
+            left: 10px;
+            right: 10px;
             color: white;
             background-color: rgba(0, 0, 0, 0.7);
             padding: 10px;
             border-radius: 5px;
             text-align: right;
-            width: 80%;
+            width: calc(100% - 20px);
             z-index: 1000;
             font-size: 14px; /* Smaller by 1 increment */
             direction: rtl;
@@ -227,7 +229,7 @@
         zone.audio.loop = true;
         zone.audio.volume = 0;
         zone.audio.load();
-        console.log(Loaded audio file for zone: ${zone.audio.src});
+        console.log(`Loaded audio file for zone: ${zone.audio.src}`);
     });
 
     var audioInitialized = false;
@@ -252,13 +254,13 @@
             }
 
             zone.audio.volume = Math.max(0, volume);
-            console.log(Zone audio src: ${zone.audio.src}, volume: ${volume});
+            console.log(`Zone audio src: ${zone.audio.src}, volume: ${volume}`);
         });
     }
 
     function handleZoomEnd() {
         var isMobile = /Mobi|Android/i.test(navigator.userAgent);
-        if (map.getZoom() <= map.getMinZoom() + 2) {
+        if (!isMobile && map.getZoom() <= map.getMinZoom() + 2) {
             document.getElementById('topText').classList.remove('fade-out');
             document.getElementById('topText').classList.add('fade-in');
             document.getElementById('bottomText').classList.remove('fade-out');
