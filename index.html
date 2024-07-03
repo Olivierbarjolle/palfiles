@@ -36,7 +36,7 @@
             padding: 10px;
             border-radius: 5px;
             z-index: 1000;
-            font-size: 15px; /* Reduced by 1 point */
+            font-size: 14px; /* Reduced by 1 point */
             transition: font-size 0.2s ease-in-out;
             max-height: 40%; /* Restrict max height */
             overflow-y: auto; /* Allow scrolling if content overflows */
@@ -63,9 +63,18 @@
             width: 100%;
             text-align: center;
             z-index: 1000;
-            font-size: 23px; /* Reduced by 1 point */
+            font-size: 22px; /* Reduced by 1 point */
             opacity: 0;
             animation: fadeInOut 2s infinite;
+        }
+
+        .start-text-english {
+            top: calc(48.5% - 40px);
+        }
+
+        .start-text-arabic {
+            top: calc(48.5% + 40px);
+            direction: rtl;
         }
 
         .fade-out {
@@ -276,10 +285,18 @@
         } else {
             document.getElementById('landscape-message').style.display = 'none';
             document.getElementById('panorama').style.display = 'block';
-            document.getElementById('topText').style.display = 'block';
-            document.getElementById('bottomText').style.display = 'block';
-            document.getElementById('startTextEnglish').style.display = 'block';
-            document.getElementById('startTextArabic').style.display = 'block';
+
+            if (!initialClickHandled) {
+                document.getElementById('topText').style.display = 'block';
+                document.getElementById('bottomText').style.display = 'block';
+                document.getElementById('startTextEnglish').style.display = 'block';
+                document.getElementById('startTextArabic').style.display = 'block';
+            } else {
+                document.getElementById('topText').classList.add('fade-out');
+                document.getElementById('bottomText').classList.add('fade-out');
+                document.getElementById('startTextEnglish').classList.add('fade-out');
+                document.getElementById('startTextArabic').classList.add('fade-out');
+            }
         }
     }
 
@@ -289,23 +306,23 @@
     // Adjust text size based on window size
     function adjustTextSize() {
         var isMobile = /Mobi|Android/i.test(navigator.userAgent);
-        var textSize = 15; // Adjusted font size
+        var textSize = 14; // Adjusted font size
         if (window.innerWidth < 600 || window.innerHeight < 600) {
             textSize = 12; // Adjusted font size
         }
         if (isMobile) {
-            textSize = 14; // Adjusted font size
+            textSize = 13; // Adjusted font size
         }
         document.querySelectorAll('.top-text, .bottom-text').forEach(function(el) {
             el.style.fontSize = textSize + 'px';
         });
 
-        var startTextSize = 23; // Adjusted font size
+        var startTextSize = 22; // Adjusted font size
         if (window.innerWidth < 600 || window.innerHeight < 600) {
             startTextSize = 19; // Adjusted font size
         }
         if (isMobile) {
-            startTextSize = 21; // Adjusted font size
+            startTextSize = 20; // Adjusted font size
         }
         document.querySelectorAll('.start-text-english, .start-text-arabic').forEach(function(el) {
             el.style.fontSize = startTextSize + 'px';
