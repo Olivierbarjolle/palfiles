@@ -269,7 +269,7 @@
 
             // Check if the device is mobile
             if (/Mobi|Android/i.test(navigator.userAgent)) {
-                zoomLevel -= 1; // Zoom one level less on mobile
+                zoomLevel += 1; // Zoom one level more on mobile
             }
 
             map.flyTo(centerLatLng, zoomLevel, {
