@@ -221,23 +221,6 @@
     var audioInitialized = false;
     var initialClickHandled = false;
 
-    function fadeVolume(audio, targetVolume, duration) {
-        const stepTime = 50;
-        const steps = duration / stepTime;
-        const volumeChange = (targetVolume - audio.volume) / steps;
-        
-        let step = 0;
-        const fade = setInterval(() => {
-            if (step++ < steps) {
-                audio.volume += volumeChange;
-                if (audio.volume < 0) audio.volume = 0;
-                if (audio.volume > 1) audio.volume = 1;
-            } else {
-                clearInterval(fade);
-            }
-        }, stepTime);
-    }
-
     function adjustVolume() {
         var centerLng = map.getCenter().lng * TILE_SIZE;
         var zoomLevel = map.getZoom();
@@ -255,7 +238,17 @@
                 }
             }
 
-            fadeVolume(zone.audio, Math.max(0, volume), 500);
+            // Ensure the volume is applied correctly for iOS Safari
+            zone.audio.volume = Math.max(0, volume);
+            if (volume > 0) {
+                if (zone.audio.paused) {
+                    zone.audio.play().catch(error => {
+                        console.error("Audio playback failed:", error);
+                    });
+                }
+            } else {
+                zone.audio.pause();
+            }
             console.log(`Zone audio src: ${zone.audio.src}, volume: ${volume}`);
         });
     }
