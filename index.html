@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -192,35 +193,7 @@
     انقر على السطر للبدء
 </div>
 <div id="landscape-message">Portrait mode only</div>
-<!-- Android Firefox specific bottom space -->
-<div id="androidFirefoxSpace" class="android-firefox-bottom-space"></div>
 
-<script>
-    // Function to detect the browser and apply specific styles for Android Chrome and Android Firefox
-    function detectBrowserAndApplyStyles() {
-        var userAgent = navigator.userAgent;
-
-        // Detect Android Chrome
-        var isAndroidChrome = /Android/i.test(userAgent) && /Chrome/i.test(userAgent);
-
-        // Detect Android Firefox
-        var isAndroidFirefox = /Android/i.test(userAgent) && /Firefox/i.test(userAgent);
-
-        // Apply text size reduction for Android Chrome
-        if (isAndroidChrome) {
-            document.getElementById('topText').style.transform = 'scale(0.5)';
-            document.getElementById('bottomText').style.transform = 'scale(0.5)';
-            document.getElementById('startTextEnglish').style.transform = 'scale(0.5)';
-            document.getElementById('startTextArabic').style.transform = 'scale(0.5)';
-        }
-
-        // Apply bottom space for Android Firefox
-        if (isAndroidFirefox) {
-            document.getElementById('androidFirefoxSpace').style.display = 'block';
-        }
-    }
-
-    window.addEventListener('load', detectBrowserAndApplyStyles);
 <script>
     var TILE_SIZE = 256;
     var MAX_ZOOM = 12;
