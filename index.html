@@ -419,10 +419,10 @@
         var isMobile = /Mobi|Android/i.test(navigator.userAgent);
         var textSize = 14;
         if (window.innerWidth < 600 || window.innerHeight < 600) {
-            textSize = 12;
+            textSize = 10;
         }
         if (isMobile) {
-            textSize = 13;
+            textSize = 11;
         }
         document.querySelectorAll('.top-text, .bottom-text').forEach(function(el) {
             el.style.fontSize = textSize + 'px';
@@ -430,10 +430,10 @@
 
         var startTextSize = 22;
         if (window.innerWidth < 600 || window.innerHeight < 600) {
-            startTextSize = 19;
+            startTextSize = 17;
         }
         if (isMobile) {
-            startTextSize = 20;
+            startTextSize = 18;
         }
         document.querySelectorAll('.start-text-english, .start-text-arabic').forEach(function(el) {
             el.style.fontSize = startTextSize + 'px';
