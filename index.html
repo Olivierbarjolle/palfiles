@@ -23,6 +23,9 @@
             height: 100%;
             width: 100%;
             background-color: black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .leaflet-container {
@@ -131,61 +134,55 @@
 
         @media (max-width: 600px) {
             .top-text, .bottom-text {
-                font-size: 12px;
+                font-size: 13px; /* Increased by 1 point */
             }
 
             .start-text-english, .start-text-arabic {
-                font-size: 18px;
+                font-size: 19px; /* Increased by 1 point */
             }
         }
 
         @media (max-width: 400px) {
             .top-text, .bottom-text {
-                font-size: 10px;
+                font-size: 11px; /* Increased by 1 point */
             }
 
             .start-text-english, .start-text-arabic {
-                font-size: 16px;
+                font-size: 17px; /* Increased by 1 point */
             }
         }
 
         @media (min-height: 600px) {
             .top-text, .bottom-text {
-                font-size: 14px;
+                font-size: 15px; /* Increased by 1 point */
             }
 
             .start-text-english, .start-text-arabic {
-                font-size: 22px;
+                font-size: 23px; /* Increased by 1 point */
             }
         }
 
         @media (min-height: 800px) {
             .top-text, .bottom-text {
-                font-size: 16px;
+                font-size: 17px; /* Increased by 1 point */
             }
 
             .start-text-english, .start-text-arabic {
-                font-size: 24px;
+                font-size: 25px; /* Increased by 1 point */
             }
         }
 
-        /* Default CSS for all browsers */
-        body, html, #panorama {
-            height: 100%;
-        }
-
-        /* Custom CSS for Chrome on Android - make panorama 5 times taller */
-        .chrome-android #panorama {
-            height: 500%; /* Set panorama height to 5 times taller for Chrome on Android */
-        }
-
         /* Custom CSS for Chrome on Android */
+        .chrome-android #panorama {
+            min-height: 100vh; /* Set to make the panorama occupy at least the full viewport height */
+        }
+
         .chrome-android .top-text, .chrome-android .bottom-text {
-            font-size: 7px !important;
+            font-size: 13px !important; /* Increase by 1 point */
         }
 
         .chrome-android .start-text-english, .chrome-android .start-text-arabic {
-            font-size: 11px !important;
+            font-size: 19px !important; /* Increase by 1 point */
         }
     </style>
 </head>
