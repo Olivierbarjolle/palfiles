@@ -169,16 +169,27 @@
             }
         }
 
+        /* Default CSS for all browsers */
+        body, html, #panorama {
+            height: 100%;
+        }
+
         /* Custom CSS for Chrome on Android */
-        @media screen and (-webkit-min-device-pixel-ratio:0) and (min-device-width: 320px) and (max-device-width: 720px) and (min-resolution: 1.5dppx) {
-            @supports (-webkit-overflow-scrolling: touch) {
-                .top-text, .bottom-text {
-                    font-size: 7px; /* Reduced by half */
-                }
-                .start-text-english, .start-text-arabic {
-                    font-size: 11px; /* Reduced by half */
-                }
-            }
+        .chrome-android .top-text, .chrome-android .bottom-text {
+            font-size: 7px !important;
+        }
+
+        .chrome-android .start-text-english, .chrome-android .start-text-arabic {
+            font-size: 11px !important;
+        }
+
+        /* Custom CSS for Firefox on Android */
+        .firefox-android .top-text, .firefox-android .bottom-text {
+            font-size: 28px !important;
+        }
+
+        .firefox-android .start-text-english, .firefox-android .start-text-arabic {
+            font-size: 44px !important;
         }
     </style>
 </head>
@@ -352,6 +363,22 @@
         }
     });
 
+    function isChromeAndroid() {
+        return /Chrome/.test(navigator.userAgent) && /Android/.test(navigator.userAgent);
+    }
+
+    function isFirefoxAndroid() {
+        return /Firefox/.test(navigator.userAgent) && /Android/.test(navigator.userAgent);
+    }
+
+    if (isChromeAndroid()) {
+        document.body.classList.add('chrome-android');
+    }
+
+    if (isFirefoxAndroid()) {
+        document.body.classList.add('firefox-android');
+    }
+
     function isSafariIOS() {
         var ua = navigator.userAgent;
         return !!ua.match(/iP(ad|od|hone)/i) && !!ua.match(/WebKit/i) && !ua.match(/CriOS/i);
@@ -414,77 +441,6 @@
 
     window.addEventListener('resize', checkOrientation);
     checkOrientation();
-
-    function adjustTextSize() {
-        var isMobile = /Mobi|Android/i.test(navigator.userAgent);
-        var textSize = 14;
-        if (window.innerWidth < 600 || window.innerHeight < 600) {
-            textSize = 10;
-        }
-        if (isMobile) {
-            textSize = 11;
-        }
-        document.querySelectorAll('.top-text, .bottom-text').forEach(function(el) {
-            el.style.fontSize = textSize + 'px';
-        });
-
-        var startTextSize = 22;
-        if (window.innerWidth < 600 || window.innerHeight < 600) {
-            startTextSize = 17;
-        }
-        if (isMobile) {
-            startTextSize = 18;
-        }
-        document.querySelectorAll('.start-text-english, .start-text-arabic').forEach(function(el) {
-            el.style.fontSize = startTextSize + 'px';
-        });
-    }
-
-    window.addEventListener('resize', adjustTextSize);
-    adjustTextSize();
-
-    function isMobile() {
-        return /Mobi|Android/i.test(navigator.userAgent);
-    }
-
-    if (isMobile()) {
-        let lastTap = 0;
-        let initialY = null;
-        let isZooming = false;
-
-        function onDoubleTapDragStart(event) {
-            const now = Date.now();
-            if (now - lastTap <= 300) {
-                initialY = event.touches[0].clientY;
-                isZooming = true;
-                event.preventDefault();
-            }
-            lastTap = now;
-        }
-
-        function onDoubleTapDragMove(event) {
-            if (isZooming) {
-                const currentY = event.touches[0].clientY;
-                const deltaY = initialY - currentY;
-                const zoomLevel = map.getZoom() + deltaY * 0.01;
-                map.setZoom(zoomLevel);
-                initialY = currentY;
-                event.preventDefault();
-            }
-        }
-
-        function onDoubleTapDragEnd(event) {
-            if (isZooming) {
-                isZooming = false;
-                initialY = null;
-                event.preventDefault();
-            }
-        }
-
-        map.getContainer().addEventListener('touchstart', onDoubleTapDragStart, { passive: false });
-        map.getContainer().addEventListener('touchmove', onDoubleTapDragMove, { passive: false });
-        map.getContainer().addEventListener('touchend', onDoubleTapDragEnd, { passive: false });
-    }
 </script>
 
 </body>
