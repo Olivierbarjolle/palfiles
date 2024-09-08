@@ -131,18 +131,44 @@
             border-radius: 10px;
         }
 
-        /* Custom CSS for Chrome on Android */
-        .chrome-android #panorama {
-            min-height: 100vh !important; /* Ensure the panorama takes full height of the viewport */
-            visibility: visible !important; /* Force visibility */
+        /* Default (applies to desktop/computer) */
+        body:not(.safari-ios):not(.chrome-android):not(.firefox-android) .top-text, 
+        body:not(.safari-ios):not(.chrome-android):not(.firefox-android) .bottom-text,
+        body:not(.safari-ios):not(.chrome-android):not(.firefox-android) .start-text-english,
+        body:not(.safari-ios):not(.chrome-android):not(.firefox-android) .start-text-arabic {
+            font-size: 15px !important; /* Increase by 1 point on computers */
         }
 
+        /* Custom CSS for Chrome on Android - decrease by 1 point */
         .chrome-android .top-text, .chrome-android .bottom-text {
-            font-size: 15px !important; /* Increase by 1 point on Android Chrome only */
+            font-size: 13px !important;
         }
 
         .chrome-android .start-text-english, .chrome-android .start-text-arabic {
-            font-size: 23px !important; /* Increase by 1 point on Android Chrome only */
+            font-size: 21px !important;
+        }
+
+        .chrome-android #panorama {
+            min-height: 100vh !important;
+            visibility: visible !important; /* Ensure panorama is visible */
+        }
+
+        /* Custom CSS for Firefox on Android - increase by 1 point */
+        .firefox-android .top-text, .firefox-android .bottom-text {
+            font-size: 15px !important;
+        }
+
+        .firefox-android .start-text-english, .firefox-android .start-text-arabic {
+            font-size: 23px !important;
+        }
+
+        /* Custom CSS for Safari on iPhone (keep text size the same) */
+        .safari-ios .top-text, .safari-ios .bottom-text {
+            font-size: 14px !important;
+        }
+
+        .safari-ios .start-text-english, .safari-ios .start-text-arabic {
+            font-size: 22px !important;
         }
     </style>
 </head>
@@ -320,8 +346,8 @@
         return /Chrome/.test(navigator.userAgent) && /Android/.test(navigator.userAgent);
     }
 
-    if (isChromeAndroid()) {
-        document.body.classList.add('chrome-android');
+    function isFirefoxAndroid() {
+        return /Firefox/.test(navigator.userAgent) && /Android/.test(navigator.userAgent);
     }
 
     function isSafariIOS() {
@@ -329,32 +355,16 @@
         return !!ua.match(/iP(ad|od|hone)/i) && !!ua.match(/WebKit/i) && !ua.match(/CriOS/i);
     }
 
+    if (isChromeAndroid()) {
+        document.body.classList.add('chrome-android');
+    }
+
+    if (isFirefoxAndroid()) {
+        document.body.classList.add('firefox-android');
+    }
+
     if (isSafariIOS()) {
-        function adjustForIOS() {
-            let vh = window.innerHeight;
-            if (window.innerHeight > window.innerWidth) {
-                vh -= 240;
-            }
-            document.body.style.height = `${vh}px`;
-            document.getElementById('panorama').style.height = `${vh}px`;
-
-            var centerLatLng = map.unproject([(TILE_SIZE * TILES_X) / 2, (TILE_SIZE * TILES_Y) / 2], MAX_ZOOM);
-            map.setView(centerLatLng, map.getZoom());
-
-            document.getElementById('startTextEnglish').style.top = `calc(${vh * 0.485}px - 40px)`;
-            document.getElementById('startTextArabic').style.top = `calc(${vh * 0.485}px + 40px)`;
-
-            document.getElementById('bottomText').style.bottom = `calc(10px + 240px)`;
-        }
-
-        window.addEventListener('resize', adjustForIOS);
-        adjustForIOS();
-
-        function forceRecalculation() {
-            window.dispatchEvent(new Event('resize'));
-        }
-
-        forceRecalculation();
+        document.body.classList.add('safari-ios');
     }
 
     function checkOrientation() {
