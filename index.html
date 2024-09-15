@@ -337,6 +337,14 @@
         }
     });
 
+    // Overriding zoom behavior to fix Y-coordinate interaction to the center of the panorama
+    map.on('zoomanim', function(e) {
+        var currentCenter = map.getCenter();
+        var fixedY = (TILE_SIZE * TILES_Y) / 2;
+        var newCenter = L.latLng(fixedY, currentCenter.lng);
+        map.panTo(newCenter, { animate: false });
+    });
+
     map.on('zoomend', function() {
         if (map.getZoom() <= map.getMinZoom() + 2) {
             document.getElementById('topText').classList.remove('fade-out');
