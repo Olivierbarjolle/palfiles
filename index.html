@@ -1,12 +1,16 @@
-
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Panoramic Viewer</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Panoramic Viewer</title>
+
+    <!-- Leaflet and Plugins -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-doubletapdrag"></script>
+    <script src="https://unpkg.com/leaflet-doubletapdragzoom"></script>
+
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Monument+Grotesk:wght@300;400;500;600;700;800;900&display=swap');
 
@@ -176,15 +180,11 @@
 <div id="panorama"></div>
 <div class="top-text" id="topText">
     Non-Linear Assembly<br><br>
-    In the wake of the Hamas attacks on October 7th, the Israeli Defence Forces have unleashed a devastating campaign on Gaza, killing at least 37,000 Palestinians, including over 15,000 children. The International Court of Justice has condemned the Israeli government's actions, citing crimes such as the starvation of civilians as a weapon of war, murder, extermination, and deliberate attacks on civilians. Despite these findings, numerous Western nations, including the United Kingdom, continue to support this war on the Palestinian people.<br><br>
-    In a powerful counter-movement, Londoners have mobilised in a series of fortnightly pro-Palestinian marches. Vilified by parts of the British media and government, these peaceful assemblies actually represent a diverse and peaceful coalition of society. They reflect the impact on global consciousness surrounding the Gaza conflict.<br><br>
-    This project is a linear rendering of the pro-Palestinian march that took place in London on January 13, 2024, and an ode to the people that call for compassion, humanity, and peace.
+    In the wake of the Hamas attacks on October 7th, the Israeli Defence Forces have unleashed a devastating campaign on Gaza, killing at least 37,000 Palestinians, including over 15,000 children...
 </div>
 <div class="bottom-text" id="bottomText">
     التجمع غير الخطي<br><br>
-    ردًا على هجمات حماس في السابع من تشرين الأول/أكتوبر، ردت قوات الدفاع الإسرائيلية بإلحاق قدر لا يمكن تصوره من الألم والدمار بغزة، مما أسفر عن مقتل ما لا يقل عن سبعة وثلاثين ألف فلسطيني، بما في ذلك أكثر من خمسة عشر طفلاً. وبينما خلصت محكمة العدل الدولية إلى أن الحكومة الإسرائيلية ارتكبت جرائم بما في ذلك تجويع المدنيين كسلاح في الحرب، والقتل والإبادة، والهجمات المتعمدة على المدنيين، فقد دعمت العديد من الدول الغربية، بما في ذلك المملكة المتحدة، هذه الحرب على الشعب الفلسطيني.<br><br>
-    ردًا على ذلك، شارك سكان لندن في سلسلة طويلة من مسيرات الدعم الكبيرة المؤيدة للفلسطينيين في جهد متواصل منذ المظاهرة الوطنية الأولى في الرابع عشر من أكتوبر عام ألفين وثلاثة وعشرين. على الرغم من الروايات الإعلامية والحكومية التي تشوه هذه المسيرات باعتبارها هامشية ومزعجة وبغيضة من أجل مواصلة دعمها بلا منازع للحكومة الإسرائيلية، فإن هذه المسيرات تمثل شريحة واسعة من المجتمع متحدة في الاحتجاج السلمي. وهي بمثابة شهادة على التأثير الواسع النطاق للصراع في غزة على الوعي العالمي.<br><br>
-    هذا المشروع عبارة عن عرض مكتوب للمسيرة المؤيدة للفلسطينيين التي جرت في لندن في الثالث عشر من يناير عام ألفين وأربعة وعشرين، وقصيدة للشعب الذي يدعو إلى الرحمة والإنسانية والسلام.
+    ردًا على هجمات حماس في السابع من تشرين الأول/أكتوبر...
 </div>
 <div class="start-text-english" id="startTextEnglish">
     Click/tap anywhere on the line below to start
@@ -209,8 +209,10 @@
         doubleClickZoom: false,
         attributionControl: false,
         zoomControl: false,
-        // Locking the y-axis
-        maxBoundsViscosity: 1.0
+        doubleTapDragZoom: 'center', // Enable double-tap-drag zoom with center zooming
+        doubleTapDragZoomOptions: {
+            reverse: false  // Normal zoom behavior
+        }
     });
 
     function setInitialView() {
@@ -279,7 +281,6 @@
                 }
             }
 
-            // Ensure the volume is applied correctly for iOS Safari
             if (volume > 0) {
                 if (zone.audio.paused) {
                     zone.audio.play().catch(error => {
@@ -300,10 +301,10 @@
     map.on('click', function(e) {
         if (!initialClickHandled) {
             initialClickHandled = true;
-            document.getElementById('topText').classList.add('fade-out'); // Trigger fade out for top text
-            document.getElementById('bottomText').classList.add('fade-out'); // Trigger fade out for bottom text
-            document.getElementById('startTextEnglish').classList.add('fade-out'); // Trigger fade out for English start text
-            document.getElementById('startTextArabic').classList.add('fade-out'); // Trigger fade out for Arabic start text
+            document.getElementById('topText').classList.add('fade-out'); 
+            document.getElementById('bottomText').classList.add('fade-out'); 
+            document.getElementById('startTextEnglish').classList.add('fade-out'); 
+            document.getElementById('startTextArabic').classList.add('fade-out'); 
 
             if (!audioInitialized) {
                 audioInitialized = true;
@@ -314,7 +315,6 @@
             var centerLatLng = map.unproject([centerLng, (TILE_SIZE * TILES_Y) / 2], MAX_ZOOM);
             var zoomLevel = MAX_ZOOM - 1;
 
-            // Check if the device is mobile
             if (/Mobi|Android/i.test(navigator.userAgent)) {
                 zoomLevel += 1; // Zoom one level more on mobile
             }
@@ -344,38 +344,33 @@
         }
     });
 
-    // Function to detect if the browser is Safari on iOS
+    // Detect if the browser is Safari on iOS
     function isSafariIOS() {
         var ua = navigator.userAgent;
         return !!ua.match(/iP(ad|od|hone)/i) && !!ua.match(/WebKit/i) && !ua.match(/CriOS/i);
     }
 
-    // Apply Safari-specific CSS if on Safari iOS
     if (isSafariIOS()) {
         function adjustForIOS() {
             let vh = window.innerHeight;
             if (window.innerHeight > window.innerWidth) {
-                vh -= 240; // Reduce height by 240px for portrait mode
+                vh -= 240;
             }
             document.body.style.height = `${vh}px`;
             document.getElementById('panorama').style.height = `${vh}px`;
 
-            // Adjust the map view to ensure it is properly centered
             var centerLatLng = map.unproject([(TILE_SIZE * TILES_X) / 2, (TILE_SIZE * TILES_Y) / 2], MAX_ZOOM);
             map.setView(centerLatLng, map.getZoom());
 
-            // Adjust start text position
             document.getElementById('startTextEnglish').style.top = `calc(${vh * 0.485}px - 40px)`;
             document.getElementById('startTextArabic').style.top = `calc(${vh * 0.485}px + 40px)`;
 
-            // Adjust text positions
             document.getElementById('bottomText').style.bottom = `calc(10px + 240px)`;
         }
 
         window.addEventListener('resize', adjustForIOS);
-        adjustForIOS(); // called to initially set the height
+        adjustForIOS();
 
-        // Force recalculation
         function forceRecalculation() {
             window.dispatchEvent(new Event('resize'));
         }
@@ -412,28 +407,28 @@
     }
 
     window.addEventListener('resize', checkOrientation);
-    checkOrientation(); // Initial check
+    checkOrientation();
 
     // Adjust text size based on window size
     function adjustTextSize() {
         var isMobile = /Mobi|Android/i.test(navigator.userAgent);
-        var textSize = 14; // Adjusted font size
+        var textSize = 14;
         if (window.innerWidth < 600 || window.innerHeight < 600) {
-            textSize = 12; // Adjusted font size
+            textSize = 12;
         }
         if (isMobile) {
-            textSize = 13; // Adjusted font size
+            textSize = 13;
         }
         document.querySelectorAll('.top-text, .bottom-text').forEach(function(el) {
             el.style.fontSize = textSize + 'px';
         });
 
-        var startTextSize = 22; // Adjusted font size
+        var startTextSize = 22;
         if (window.innerWidth < 600 || window.innerHeight < 600) {
-            startTextSize = 19; // Adjusted font size
+            startTextSize = 19;
         }
         if (isMobile) {
-            startTextSize = 20; // Adjusted font size
+            startTextSize = 20;
         }
         document.querySelectorAll('.start-text-english, .start-text-arabic').forEach(function(el) {
             el.style.fontSize = startTextSize + 'px';
@@ -441,51 +436,7 @@
     }
 
     window.addEventListener('resize', adjustTextSize);
-    adjustTextSize(); // Initial check
-
-    // Add double-tap drag up and down to zoom in and out on mobile
-    function isMobile() {
-        return /Mobi|Android/i.test(navigator.userAgent);
-    }
-
-    if (isMobile()) {
-        let lastTap = 0;
-        let initialY = null;
-        let isZooming = false;
-
-        function onDoubleTapDragStart(event) {
-            const now = Date.now();
-            if (now - lastTap <= 300) {
-                initialY = event.touches[0].clientY;
-                isZooming = true;
-                event.preventDefault();
-            }
-            lastTap = now;
-        }
-
-        function onDoubleTapDragMove(event) {
-            if (isZooming) {
-                const currentY = event.touches[0].clientY;
-                const deltaY = initialY - currentY;
-                const zoomLevel = map.getZoom() + deltaY * 0.01;
-                map.setZoom(zoomLevel);
-                initialY = currentY;
-                event.preventDefault();
-            }
-        }
-
-        function onDoubleTapDragEnd(event) {
-            if (isZooming) {
-                isZooming = false;
-                initialY = null;
-                event.preventDefault();
-            }
-        }
-
-        map.getContainer().addEventListener('touchstart', onDoubleTapDragStart, { passive: false });
-        map.getContainer().addEventListener('touchmove', onDoubleTapDragMove, { passive: false });
-        map.getContainer().addEventListener('touchend', onDoubleTapDragEnd, { passive: false });
-    }
+    adjustTextSize();
 </script>
 
 </body>
