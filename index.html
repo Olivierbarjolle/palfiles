@@ -231,11 +231,20 @@
 
     setInitialView();
 
+    // Ensure the map container resizes properly on all devices, including Chrome for Android
+    function refreshMapSize() {
+        map.invalidateSize(); // Forces Leaflet to recalculate map size after load
+    }
+
+    // Adding tiles with cross-origin handling
     L.tileLayer('https://chipper-sunflower-e51e1a.netlify.app/tiles/tile_z{z}_x{x}_y{y}.jpg', {
         maxZoom: MAX_ZOOM,
         noWrap: true,
         crossOrigin: true // Allowing cross-origin requests for images to work on Chrome/Android
     }).addTo(map);
+
+    // Refresh map size after a short delay to handle load issues on mobile Chrome
+    setTimeout(refreshMapSize, 1000);
 
     var audioFiles = [
         'https://chipper-sunflower-e51e1a.netlify.app/audio/1.mp3',
