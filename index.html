@@ -205,10 +205,15 @@
     var TILES_Y = 4;
     var FADE_DISTANCE = 5 * TILE_SIZE;
 
+    // Detect Chrome on Android
+    var isChromeAndroid = /Android/i.test(navigator.userAgent) && /Chrome/i.test(navigator.userAgent);
+
+    var initialZoomLevel = isChromeAndroid ? 4 : 2;  // Zoom in more for Chrome on Android
+
     var map = L.map('panorama', {
         minZoom: 2,
         maxZoom: MAX_ZOOM,
-        zoom: 2,
+        zoom: initialZoomLevel,  // Use adjusted initial zoom for Android Chrome
         crs: L.CRS.Simple,
         doubleClickZoom: false,
         attributionControl: false,
@@ -226,25 +231,16 @@
         );
         map.setMaxBounds(bounds);
         var centerLatLng = map.unproject([(TILE_SIZE * TILES_X) / 2, (TILE_SIZE * TILES_Y) / 2], MAX_ZOOM);
-        map.setView(centerLatLng, 2);
+        map.setView(centerLatLng, initialZoomLevel);
     }
 
     setInitialView();
 
-    // Ensure the map container resizes properly on all devices, including Chrome for Android
-    function refreshMapSize() {
-        map.invalidateSize(); // Forces Leaflet to recalculate map size after load
-    }
-
-    // Adding tiles with cross-origin handling
     L.tileLayer('https://chipper-sunflower-e51e1a.netlify.app/tiles/tile_z{z}_x{x}_y{y}.jpg', {
         maxZoom: MAX_ZOOM,
         noWrap: true,
         crossOrigin: true // Allowing cross-origin requests for images to work on Chrome/Android
     }).addTo(map);
-
-    // Refresh map size after a short delay to handle load issues on mobile Chrome
-    setTimeout(refreshMapSize, 1000);
 
     var audioFiles = [
         'https://chipper-sunflower-e51e1a.netlify.app/audio/1.mp3',
