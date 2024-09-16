@@ -180,15 +180,11 @@
 <div id="panorama"></div>
 <div class="top-text" id="topText">
     Non-Linear Assembly<br><br>
-    In the wake of the Hamas attacks on October 7th, the Israeli Defence Forces have unleashed a devastating campaign on Gaza, killing at least 37,000 Palestinians, including over 15,000 children. The International Court of Justice has condemned the Israeli government's actions, citing crimes such as the starvation of civilians as a weapon of war, murder, extermination, and deliberate attacks on civilians. Despite these findings, numerous Western nations, including the United Kingdom, continue to support this war on the Palestinian people.<br><br>
-    In a powerful counter-movement, Londoners have mobilised in a series of fortnightly pro-Palestinian marches. Vilified by parts of the British media and government, these peaceful assemblies actually represent a diverse and peaceful coalition of society. They reflect the impact on global consciousness surrounding the Gaza conflict.<br><br>
-    This project is a linear rendering of the pro-Palestinian march that took place in London on January 13, 2024, and an ode to the people that call for compassion, humanity, and peace.
+    In the wake of the Hamas attacks on October 7th, the Israeli Defence Forces have unleashed a devastating campaign on Gaza, killing at least 37,000 Palestinians, including over 15,000 children...
 </div>
 <div class="bottom-text" id="bottomText">
     التجمع غير الخطي<br><br>
-    ردًا على هجمات حماس في السابع من تشرين الأول/أكتوبر، ردت قوات الدفاع الإسرائيلية بإلحاق قدر لا يمكن تصوره من الألم والدمار بغزة، مما أسفر عن مقتل ما لا يقل عن سبعة وثلاثين ألف فلسطيني، بما في ذلك أكثر من خمسة عشر طفلاً. وبينما خلصت محكمة العدل الدولية إلى أن الحكومة الإسرائيلية ارتكبت جرائم بما في ذلك تجويع المدنيين كسلاح في الحرب، والقتل والإبادة، والهجمات المتعمدة على المدنيين، فقد دعمت العديد من الدول الغربية، بما في ذلك المملكة المتحدة، هذه الحرب على الشعب الفلسطيني.<br><br>
-    ردًا على ذلك، شارك سكان لندن في سلسلة طويلة من مسيرات الدعم الكبيرة المؤيدة للفلسطينيين في جهد متواصل منذ المظاهرة الوطنية الأولى في الرابع عشر من أكتوبر عام ألفين وثلاثة وعشرين. على الرغم من الروايات الإعلامية والحكومية التي تشوه هذه المسيرات باعتبارها هامشية ومزعجة وبغيضة من أجل مواصلة دعمها بلا منازع للحكومة الإسرائيلية، فإن هذه المسيرات تمثل شريحة واسعة من المجتمع متحدة في الاحتجاج السلمي. وهي بمثابة شهادة على التأثير الواسع النطاق للصراع في غزة على الوعي العالمي.<br><br>
-    هذا المشروع عبارة عن عرض مكتوب للمسيرة المؤيدة للفلسطينيين التي جرت في لندن في الثالث عشر من يناير عام ألفين وأربعة وعشرين، وقصيدة للشعب الذي يدعو إلى الرحمة والإنسانية والسلام.
+    ردًا على هجمات حماس في السابع من تشرين الأول/أكتوبر، ردت قوات الدفاع الإسرائيلية بإلحاق قدر لا يمكن تصوره من الألم والدمار بغزة...
 </div>
 <div class="start-text-english" id="startTextEnglish">
     Click/tap anywhere on the line below to start
@@ -208,7 +204,8 @@
     // Detect Chrome on Android
     var isChromeAndroid = /Android/i.test(navigator.userAgent) && /Chrome/i.test(navigator.userAgent);
 
-    var initialZoomLevel = isChromeAndroid ? 4 : 2;  // Zoom in more for Chrome on Android
+    var initialZoomLevel = isChromeAndroid ? 4 : 3;  // Zoom in more, but less zoom-out for Android Chrome
+    var aspectRatioAdjust = 1.5;  // Stretch the vertical size by a factor to make it "thicker"
 
     var map = L.map('panorama', {
         minZoom: 2,
@@ -226,11 +223,11 @@
 
     function setInitialView() {
         var bounds = new L.LatLngBounds(
-            map.unproject([0, TILE_SIZE * TILES_Y], MAX_ZOOM),
+            map.unproject([0, TILE_SIZE * TILES_Y * aspectRatioAdjust], MAX_ZOOM),  // Adjust vertical size by aspect ratio
             map.unproject([TILE_SIZE * TILES_X, 0], MAX_ZOOM)
         );
         map.setMaxBounds(bounds);
-        var centerLatLng = map.unproject([(TILE_SIZE * TILES_X) / 2, (TILE_SIZE * TILES_Y) / 2], MAX_ZOOM);
+        var centerLatLng = map.unproject([(TILE_SIZE * TILES_X) / 2, (TILE_SIZE * TILES_Y * aspectRatioAdjust) / 2], MAX_ZOOM);  // Center with adjusted aspect ratio
         map.setView(centerLatLng, initialZoomLevel);
     }
 
@@ -325,7 +322,7 @@
 
             var clickedLatLng = e.latlng;
             var centerLng = Math.max(0, Math.min(TILE_SIZE * TILES_X, map.project(clickedLatLng, MAX_ZOOM).x));
-            var centerLatLng = map.unproject([centerLng, (TILE_SIZE * TILES_Y) / 2], MAX_ZOOM);
+            var centerLatLng = map.unproject([centerLng, (TILE_SIZE * TILES_Y * aspectRatioAdjust) / 2], MAX_ZOOM);
             var zoomLevel = MAX_ZOOM - 1;
 
             if (/Mobi|Android/i.test(navigator.userAgent)) {
