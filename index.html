@@ -205,14 +205,14 @@
     var TILES_Y = 4;
     var FADE_DISTANCE = 5 * TILE_SIZE;
 
-    // Keep original zoom level but maintain vertical stretching
-    var initialZoomLevel = 2;  // Set original zoom level
-    var aspectRatioAdjust = 1.5;  // Stretch the vertical size to make the panorama thicker
+    // Set zoom level to 2 (to fit width) and fine-tune the vertical stretching for better visibility
+    var initialZoomLevel = 2;  
+    var aspectRatioAdjust = 1.2;  // Moderate vertical stretching for better fit
 
     var map = L.map('panorama', {
         minZoom: 2,
         maxZoom: MAX_ZOOM,
-        zoom: initialZoomLevel,  // Use the original zoom level
+        zoom: initialZoomLevel,  // Use original zoom level
         crs: L.CRS.Simple,
         doubleClickZoom: false,
         attributionControl: false,
