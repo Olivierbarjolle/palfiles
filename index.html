@@ -229,7 +229,7 @@
             map.unproject([TILE_SIZE * TILES_X, 0], MAX_ZOOM)
         );
         map.setMaxBounds(bounds);
-        var centerLatLng = map.unproject([(TILE_SIZE * TILES_X) / 2, (TILE_SIZE * TILES_Y * aspectRatioAdjust) / 2], MAX_ZOOM);  // Center with adjusted aspect ratio
+        var centerLatLng = map.unproject([(TILE_SIZE * TILES_X) / 2, (TILE_SIZE * TILES_Y * aspectRatioAdjust) / 2], MAX_ZOOM);  // Adjust center correctly
         map.setView(centerLatLng, initialZoomLevel);
     }
 
@@ -324,7 +324,7 @@
 
             var clickedLatLng = e.latlng;
             var centerLng = Math.max(0, Math.min(TILE_SIZE * TILES_X, map.project(clickedLatLng, MAX_ZOOM).x));
-            var centerLatLng = map.unproject([centerLng, (TILE_SIZE * TILES_Y * aspectRatioAdjust) / 2], MAX_ZOOM);
+            var centerLatLng = map.unproject([centerLng, (TILE_SIZE * TILES_Y * aspectRatioAdjust) / 2], MAX_ZOOM);  // Adjust center for zoom
             var zoomLevel = MAX_ZOOM - 1;
 
             if (/Mobi|Android/i.test(navigator.userAgent)) {
