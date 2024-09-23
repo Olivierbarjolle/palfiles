@@ -205,8 +205,8 @@
     var TILES_Y = 4;
     var FADE_DISTANCE = 5 * TILE_SIZE;
 
-    // Detect Chrome on Android
-    var isChromeAndroid = /Android/i.test(navigator.userAgent) && /Chrome/i.test(navigator.userAgent);
+    // Detect Chrome or firefox on Android
+    var isChromeAndroid = /Android/i.test(navigator.userAgent) && (/Chrome/i.test(navigator.userAgent) || /Firefox/i.test(navigator.userAgent));
 
     var initialZoomLevel = isChromeAndroid ? 4 : 2;  // Zoom in more for Chrome on Android
 
