@@ -210,39 +210,10 @@ var isFirefoxAndroid = /Android/i.test(navigator.userAgent) && /Firefox/i.test(n
 
 if (isFirefoxAndroid) {
     // Apply custom styles for Firefox on Android to double text size
-    document.documentElement.style.setProperty('--text-scale-factor', '2');
+    document.documentElement.style.setProperty('--text-scale-factor', '5');
 } else {
-    document.documentElement.style.setProperty('--text-scale-factor', '1');
+    document.documentElement.style.setProperty('--text-scale-factor', '3');
 }
-
-// Adjust text size based on window size and browser
-function adjustTextSize() {
-    var isMobile = /Mobi|Android/i.test(navigator.userAgent);
-    var textSize = 14 * parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--text-scale-factor'));
-    if (window.innerWidth < 600 || window.innerHeight < 600) {
-        textSize = 12 * parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--text-scale-factor'));
-    }
-    if (isMobile) {
-        textSize = 13 * parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--text-scale-factor'));
-    }
-    document.querySelectorAll('.top-text, .bottom-text').forEach(function(el) {
-        el.style.fontSize = textSize + 'px';
-    });
-
-    var startTextSize = 22 * parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--text-scale-factor'));
-    if (window.innerWidth < 600 || window.innerHeight < 600) {
-        startTextSize = 19 * parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--text-scale-factor'));
-    }
-    if (isMobile) {
-        startTextSize = 20 * parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--text-scale-factor'));
-    }
-    document.querySelectorAll('.start-text-english, .start-text-arabic').forEach(function(el) {
-        el.style.fontSize = startTextSize + 'px';
-    });
-}
-
-window.addEventListener('resize', adjustTextSize);
-adjustTextSize();
 
     // Detect Chrome or firefox on Android
     var isChromeAndroid = /Android/i.test(navigator.userAgent) && (/Chrome/i.test(navigator.userAgent) || /Firefox/i.test(navigator.userAgent));
