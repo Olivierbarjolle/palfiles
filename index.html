@@ -205,16 +205,6 @@
     var TILES_Y = 4;
     var FADE_DISTANCE = 5 * TILE_SIZE;
 
-    // Detect Firefox on Android
-var isFirefoxAndroid = /Android/i.test(navigator.userAgent) && /Firefox/i.test(navigator.userAgent);
-
-if (isFirefoxAndroid) {
-    // Apply custom styles for Firefox on Android to double text size
-    document.documentElement.style.setProperty('--text-scale-factor', '5');
-} else {
-    document.documentElement.style.setProperty('--text-scale-factor', '3');
-}
-
     // Detect Chrome or firefox on Android
     var isChromeAndroid = /Android/i.test(navigator.userAgent) && (/Chrome/i.test(navigator.userAgent) || /Firefox/i.test(navigator.userAgent));
 
