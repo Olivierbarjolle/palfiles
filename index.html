@@ -205,14 +205,15 @@
     var TILES_Y = 4;
     var FADE_DISTANCE = 5 * TILE_SIZE;
 
-    // Keep original zoom level but maintain vertical stretching
-    var initialZoomLevel = 2;  // Set original zoom level
-    var aspectRatioAdjust = 1.5;  // Stretch the vertical size to make the panorama thicker
+    // Detect Chrome on Android
+    var isChromeAndroid = /Android/i.test(navigator.userAgent) && /Chrome/i.test(navigator.userAgent);
+
+    var initialZoomLevel = isChromeAndroid ? 4 : 2;  // Zoom in more for Chrome on Android
 
     var map = L.map('panorama', {
         minZoom: 2,
         maxZoom: MAX_ZOOM,
-        zoom: initialZoomLevel,  // Use the original zoom level
+        zoom: initialZoomLevel,  // Use adjusted initial zoom for Android Chrome
         crs: L.CRS.Simple,
         doubleClickZoom: false,
         attributionControl: false,
@@ -225,11 +226,11 @@
 
     function setInitialView() {
         var bounds = new L.LatLngBounds(
-            map.unproject([0, TILE_SIZE * TILES_Y * aspectRatioAdjust], MAX_ZOOM),  // Adjust vertical size by aspect ratio
+            map.unproject([0, TILE_SIZE * TILES_Y], MAX_ZOOM),
             map.unproject([TILE_SIZE * TILES_X, 0], MAX_ZOOM)
         );
         map.setMaxBounds(bounds);
-        var centerLatLng = map.unproject([(TILE_SIZE * TILES_X) / 2, (TILE_SIZE * TILES_Y * aspectRatioAdjust) / 2], MAX_ZOOM);  // Center with adjusted aspect ratio
+        var centerLatLng = map.unproject([(TILE_SIZE * TILES_X) / 2, (TILE_SIZE * TILES_Y) / 2], MAX_ZOOM);
         map.setView(centerLatLng, initialZoomLevel);
     }
 
@@ -324,7 +325,7 @@
 
             var clickedLatLng = e.latlng;
             var centerLng = Math.max(0, Math.min(TILE_SIZE * TILES_X, map.project(clickedLatLng, MAX_ZOOM).x));
-            var centerLatLng = map.unproject([centerLng, (TILE_SIZE * TILES_Y * aspectRatioAdjust) / 2], MAX_ZOOM);
+            var centerLatLng = map.unproject([centerLng, (TILE_SIZE * TILES_Y) / 2], MAX_ZOOM);
             var zoomLevel = MAX_ZOOM - 1;
 
             if (/Mobi|Android/i.test(navigator.userAgent)) {
