@@ -223,15 +223,17 @@
         }
     });
 
-    function setInitialView() {
-        var bounds = new L.LatLngBounds(
-            map.unproject([0, TILE_SIZE * TILES_Y * aspectRatioAdjust], MAX_ZOOM),  // Adjust vertical size significantly
-            map.unproject([TILE_SIZE * TILES_X, 0], MAX_ZOOM)
-        );
-        map.setMaxBounds(bounds);
-        var centerLatLng = map.unproject([(TILE_SIZE * TILES_X) / 2, (TILE_SIZE * TILES_Y * aspectRatioAdjust) / 2], MAX_ZOOM);  // Adjust center correctly
-        map.setView(centerLatLng, initialZoomLevel);
-    }
+function setInitialView() {
+    var bounds = new L.LatLngBounds(
+        map.unproject([0, TILE_SIZE * TILES_Y * aspectRatioAdjust], MAX_ZOOM),  // Adjust vertical size
+        map.unproject([TILE_SIZE * TILES_X, 0], MAX_ZOOM)
+    );
+    map.setMaxBounds(bounds);
+
+    // Adjust center calculation to center both vertically and horizontally
+    var centerLatLng = map.unproject([(TILE_SIZE * TILES_X) / 2, (TILE_SIZE * TILES_Y) / 2], MAX_ZOOM);  // Update this line
+    map.setView(centerLatLng, initialZoomLevel);
+}
 
     setInitialView();
 
