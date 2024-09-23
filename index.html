@@ -14,22 +14,6 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Monument+Grotesk:wght@300;400;500;600;700;800;900&display=swap');
 
-       <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Panoramic Viewer</title>
-
-    <!-- Leaflet and Plugins -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <script src="https://unpkg.com/leaflet-doubletapdrag"></script>
-    <script src="https://unpkg.com/leaflet-doubletapdragzoom"></script>
-
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Monument+Grotesk:wght@300;400;500;600;700;800;900&display=swap');
-
         body, html {
             margin: 0;
             padding: 0;
@@ -44,8 +28,10 @@
             height: 100%;
             width: 100%;
             background-color: black;
-            transform: scaleY(1.2); /* Stretch vertically by 20% */
-            transform-origin: center; /* Ensure the stretching happens from the center */
+        }
+
+        .leaflet-container {
+            background-color: black;
         }
 
         .top-text, .bottom-text {
@@ -62,31 +48,18 @@
         }
 
         .top-text {
-            top: 5%; /* Adjust positioning after vertical stretch */
+            top: 10px;
             left: 10px;
             text-align: left;
             width: calc(100% - 20px);
         }
 
         .bottom-text {
-            bottom: 5%; /* Adjust positioning after vertical stretch */
             right: 10px;
             text-align: right;
             width: calc(100% - 20px);
             direction: rtl;
-        }
-
-        /* Other existing styles... */
-    </style>
-</head>
-<body>
-
-<div id="panorama"></div>
-<!-- Other HTML elements -->
-
-</body>
-</html>
-
+            bottom: 10px;
         }
 
         .start-text-english, .start-text-arabic {
