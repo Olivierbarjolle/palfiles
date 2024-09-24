@@ -205,35 +205,30 @@
 <div id="landscape-message">Portrait mode only</div>
 
 <script>
-  var TILE_SIZE = 256;
+    var TILE_SIZE = 256;
     var MAX_ZOOM = 12;
     var TILES_X = 2891;
     var TILES_Y = 4;
-    var FADE_DISTANCE = 5 * TILE_SIZE;
 
-    // Detect if the user is on Android and using Firefox
-    var isFirefoxAndroid = /Android/i.test(navigator.userAgent) && /Firefox/i.test(navigator.userAgent);
-
-    if (isFirefoxAndroid) {
-        // Apply the class to increase text size for .top-text and .bottom-text
-        document.querySelectorAll('.top-text, .bottom-text').forEach(function(el) {
-            el.classList.add('firefox-android-large-text');  // Apply the class
-        });
-    }
-
-    // Detect Chrome on Android
+    // Detect if the user is on Android Chrome
     function isChromeAndroid() {
         var ua = navigator.userAgent;
         return /Android/i.test(ua) && /Chrome/i.test(ua);
     }
 
-    // Set initial zoom level for Chrome on Android
-    var initialZoomLevel = isChromeAndroid() ? 4 : 2;  // Adjust zoom for Chrome on Android
+    // Detect if the browser is Safari on iOS
+    function isSafariIOS() {
+        var ua = navigator.userAgent;
+        return !!ua.match(/iP(ad|od|hone)/i) && !!ua.match(/WebKit/i) && !ua.match(/CriOS/i);
+    }
+
+    // Set initial zoom level for Android Chrome
+    var initialZoomLevel = isChromeAndroid() ? 4 : 2;
 
     var map = L.map('panorama', {
         minZoom: 2,
         maxZoom: MAX_ZOOM,
-        zoom: initialZoomLevel,  // Use adjusted initial zoom for Chrome on Android
+        zoom: initialZoomLevel,
         crs: L.CRS.Simple,
         doubleClickZoom: false,
         attributionControl: false,
@@ -259,30 +254,57 @@
     L.tileLayer('https://chipper-sunflower-e51e1a.netlify.app/tiles/tile_z{z}_x{x}_y{y}.jpg', {
         maxZoom: MAX_ZOOM,
         noWrap: true,
-        crossOrigin: true // Allow cross-origin requests for images
+        crossOrigin: true
     }).addTo(map);
 
-    // Recenter panorama for Chrome on Android using the same method as iOS
-    if (isChromeAndroid()) {
-        function adjustForAndroidChrome() {
-            let vh = window.innerHeight;
-            if (window.innerHeight > window.innerWidth) {
-                vh -= 240; // Offset for Android Chrome in portrait mode
-            }
-            document.body.style.height = `${vh}px`;
-            document.getElementById('panorama').style.height = `${vh}px`;
+    // Adjust the viewport dynamically for Chrome on Android
+    function adjustForAndroidChrome() {
+        let vh = window.innerHeight;
+        let vw = window.innerWidth;
 
-            var centerLatLng = map.unproject([(TILE_SIZE * TILES_X) / 2, (TILE_SIZE * TILES_Y) / 2], MAX_ZOOM);
-            map.setView(centerLatLng, map.getZoom());  // Recenter the map
+        let aspectRatio = TILES_X / TILES_Y;  // The aspect ratio of the panorama
 
-            document.getElementById('startTextEnglish').style.top = `calc(${vh * 0.485}px - 40px)`;
-            document.getElementById('startTextArabic').style.top = `calc(${vh * 0.485}px + 40px)`;
-
-            document.getElementById('bottomText').style.bottom = `calc(10px + 240px)`;
+        // Adjust viewport based on aspect ratio to minimize black space
+        if (vh < vw / aspectRatio) {
+            vh = vw / aspectRatio;  // Maintain aspect ratio
         }
 
+        document.body.style.height = `${vh}px`;
+        document.getElementById('panorama').style.height = `${vh}px`;
+
+        // Recenter the map
+        var centerLatLng = map.unproject([(TILE_SIZE * TILES_X) / 2, (TILE_SIZE * TILES_Y) / 2], MAX_ZOOM);
+        map.setView(centerLatLng, map.getZoom());
+    }
+
+    // Adjust for iOS Safari
+    function adjustForIOS() {
+        let vh = window.innerHeight;
+        let vw = window.innerWidth;
+
+        let aspectRatio = TILES_X / TILES_Y;  // The aspect ratio of the panorama
+
+        if (vh < vw / aspectRatio) {
+            vh = vw / aspectRatio;
+        }
+
+        document.body.style.height = `${vh}px`;
+        document.getElementById('panorama').style.height = `${vh}px`;
+
+        var centerLatLng = map.unproject([(TILE_SIZE * TILES_X) / 2, (TILE_SIZE * TILES_Y) / 2], MAX_ZOOM);
+        map.setView(centerLatLng, map.getZoom());
+    }
+
+    // Apply adjustments for Chrome on Android
+    if (isChromeAndroid()) {
         window.addEventListener('resize', adjustForAndroidChrome);
-        adjustForAndroidChrome();  // Apply recentering on Chrome Android
+        adjustForAndroidChrome();  // Apply adjustments on load
+    }
+
+    // Apply adjustments for iOS Safari
+    if (isSafariIOS()) {
+        window.addEventListener('resize', adjustForIOS);
+        adjustForIOS();  // Apply adjustments on load
     }
 
     // Detect if the browser is Safari on iOS
