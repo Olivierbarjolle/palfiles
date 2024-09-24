@@ -180,7 +180,9 @@
         
          /* CSS class for smaller text on Chrome Android */
     .chrome-android-small-text {
-        font-size: 0.7em !important; /* Makes the text half the size */
+        font-size: 0.8em !important; /* Makes the text half the size */
+        margin-top: 20px !important;  /* Add top margin */
+    margin-bottom: 20px !important; /* Add bottom margin */
     }
 
         
@@ -220,9 +222,9 @@
 var isChromeAndroid = /Android/i.test(navigator.userAgent) && /Chrome/i.test(navigator.userAgent);
 
 if (isChromeAndroid) {
-    // Apply the class to reduce text size for .top-text and .bottom-text
+    // Apply the class to reduce text size and add margins for .top-text and .bottom-text
     document.querySelectorAll('.top-text, .bottom-text').forEach(function(el) {
-        el.classList.add('chrome-android-small-text');  // Apply the class
+        el.classList.add('chrome-android-small-text');  // Apply the class with margins
     });
 }
 
