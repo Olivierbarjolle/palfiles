@@ -222,13 +222,10 @@
         return !!ua.match(/iP(ad|od|hone)/i) && !!ua.match(/WebKit/i) && !ua.match(/CriOS/i);
     }
 
-    // Set initial zoom level for Android Chrome
-    var initialZoomLevel = isChromeAndroid() ? 4 : 2;
-
     var map = L.map('panorama', {
         minZoom: 2,
         maxZoom: MAX_ZOOM,
-        zoom: initialZoomLevel,
+        zoom: 2,  // Default zoom level
         crs: L.CRS.Simple,
         doubleClickZoom: false,
         attributionControl: false,
@@ -246,7 +243,7 @@
         );
         map.setMaxBounds(bounds);
         var centerLatLng = map.unproject([(TILE_SIZE * TILES_X) / 2, (TILE_SIZE * TILES_Y) / 2], MAX_ZOOM);
-        map.setView(centerLatLng, initialZoomLevel);
+        map.setView(centerLatLng, 2);
     }
 
     setInitialView();
@@ -257,14 +254,9 @@
         crossOrigin: true
     }).addTo(map);
 
-    // Adjust the viewport for Chrome on Android using a reduced offset
+    // Adjust the viewport for Chrome on Android by a fixed amount
     function adjustForAndroidChrome() {
-        let vh = window.innerHeight;
-
-        // Apply a smaller offset for Android Chrome, 120px instead of 240px
-        if (window.innerHeight > window.innerWidth) {
-            vh -= 120; // Half the offset compared to iOS Safari
-        }
+        let vh = window.innerHeight - 100; // Reduce the viewport height by a fixed 100px
 
         document.body.style.height = `${vh}px`;
         document.getElementById('panorama').style.height = `${vh}px`;
@@ -274,7 +266,7 @@
         map.setView(centerLatLng, map.getZoom());
     }
 
-    // Adjust for iOS Safari with full offset
+    // Adjust for iOS Safari
     function adjustForIOS() {
         let vh = window.innerHeight;
 
@@ -289,13 +281,13 @@
         map.setView(centerLatLng, map.getZoom());
     }
 
-    // Apply adjustments for Chrome on Android
+    // Apply the fixed height adjustment for Chrome on Android
     if (isChromeAndroid()) {
         window.addEventListener('resize', adjustForAndroidChrome);
-        adjustForAndroidChrome();  // Apply adjustments on load for Android Chrome
+        adjustForAndroidChrome();  // Apply the fixed height reduction on load for Android Chrome
     }
 
-    // Apply adjustments for iOS Safari
+    // Apply the iOS Safari-specific adjustments
     if (isSafariIOS()) {
         window.addEventListener('resize', adjustForIOS);
         adjustForIOS();  // Apply adjustments on load for iOS Safari
