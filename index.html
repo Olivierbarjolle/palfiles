@@ -332,8 +332,6 @@
             var centerLatLng = map.unproject([centerLng, (TILE_SIZE * TILES_Y) / 2], MAX_ZOOM);
             var zoomLevel = MAX_ZOOM - 1;
 
-            if (/Mobi|Android/i.test(navigator.userAgent)) {
-                zoomLevel += 1; // Zoom one level more on mobile
             }
 
             map.flyTo(centerLatLng, zoomLevel, {
