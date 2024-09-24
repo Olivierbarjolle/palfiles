@@ -205,7 +205,7 @@
 <div id="landscape-message">Portrait mode only</div>
 
 <script>
-    var TILE_SIZE = 256;
+ var TILE_SIZE = 256;
     var MAX_ZOOM = 12;
     var TILES_X = 2891;
     var TILES_Y = 4;
@@ -262,7 +262,7 @@
         crossOrigin: true // Allow cross-origin requests for images
     }).addTo(map);
 
-    // Adjust viewport for Chrome on Android
+    // Recenter panorama for Chrome on Android using the same method as iOS
     if (isChromeAndroid()) {
         function adjustForAndroidChrome() {
             let vh = window.innerHeight;
@@ -273,7 +273,7 @@
             document.getElementById('panorama').style.height = `${vh}px`;
 
             var centerLatLng = map.unproject([(TILE_SIZE * TILES_X) / 2, (TILE_SIZE * TILES_Y) / 2], MAX_ZOOM);
-            map.setView(centerLatLng, map.getZoom());
+            map.setView(centerLatLng, map.getZoom());  // Recenter the map
 
             document.getElementById('startTextEnglish').style.top = `calc(${vh * 0.485}px - 40px)`;
             document.getElementById('startTextArabic').style.top = `calc(${vh * 0.485}px + 40px)`;
@@ -282,7 +282,7 @@
         }
 
         window.addEventListener('resize', adjustForAndroidChrome);
-        adjustForAndroidChrome();
+        adjustForAndroidChrome();  // Apply recentering on Chrome Android
     }
 
     // Detect if the browser is Safari on iOS
@@ -301,7 +301,7 @@
             document.getElementById('panorama').style.height = `${vh}px`;
 
             var centerLatLng = map.unproject([(TILE_SIZE * TILES_X) / 2, (TILE_SIZE * TILES_Y) / 2], MAX_ZOOM);
-            map.setView(centerLatLng, map.getZoom());
+            map.setView(centerLatLng, map.getZoom());  // Recenter the map for iOS
 
             document.getElementById('startTextEnglish').style.top = `calc(${vh * 0.485}px - 40px)`;
             document.getElementById('startTextArabic').style.top = `calc(${vh * 0.485}px + 40px)`;
@@ -310,7 +310,7 @@
         }
 
         window.addEventListener('resize', adjustForIOS);
-        adjustForIOS();
+        adjustForIOS();  // Apply recentering on iOS Safari
     }
 
     var audioFiles = [
