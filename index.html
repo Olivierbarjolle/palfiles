@@ -205,24 +205,54 @@
     var TILES_Y = 4;
     var FADE_DISTANCE = 5 * TILE_SIZE;
 
-    // Detect Chrome or firefox on Android
-    var isChromeAndroid = /Android/i.test(navigator.userAgent) && (/Chrome/i.test(navigator.userAgent) || /Firefox/i.test(navigator.userAgent));
+// Detect Chrome or Firefox on Android
+var isAndroidChrome = /Android/i.test(navigator.userAgent) && /Chrome/i.test(navigator.userAgent);
+var isAndroidFirefox = /Android/i.test(navigator.userAgent) && /Firefox/i.test(navigator.userAgent);
 
-    var initialZoomLevel = isChromeAndroid ? 4 : 2;  // Zoom in more for Chrome on Android
+if (isAndroidChrome || isAndroidFirefox) {
+    adjustForAndroidBrowsers(); // Apply adjustments for both browsers
+}
 
-    var map = L.map('panorama', {
-        minZoom: 2,
-        maxZoom: MAX_ZOOM,
-        zoom: initialZoomLevel,  // Use adjusted initial zoom for Android Chrome
-        crs: L.CRS.Simple,
-        doubleClickZoom: false,
-        attributionControl: false,
-        zoomControl: false,
-        doubleTapDragZoom: 'center',
-        doubleTapDragZoomOptions: {
-            reverse: false
-        }
-    });
+function adjustForAndroidBrowsers() {
+    let vh = window.innerHeight;
+    if (window.innerHeight > window.innerWidth) {
+        vh -= 240; // Apply the vertical adjustment for landscape orientation
+    }
+    document.body.style.height = `${vh}px`;
+    document.getElementById('panorama').style.height = `${vh}px`;
+
+    var centerLatLng = map.unproject([(TILE_SIZE * TILES_X) / 2, (TILE_SIZE * TILES_Y) / 2], MAX_ZOOM);
+    map.setView(centerLatLng, map.getZoom());
+
+    document.getElementById('startTextEnglish').style.top = `calc(${vh * 0.485}px - 40px)`;
+    document.getElementById('startTextArabic').style.top = `calc(${vh * 0.485}px + 40px)`;
+
+    document.getElementById('bottomText').style.bottom = `calc(10px + 240px)`; // Adjust bottom text position
+}
+
+// Adjust panorama zoom level based on Android Chrome or Firefox
+var initialZoomLevel = (isAndroidChrome || isAndroidFirefox) ? 4 : 2;  // Zoom in more for Android browsers
+
+var map = L.map('panorama', {
+    minZoom: 2,
+    maxZoom: MAX_ZOOM,
+    zoom: initialZoomLevel,  // Use adjusted initial zoom for Android browsers
+    crs: L.CRS.Simple,
+    doubleClickZoom: false,
+    attributionControl: false,
+    zoomControl: false,
+    doubleTapDragZoom: 'center',
+    doubleTapDragZoomOptions: {
+        reverse: false
+    }
+});
+
+window.addEventListener('resize', function() {
+    if (isAndroidChrome || isAndroidFirefox) {
+        adjustForAndroidBrowsers(); // Reapply adjustments on resize for Android
+    }
+});
+
 
     function setInitialView() {
         var bounds = new L.LatLngBounds(
