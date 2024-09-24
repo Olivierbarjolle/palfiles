@@ -176,6 +176,14 @@
         .firefox-android-large-text {
             font-size: 4em !important; /* Makes text 4 times bigger */
         }
+
+html {
+    text-size-adjust: 100%; /* Prevent mobile browsers from auto-resizing text */
+    -webkit-text-size-adjust: 100%; /* For Safari and Chrome */
+    -moz-text-size-adjust: 100%; /* Specifically for Firefox */
+}
+
+        
     </style>
 </head>
 <body>
