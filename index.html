@@ -178,12 +178,19 @@
             font-size: 1.6em !important; /* Makes text 4 times bigger */
         }
         
-         /* CSS class for smaller text on Chrome Android */
-    .chrome-android-small-text {
-        font-size: 0.65em !important; /* Makes the text half the size */
-        margin-top: 10px !important;  /* Add top margin */
-    margin-bottom: 60px !important; /* Add bottom margin */
-    }
+        /* Styles for Chrome on Samsung devices */
+.chrome-samsung {
+    font-size: 0.75em !important;
+    margin-top: 10px !important;
+    margin-bottom: 60px !important;
+}
+
+/* Styles for Chrome on Google Pixel (or other Android) devices */
+.chrome-pixel {
+    font-size: 0.6em !important;
+    margin-top: 10px !important;
+    margin-bottom: 60px !important;
+}
 
         
     </style>
@@ -218,13 +225,26 @@
     var TILES_Y = 4;
     var FADE_DISTANCE = 5 * TILE_SIZE;
 
-// Detect if the user is on Android and using Chrome
+// Detect if it's Chrome on an Android device
 var isChromeAndroid = /Android/i.test(navigator.userAgent) && /Chrome/i.test(navigator.userAgent);
 
-if (isChromeAndroid) {
-    // Apply the class to reduce text size and add margins for .top-text and .bottom-text
+// Further narrow down to Samsung devices using 'Samsung' in the user agent
+var isSamsungChrome = isChromeAndroid && /Samsung/i.test(navigator.userAgent);
+
+// Detect Chrome on Google Pixel (or other Android) phones by excluding Samsung
+var isPixelChrome = isChromeAndroid && !/Samsung/i.test(navigator.userAgent) && /Pixel/i.test(navigator.userAgent);
+
+if (isSamsungChrome) {
+    // Apply the Samsung-specific class
     document.querySelectorAll('.top-text, .bottom-text').forEach(function(el) {
-        el.classList.add('chrome-android-small-text');  // Apply the class with margins
+        el.classList.add('chrome-samsung');  // Apply Samsung Chrome-specific styles
+    });
+}
+
+if (isPixelChrome) {
+    // Apply the Google Pixel-specific class
+    document.querySelectorAll('.top-text, .bottom-text').forEach(function(el) {
+        el.classList.add('chrome-pixel');  // Apply Google Pixel Chrome-specific styles
     });
 }
 
