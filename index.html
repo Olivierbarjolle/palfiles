@@ -12,10 +12,6 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Monument+Grotesk:wght@300;400;500;600;700;800;900&display=swap');
 
- /* Prevent mobile browsers from auto-resizing text */
-        html {
-            -moz-text-size-adjust: 50%; /* Specifically for Firefox */
-        }
         
         body, html {
             margin: 0;
@@ -226,7 +222,7 @@ if (isFirefoxAndroid) {
 
     // Fallback: Directly adjust the font size to the original size (1em)
     document.querySelectorAll('.top-text, .bottom-text').forEach(function(el) {
-        el.style.fontSize = "0.2em"; // Set to default (1em)
+        el.style.fontSize = "5em"; // Set to default (1em)
     });
 }
 
