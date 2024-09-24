@@ -177,6 +177,11 @@
         .firefox-android-large-text {
             font-size: 1.6em !important; /* Makes text 4 times bigger */
         }
+        
+         /* CSS class for smaller text on Chrome Android */
+    .chrome-android-small-text {
+        font-size: 0.7em !important; /* Makes the text half the size */
+    }
 
         
     </style>
@@ -211,13 +216,13 @@
     var TILES_Y = 4;
     var FADE_DISTANCE = 5 * TILE_SIZE;
 
-    // Detect if the user is on Android Chrome
+// Detect if the user is on Android and using Chrome
 var isChromeAndroid = /Android/i.test(navigator.userAgent) && /Chrome/i.test(navigator.userAgent);
 
 if (isChromeAndroid) {
-    // Reduce the text size for Chrome on Android
+    // Apply the class to reduce text size for .top-text and .bottom-text
     document.querySelectorAll('.top-text, .bottom-text').forEach(function(el) {
-        el.style.fontSize = '20%';  // Reduces the text size to half
+        el.classList.add('chrome-android-small-text');  // Apply the class
     });
 }
 
