@@ -219,11 +219,6 @@ if (isFirefoxAndroid) {
     document.querySelectorAll('.top-text, .bottom-text').forEach(function(el) {
         el.classList.add('firefox-android-large-text');  // Apply the class
     });
-
-    // Fallback: Directly adjust the font size to the original size (1em)
-    document.querySelectorAll('.top-text, .bottom-text').forEach(function(el) {
-        el.style.fontSize = "5em"; // Set to default (1em)
-    });
 }
 
 
