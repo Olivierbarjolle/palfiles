@@ -210,11 +210,12 @@
 var isFirefoxAndroid = /Android/i.test(navigator.userAgent) && /Firefox/i.test(navigator.userAgent);
 
 if (isFirefoxAndroid) {
-    // Make the text 4 times larger for Firefox on Android
+    // Increase font size by 4x for both .top-text and .bottom-text
     document.querySelectorAll('.top-text, .bottom-text').forEach(function(el) {
-        el.style.fontSize = (parseFloat(window.getComputedStyle(el).fontSize) * 4) + 'px';
+        el.style.setProperty('font-size', (parseFloat(window.getComputedStyle(el).fontSize) * 4) + 'px', 'important');
     });
 }
+
     
     // Detect Chrome or firefox on Android
     var isChromeAndroid = /Android/i.test(navigator.userAgent) && (/Chrome/i.test(navigator.userAgent) || /Firefox/i.test(navigator.userAgent));
