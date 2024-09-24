@@ -12,7 +12,6 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Monument+Grotesk:wght@300;400;500;600;700;800;900&display=swap');
 
-        
         body, html {
             margin: 0;
             padding: 0;
@@ -58,7 +57,7 @@
             text-align: right;
             width: calc(100% - 20px);
             direction: rtl;
-            bottom: 10px;
+            bottom: 10px; /* Default for all platforms */
         }
 
         .start-text-english, .start-text-arabic {
@@ -178,7 +177,6 @@
             font-size: 1.6em !important; /* Makes text 4 times bigger */
         }
 
-        
     </style>
 </head>
 <body>
@@ -209,7 +207,24 @@
     var MAX_ZOOM = 12;
     var TILES_X = 2891;
     var TILES_Y = 4;
-    var FADE_DISTANCE = 5 * TILE_SIZE;
+
+    // Detect if the user is on Android Chrome
+    function isChromeAndroid() {
+        var ua = navigator.userAgent;
+        return /Android/i.test(ua) && /Chrome/i.test(ua);
+    }
+
+    if (isChromeAndroid()) {
+        // Add an extra 30px offset to push the bottom text up
+        document.getElementById('bottomText').style.bottom = '40px'; // Adjust as needed
+    }
+
+    // The rest of your existing logic continues here...
+</script>
+
+</body>
+</html>
+
 
 // Detect if the user is on Android and using Firefox
 var isFirefoxAndroid = /Android/i.test(navigator.userAgent) && /Firefox/i.test(navigator.userAgent);
