@@ -202,29 +202,31 @@
 <div id="landscape-message">Portrait mode only</div>
 
 <script>
-    // Detect if the user is on Android and using Firefox
-    var isFirefoxAndroid = /Android/i.test(navigator.userAgent) && /Firefox/i.test(navigator.userAgent);
-
-    // Debugging: Check if the detection works
-    console.log("Is Firefox on Android? ", isFirefoxAndroid);
-
-    if (isFirefoxAndroid) {
-        // Apply the class to increase text size for .top-text and .bottom-text
-        document.querySelectorAll('.top-text, .bottom-text').forEach(function(el) {
-            console.log("Applying larger text class to element:", el);
-            el.classList.add('firefox-android-large-text');  // Apply the class
-        });
-
-        // If applying class fails, directly adjust the font size via JS (fallback)
-        document.querySelectorAll('.top-text, .bottom-text').forEach(function(el) {
-            el.style.fontSize = "4em";
-
-<script>
     var TILE_SIZE = 256;
     var MAX_ZOOM = 12;
     var TILES_X = 2891;
     var TILES_Y = 4;
     var FADE_DISTANCE = 5 * TILE_SIZE;
+
+// Detect if the user is on Android and using Firefox
+var isFirefoxAndroid = /Android/i.test(navigator.userAgent) && /Firefox/i.test(navigator.userAgent);
+
+// Debugging: Check if the detection works
+console.log("Is Firefox on Android? ", isFirefoxAndroid);
+
+if (isFirefoxAndroid) {
+    // Apply the class to increase text size for .top-text and .bottom-text
+    document.querySelectorAll('.top-text, .bottom-text').forEach(function(el) {
+        console.log("Applying larger text class to element:", el);
+        el.classList.add('firefox-android-large-text');  // Apply the class
+    });
+
+    // Fallback: Directly adjust the font size if class application fails
+    document.querySelectorAll('.top-text, .bottom-text').forEach(function(el) {
+        el.style.fontSize = "4em";
+    });
+}
+
 
     
     // Detect Chrome or firefox on Android
