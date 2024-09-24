@@ -257,82 +257,46 @@
         crossOrigin: true
     }).addTo(map);
 
-    // Adjust the viewport dynamically for Chrome on Android
+    // Adjust the viewport for Chrome on Android using the same logic as iOS
     function adjustForAndroidChrome() {
         let vh = window.innerHeight;
-        let vw = window.innerWidth;
 
-        let aspectRatio = TILES_X / TILES_Y;  // The aspect ratio of the panorama
-
-        // Adjust viewport based on aspect ratio to minimize black space
-        if (vh < vw / aspectRatio) {
-            vh = vw / aspectRatio;  // Maintain aspect ratio
+        if (window.innerHeight > window.innerWidth) {
+            vh -= 240; // Same offset as used for iOS Safari
         }
 
         document.body.style.height = `${vh}px`;
         document.getElementById('panorama').style.height = `${vh}px`;
 
-        // Recenter the map
         var centerLatLng = map.unproject([(TILE_SIZE * TILES_X) / 2, (TILE_SIZE * TILES_Y) / 2], MAX_ZOOM);
-        map.setView(centerLatLng, map.getZoom());
+        map.setView(centerLatLng, map.getZoom());  // Recenter the map for Android Chrome
     }
 
     // Adjust for iOS Safari
     function adjustForIOS() {
         let vh = window.innerHeight;
-        let vw = window.innerWidth;
 
-        let aspectRatio = TILES_X / TILES_Y;  // The aspect ratio of the panorama
-
-        if (vh < vw / aspectRatio) {
-            vh = vw / aspectRatio;
+        if (window.innerHeight > window.innerWidth) {
+            vh -= 240; // Full offset for iOS Safari
         }
 
         document.body.style.height = `${vh}px`;
         document.getElementById('panorama').style.height = `${vh}px`;
 
         var centerLatLng = map.unproject([(TILE_SIZE * TILES_X) / 2, (TILE_SIZE * TILES_Y) / 2], MAX_ZOOM);
-        map.setView(centerLatLng, map.getZoom());
+        map.setView(centerLatLng, map.getZoom());  // Recenter the map for iOS Safari
     }
 
     // Apply adjustments for Chrome on Android
     if (isChromeAndroid()) {
         window.addEventListener('resize', adjustForAndroidChrome);
-        adjustForAndroidChrome();  // Apply adjustments on load
+        adjustForAndroidChrome();  // Apply adjustments on load for Android Chrome
     }
 
     // Apply adjustments for iOS Safari
     if (isSafariIOS()) {
         window.addEventListener('resize', adjustForIOS);
-        adjustForIOS();  // Apply adjustments on load
-    }
-
-    // Detect if the browser is Safari on iOS
-    function isSafariIOS() {
-        var ua = navigator.userAgent;
-        return !!ua.match(/iP(ad|od|hone)/i) && !!ua.match(/WebKit/i) && !ua.match(/CriOS/i);
-    }
-
-    if (isSafariIOS()) {
-        function adjustForIOS() {
-            let vh = window.innerHeight;
-            if (window.innerHeight > window.innerWidth) {
-                vh -= 240;
-            }
-            document.body.style.height = `${vh}px`;
-            document.getElementById('panorama').style.height = `${vh}px`;
-
-            var centerLatLng = map.unproject([(TILE_SIZE * TILES_X) / 2, (TILE_SIZE * TILES_Y) / 2], MAX_ZOOM);
-            map.setView(centerLatLng, map.getZoom());  // Recenter the map for iOS
-
-            document.getElementById('startTextEnglish').style.top = `calc(${vh * 0.485}px - 40px)`;
-            document.getElementById('startTextArabic').style.top = `calc(${vh * 0.485}px + 40px)`;
-
-            document.getElementById('bottomText').style.bottom = `calc(10px + 240px)`;
-        }
-
-        window.addEventListener('resize', adjustForIOS);
-        adjustForIOS();  // Apply recentering on iOS Safari
+        adjustForIOS();  // Apply adjustments on load for iOS Safari
     }
 
     var audioFiles = [
