@@ -256,7 +256,7 @@
 
     // Adjust the viewport for Chrome on Android by a fixed amount
     function adjustForAndroidChrome() {
-        let vh = window.innerHeight - 100; // Reduce the viewport height by a fixed 100px
+        let vh = window.innerHeight - 1000; // Reduce the viewport height by a fixed 100px
 
         document.body.style.height = `${vh}px`;
         document.getElementById('panorama').style.height = `${vh}px`;
