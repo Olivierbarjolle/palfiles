@@ -209,7 +209,7 @@
     // Detect Chrome or firefox on Android
     var isChromeAndroid = /Android/i.test(navigator.userAgent) && (/Chrome/i.test(navigator.userAgent) || /Firefox/i.test(navigator.userAgent));
 
-    var initialZoomLevel = isChromeAndroid ? 4 : 2;  // Zoom in more for Chrome on Android
+    var initialZoomLevel = 2; 
 
     var map = L.map('panorama', {
         minZoom: 2,
