@@ -1,3 +1,5 @@
+Best so far 24 sep
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -204,6 +206,25 @@
     var TILES_X = 2891;
     var TILES_Y = 4;
     var FADE_DISTANCE = 5 * TILE_SIZE;
+
+    // Detect Chrome or firefox on Android
+    var isChromeAndroid = /Android/i.test(navigator.userAgent) && (/Chrome/i.test(navigator.userAgent) || /Firefox/i.test(navigator.userAgent));
+
+    var initialZoomLevel = isChromeAndroid ? 4 : 2;  // Zoom in more for Chrome on Android
+
+    var map = L.map('panorama', {
+        minZoom: 1,
+        maxZoom: MAX_ZOOM,
+        zoom: initialZoomLevel,  // Use adjusted initial zoom for Android Chrome
+        crs: L.CRS.Simple,
+        doubleClickZoom: false,
+        attributionControl: false,
+        zoomControl: false,
+        doubleTapDragZoom: 'center',
+        doubleTapDragZoomOptions: {
+            reverse: false
+        }
+    });
 
     function setInitialView() {
         var bounds = new L.LatLngBounds(
