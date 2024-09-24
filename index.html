@@ -211,28 +211,29 @@
     var TILES_Y = 4;
     var FADE_DISTANCE = 5 * TILE_SIZE;
 
-// Detect if the user is on Android and using Firefox
-var isFirefoxAndroid = /Android/i.test(navigator.userAgent) && /Firefox/i.test(navigator.userAgent);
+    // Detect if the user is on Android and using Firefox
+    var isFirefoxAndroid = /Android/i.test(navigator.userAgent) && /Firefox/i.test(navigator.userAgent);
 
-if (isFirefoxAndroid) {
-    // Apply the class to increase text size for .top-text and .bottom-text
-    document.querySelectorAll('.top-text, .bottom-text').forEach(function(el) {
-        el.classList.add('firefox-android-large-text');  // Apply the class
-    });
-}
+    if (isFirefoxAndroid) {
+        // Apply the class to increase text size for .top-text and .bottom-text
+        document.querySelectorAll('.top-text, .bottom-text').forEach(function(el) {
+            el.classList.add('firefox-android-large-text');  // Apply the class
+        });
+    }
 
+    // Detect Chrome on Android
+    function isChromeAndroid() {
+        var ua = navigator.userAgent;
+        return /Android/i.test(ua) && /Chrome/i.test(ua);
+    }
 
-
-    
-    // Detect Chrome or firefox on Android
-    var isChromeAndroid = /Android/i.test(navigator.userAgent) && (/Chrome/i.test(navigator.userAgent) || /Firefox/i.test(navigator.userAgent));
-
-    var initialZoomLevel = isChromeAndroid ? 4 : 2;  // Zoom in more for Chrome on Android
+    // Set initial zoom level for Chrome on Android
+    var initialZoomLevel = isChromeAndroid() ? 4 : 2;  // Adjust zoom for Chrome on Android
 
     var map = L.map('panorama', {
         minZoom: 2,
         maxZoom: MAX_ZOOM,
-        zoom: initialZoomLevel,  // Use adjusted initial zoom for Android Chrome
+        zoom: initialZoomLevel,  // Use adjusted initial zoom for Chrome on Android
         crs: L.CRS.Simple,
         doubleClickZoom: false,
         attributionControl: false,
@@ -258,8 +259,59 @@ if (isFirefoxAndroid) {
     L.tileLayer('https://chipper-sunflower-e51e1a.netlify.app/tiles/tile_z{z}_x{x}_y{y}.jpg', {
         maxZoom: MAX_ZOOM,
         noWrap: true,
-        crossOrigin: true // Allowing cross-origin requests for images to work on Chrome/Android
+        crossOrigin: true // Allow cross-origin requests for images
     }).addTo(map);
+
+    // Adjust viewport for Chrome on Android
+    if (isChromeAndroid()) {
+        function adjustForAndroidChrome() {
+            let vh = window.innerHeight;
+            if (window.innerHeight > window.innerWidth) {
+                vh -= 240; // Offset for Android Chrome in portrait mode
+            }
+            document.body.style.height = `${vh}px`;
+            document.getElementById('panorama').style.height = `${vh}px`;
+
+            var centerLatLng = map.unproject([(TILE_SIZE * TILES_X) / 2, (TILE_SIZE * TILES_Y) / 2], MAX_ZOOM);
+            map.setView(centerLatLng, map.getZoom());
+
+            document.getElementById('startTextEnglish').style.top = `calc(${vh * 0.485}px - 40px)`;
+            document.getElementById('startTextArabic').style.top = `calc(${vh * 0.485}px + 40px)`;
+
+            document.getElementById('bottomText').style.bottom = `calc(10px + 240px)`;
+        }
+
+        window.addEventListener('resize', adjustForAndroidChrome);
+        adjustForAndroidChrome();
+    }
+
+    // Detect if the browser is Safari on iOS
+    function isSafariIOS() {
+        var ua = navigator.userAgent;
+        return !!ua.match(/iP(ad|od|hone)/i) && !!ua.match(/WebKit/i) && !ua.match(/CriOS/i);
+    }
+
+    if (isSafariIOS()) {
+        function adjustForIOS() {
+            let vh = window.innerHeight;
+            if (window.innerHeight > window.innerWidth) {
+                vh -= 240;
+            }
+            document.body.style.height = `${vh}px`;
+            document.getElementById('panorama').style.height = `${vh}px`;
+
+            var centerLatLng = map.unproject([(TILE_SIZE * TILES_X) / 2, (TILE_SIZE * TILES_Y) / 2], MAX_ZOOM);
+            map.setView(centerLatLng, map.getZoom());
+
+            document.getElementById('startTextEnglish').style.top = `calc(${vh * 0.485}px - 40px)`;
+            document.getElementById('startTextArabic').style.top = `calc(${vh * 0.485}px + 40px)`;
+
+            document.getElementById('bottomText').style.bottom = `calc(10px + 240px)`;
+        }
+
+        window.addEventListener('resize', adjustForIOS);
+        adjustForIOS();
+    }
 
     var audioFiles = [
         'https://chipper-sunflower-e51e1a.netlify.app/audio/1.mp3',
