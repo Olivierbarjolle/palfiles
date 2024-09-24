@@ -211,6 +211,13 @@
     var TILES_Y = 4;
     var FADE_DISTANCE = 5 * TILE_SIZE;
 
+    // Detect if the user is on Android Chrome
+function isChromeAndroid() {
+    var ua = navigator.userAgent;
+    return /Android/i.test(ua) && /Chrome/i.test(ua);
+}
+
+
 // Detect if the user is on Android and using Firefox
 var isFirefoxAndroid = /Android/i.test(navigator.userAgent) && /Firefox/i.test(navigator.userAgent);
 
@@ -382,6 +389,29 @@ if (isFirefoxAndroid) {
         return !!ua.match(/iP(ad|od|hone)/i) && !!ua.match(/WebKit/i) && !ua.match(/CriOS/i);
     }
 
+    if (isChromeAndroid()) {
+    function adjustForAndroidChrome() {
+        let vh = window.innerHeight;
+        if (window.innerHeight > window.innerWidth) {
+            vh -= 240; // Offset for Android Chrome in portrait mode
+        }
+        document.body.style.height = `${vh}px`;
+        document.getElementById('panorama').style.height = `${vh}px`;
+
+        var centerLatLng = map.unproject([(TILE_SIZE * TILES_X) / 2, (TILE_SIZE * TILES_Y) / 2], MAX_ZOOM);
+        map.setView(centerLatLng, map.getZoom());
+
+        document.getElementById('startTextEnglish').style.top = `calc(${vh * 0.485}px - 40px)`;
+        document.getElementById('startTextArabic').style.top = `calc(${vh * 0.485}px + 40px)`;
+
+        document.getElementById('bottomText').style.bottom = `calc(10px + 240px)`;
+    }
+
+    window.addEventListener('resize', adjustForAndroidChrome);
+    adjustForAndroidChrome();
+}
+
+    
     if (isSafariIOS()) {
         function adjustForIOS() {
             let vh = window.innerHeight;
