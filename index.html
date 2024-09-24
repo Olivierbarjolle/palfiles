@@ -257,22 +257,24 @@
         crossOrigin: true
     }).addTo(map);
 
-    // Adjust the viewport for Chrome on Android using the same logic as iOS
+    // Adjust the viewport for Chrome on Android using a reduced offset
     function adjustForAndroidChrome() {
         let vh = window.innerHeight;
 
+        // Apply a smaller offset for Android Chrome, 120px instead of 240px
         if (window.innerHeight > window.innerWidth) {
-            vh -= 240; // Same offset as used for iOS Safari
+            vh -= 120; // Half the offset compared to iOS Safari
         }
 
         document.body.style.height = `${vh}px`;
         document.getElementById('panorama').style.height = `${vh}px`;
 
+        // Recenter the map
         var centerLatLng = map.unproject([(TILE_SIZE * TILES_X) / 2, (TILE_SIZE * TILES_Y) / 2], MAX_ZOOM);
-        map.setView(centerLatLng, map.getZoom());  // Recenter the map for Android Chrome
+        map.setView(centerLatLng, map.getZoom());
     }
 
-    // Adjust for iOS Safari
+    // Adjust for iOS Safari with full offset
     function adjustForIOS() {
         let vh = window.innerHeight;
 
@@ -284,7 +286,7 @@
         document.getElementById('panorama').style.height = `${vh}px`;
 
         var centerLatLng = map.unproject([(TILE_SIZE * TILES_X) / 2, (TILE_SIZE * TILES_Y) / 2], MAX_ZOOM);
-        map.setView(centerLatLng, map.getZoom());  // Recenter the map for iOS Safari
+        map.setView(centerLatLng, map.getZoom());
     }
 
     // Apply adjustments for Chrome on Android
@@ -298,6 +300,8 @@
         window.addEventListener('resize', adjustForIOS);
         adjustForIOS();  // Apply adjustments on load for iOS Safari
     }
+</script>
+
 
     var audioFiles = [
         'https://chipper-sunflower-e51e1a.netlify.app/audio/1.mp3',
