@@ -206,6 +206,16 @@
     var TILES_Y = 4;
     var FADE_DISTANCE = 5 * TILE_SIZE;
 
+// Detect if the user is on Android and using Firefox
+var isFirefoxAndroid = /Android/i.test(navigator.userAgent) && /Firefox/i.test(navigator.userAgent);
+
+if (isFirefoxAndroid) {
+    // Make the text 4 times larger for Firefox on Android
+    document.querySelectorAll('.top-text, .bottom-text').forEach(function(el) {
+        el.style.fontSize = (parseFloat(window.getComputedStyle(el).fontSize) * 4) + 'px';
+    });
+}
+    
     // Detect Chrome or firefox on Android
     var isChromeAndroid = /Android/i.test(navigator.userAgent) && (/Chrome/i.test(navigator.userAgent) || /Firefox/i.test(navigator.userAgent));
 
