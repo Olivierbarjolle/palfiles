@@ -214,15 +214,15 @@ var isFirefoxAndroid = /Android/i.test(navigator.userAgent) && /Firefox/i.test(n
 if (isFirefoxAndroid) {
     // Apply the class to increase text size for .top-text and .bottom-text
     document.querySelectorAll('.top-text, .bottom-text').forEach(function(el) {
-        console.log("Applying larger text class to element:", el);
         el.classList.add('firefox-android-large-text');  // Apply the class
     });
 
-    // Fallback: Directly adjust the font size if class application fails
+    // Fallback: Directly adjust the font size to the original size (1em)
     document.querySelectorAll('.top-text, .bottom-text').forEach(function(el) {
-        el.style.fontSize = "1em";
+        el.style.fontSize = "0.5em"; // Set to default (1em)
     });
 }
+
 
 
     
