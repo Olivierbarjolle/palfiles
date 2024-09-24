@@ -209,7 +209,7 @@
     // Detect Chrome or firefox on Android
     var isChromeAndroid = /Android/i.test(navigator.userAgent) && (/Chrome/i.test(navigator.userAgent) || /Firefox/i.test(navigator.userAgent));
 
-    var initialZoomLevel = 2; 
+    var initialZoomLevel = isChromeAndroid ? 4 : 2;  // Zoom in more for Chrome on Android
 
     var map = L.map('panorama', {
         minZoom: 2,
@@ -225,19 +225,15 @@
         }
     });
 
-function setInitialView() {
-    // Set simple bounds with default Y-axis height
-    var bounds = new L.LatLngBounds(
-        map.unproject([0, TILE_SIZE * TILES_Y], MAX_ZOOM),  // Use original Y-axis
-        map.unproject([TILE_SIZE * TILES_X, 0], MAX_ZOOM)
-    );
-    map.setMaxBounds(bounds);
-
-    // Center the map on the middle of the image
-    var centerLatLng = map.unproject([(TILE_SIZE * TILES_X) / 2, (TILE_SIZE * TILES_Y) / 2], MAX_ZOOM);
-    map.setView(centerLatLng, initialZoomLevel);
-}
-
+    function setInitialView() {
+        var bounds = new L.LatLngBounds(
+            map.unproject([0, TILE_SIZE * TILES_Y], MAX_ZOOM),
+            map.unproject([TILE_SIZE * TILES_X, 0], MAX_ZOOM)
+        );
+        map.setMaxBounds(bounds);
+        var centerLatLng = map.unproject([(TILE_SIZE * TILES_X) / 2, (TILE_SIZE * TILES_Y) / 2], MAX_ZOOM);
+        map.setView(centerLatLng, initialZoomLevel);
+    }
 
     setInitialView();
 
@@ -316,48 +312,32 @@ function setInitialView() {
 
     map.on('move', adjustVolume); // Adjust volume continuously as the map moves
 
- map.on('click', function(e) {
-    if (!initialClickHandled) {
-        initialClickHandled = true;
-        document.getElementById('topText').classList.add('fade-out'); 
-        document.getElementById('bottomText').classList.add('fade-out'); 
-        document.getElementById('startTextEnglish').classList.add('fade-out'); 
-        document.getElementById('startTextArabic').classList.add('fade-out'); 
+    map.on('click', function(e) {
+        if (!initialClickHandled) {
+            initialClickHandled = true;
+            document.getElementById('topText').classList.add('fade-out'); 
+            document.getElementById('bottomText').classList.add('fade-out'); 
+            document.getElementById('startTextEnglish').classList.add('fade-out'); 
+            document.getElementById('startTextArabic').classList.add('fade-out'); 
 
-        if (!audioInitialized) {
-            audioInitialized = true;
-        }
+            if (!audioInitialized) {
+                audioInitialized = true;
+            }
 
-        var clickedLatLng = e.latlng;
-        var centerLng = Math.max(0, Math.min(TILE_SIZE * TILES_X, map.project(clickedLatLng, MAX_ZOOM).x));
-        var centerLatLng = map.unproject([centerLng, (TILE_SIZE * TILES_Y) / 2], MAX_ZOOM);
+            var clickedLatLng = e.latlng;
+            var centerLng = Math.max(0, Math.min(TILE_SIZE * TILES_X, map.project(clickedLatLng, MAX_ZOOM).x));
+            var centerLatLng = map.unproject([centerLng, (TILE_SIZE * TILES_Y) / 2], MAX_ZOOM);
+            var zoomLevel = MAX_ZOOM - 1;
 
-        var zoomLevel = MAX_ZOOM - 1; // Default zoom level
+            if (/Mobi|Android/i.test(navigator.userAgent)) {
+                zoomLevel += 1; // Zoom one level more on mobile
+            }
 
-        // Adjust zoom for mobile, but without adding an extra zoom level
-        if (/Mobi|Android/i.test(navigator.userAgent)) {
-            zoomLevel = MAX_ZOOM - 1; // Set zoom level to MAX_ZOOM - 1 for mobile without adding extra zoom
-        }
+            map.flyTo(centerLatLng, zoomLevel, {
+                animate: true,
+                duration: 4
+            });
 
-        map.flyTo(centerLatLng, zoomLevel, {
-            animate: true,
-            duration: 4
-        });
-
-        map.once('moveend', function() {
-            adjustVolume(); // Ensure volume is adjusted after moving
-        });
-    }
-});
-
-    map.setMaxBounds(bounds);
-
-    // Recalculate the center and ensure it's correct after zoom/move
-    var centerLatLng = map.unproject([(TILE_SIZE * TILES_X) / 2, (TILE_SIZE * TILES_Y * 4) / 2], map.getZoom());
-    map.setView(centerLatLng, map.getZoom(), { animate: false });
-});
-
-            
             map.once('moveend', function() {
                 adjustVolume(); // Ensure volume is adjusted after moving
             });
