@@ -173,18 +173,19 @@
             }
         }
 
-              /* Special styles for Google Pixel on Chrome */
+  /* Specific styles for Google Pixel on Chrome */
         .google-chrome-phone-text {
-            margin-top: 10px;   /* Add top margin */
-            margin-bottom: 60px; /* Adjust bottom margin */
-            font-size: 0.1em !important;      /* Adjust font size */
+            margin-top: 10px !important;
+            margin-bottom: 100px !important;
+            font-size: 0.2em !important;
         }
 
-        /* Special styles for Samsung on Chrome */
+        /* Specific styles for Samsung on Chrome */
         .samsung-chrome-phone-text {
-            margin-top: 10px;   /* Add top margin */
-            margin-bottom: 60px; /* Adjust bottom margin */
-            font-size: 0.1em !important;      /* Adjust font size */
+            margin-top: 10px !important;
+            margin-bottom: 150px !important;
+            font-size: 0.20em !important;
+        }
 
 /* CSS class for larger text on Firefox Android */
 .firefox-android-large-text {
@@ -223,7 +224,7 @@
     var TILES_Y = 4;
     var FADE_DISTANCE = 5 * TILE_SIZE;
 
- // Function to detect Chrome
+// Function to detect Chrome
     function isChrome() {
         return /Chrome/i.test(navigator.userAgent) && !/Edge|OPR/i.test(navigator.userAgent);  // Exclude Edge and Opera
     }
@@ -238,14 +239,14 @@
         return isChrome() && /Pixel/i.test(navigator.userAgent);
     }
 
-    // Apply Google phone specific styles when using Chrome
+    // Apply styles for Google Pixel phones on Chrome
     if (isGooglePhoneChrome()) {
         document.querySelectorAll('.top-text, .bottom-text').forEach(function(el) {
             el.classList.add('google-chrome-phone-text');
         });
     }
 
-    // Apply Samsung phone specific styles when using Chrome
+    // Apply styles for Samsung phones on Chrome
     if (isSamsungChrome()) {
         document.querySelectorAll('.top-text, .bottom-text').forEach(function(el) {
             el.classList.add('samsung-chrome-phone-text');
