@@ -173,18 +173,17 @@
             }
         }
 
-        /* CSS class for larger text on Firefox Android */
-        .firefox-android-large-text {
-            font-size: 1.6em !important; /* Makes text 4 times bigger */
-        }
-        
-         /* CSS class for smaller text on Chrome Android */
-    .chrome-android-small-text {
-        margin-top: 10px !important;  /* Add top margin */
+       /* CSS class for smaller text on Chrome Android */
+.chrome-android-small-text {
+    margin-top: 10px !important;   /* Add top margin */
     margin-bottom: 150px !important; /* Add bottom margin */
-         font-size: 65% !important; /* Makes text 4 times bigger */
-    }
+    font-size: 65% !important;      /* Smaller font size */
+}
 
+/* CSS class for larger text on Firefox Android */
+.firefox-android-large-text {
+    font-size: 1.6em !important;    /* Larger font size */
+}
         
     </style>
 </head>
@@ -220,31 +219,20 @@
 
 // Detect if the user is on Android and using Chrome
 var isChromeAndroid = /Android/i.test(navigator.userAgent) && /Chrome/i.test(navigator.userAgent);
-
-if (isChromeAndroid) {
-    // Apply the class to reduce text size and add margins for .top-text and .bottom-text
-    document.querySelectorAll('.top-text, .bottom-text').forEach(function(el) {
-        el.classList.add('chrome-android-small-text');  // Apply the class with margins
-    });
-}
-
-
-// Detect if the user is on Android and using Firefox
 var isFirefoxAndroid = /Android/i.test(navigator.userAgent) && /Firefox/i.test(navigator.userAgent);
 
-if (isFirefoxAndroid) {
-    // Apply the class to increase text size for .top-text and .bottom-text
+if (isChromeAndroid) {
+    // Apply the class to reduce text size and add margins for Chrome Android
     document.querySelectorAll('.top-text, .bottom-text').forEach(function(el) {
-        el.classList.add('firefox-android-large-text');  // Apply the class
+        el.classList.add('chrome-android-small-text'); // Apply Chrome-specific styles
+    });
+} else if (isFirefoxAndroid) {
+    // Apply the class to increase text size for Firefox Android
+    document.querySelectorAll('.top-text, .bottom-text').forEach(function(el) {
+        el.classList.add('firefox-android-large-text'); // Apply Firefox-specific styles
     });
 }
-
-
-
     
-    // Detect Chrome or firefox on Android
-    var isChromeAndroid = /Android/i.test(navigator.userAgent) && (/Chrome/i.test(navigator.userAgent) || /Firefox/i.test(navigator.userAgent));
-
     var initialZoomLevel = isChromeAndroid ? 4 : 2;  // Zoom in more for Chrome on Android
 
     var map = L.map('panorama', {
