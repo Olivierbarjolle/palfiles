@@ -173,12 +173,18 @@
             }
         }
 
-       /* CSS class for smaller text on Chrome Android */
-.chrome-android-small-text {
-    margin-top: 10px !important;   /* Add top margin */
-    margin-bottom: 150px !important; /* Add bottom margin */
-    font-size: 40% ;      /* Smaller font size */
-}
+              /* Special styles for Google Pixel on Chrome */
+        .google-chrome-phone-text {
+            margin-top: 10px;   /* Add top margin */
+            margin-bottom: 100px; /* Adjust bottom margin */
+            font-size: 75%;      /* Adjust font size */
+        }
+
+        /* Special styles for Samsung on Chrome */
+        .samsung-chrome-phone-text {
+            margin-top: 10px;   /* Add top margin */
+            margin-bottom: 150px; /* Adjust bottom margin */
+            font-size: 80%;      /* Adjust font size */
 
 /* CSS class for larger text on Firefox Android */
 .firefox-android-large-text {
@@ -217,14 +223,34 @@
     var TILES_Y = 4;
     var FADE_DISTANCE = 5 * TILE_SIZE;
 
-// Detect if the user is on Android and using Chrome
-var isChromeAndroid = /Android/i.test(navigator.userAgent) && /Chrome/i.test(navigator.userAgent);
-var isFirefoxAndroid = /Android/i.test(navigator.userAgent) && /Firefox/i.test(navigator.userAgent);
+ // Function to detect Chrome
+    function isChrome() {
+        return /Chrome/i.test(navigator.userAgent) && !/Edge|OPR/i.test(navigator.userAgent);  // Exclude Edge and Opera
+    }
 
-if (isChromeAndroid) {
-    // Apply the class to reduce text size and add margins for Chrome Android
-    document.querySelectorAll('.top-text, .bottom-text').forEach(function(el) {
-        el.classList.add('chrome-android-small-text'); // Apply Chrome-specific styles
+    // Function to detect Samsung devices on Chrome
+    function isSamsungChrome() {
+        return isChrome() && /SAMSUNG|SM-/i.test(navigator.userAgent);
+    }
+
+    // Function to detect Google Pixel devices on Chrome
+    function isGooglePhoneChrome() {
+        return isChrome() && /Pixel/i.test(navigator.userAgent);
+    }
+
+    // Apply Google phone specific styles when using Chrome
+    if (isGooglePhoneChrome()) {
+        document.querySelectorAll('.top-text, .bottom-text').forEach(function(el) {
+            el.classList.add('google-chrome-phone-text');
+        });
+    }
+
+    // Apply Samsung phone specific styles when using Chrome
+    if (isSamsungChrome()) {
+        document.querySelectorAll('.top-text, .bottom-text').forEach(function(el) {
+            el.classList.add('samsung-chrome-phone-text');
+        });
+    }
     });
 } else if (isFirefoxAndroid) {
     // Apply the class to increase text size for Firefox Android
