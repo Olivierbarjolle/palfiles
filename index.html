@@ -102,7 +102,8 @@
     var TILES_X = 2891;
     var TILES_Y = 4;
     var FADE_DISTANCE = 5 * TILE_SIZE;
-
+    var isPanning = false;
+    var panSpeed = 0;
     var map = L.map('panorama', {
         minZoom: 2,
         maxZoom: MAX_ZOOM,
@@ -171,17 +172,33 @@
                 duration: 4
             });
 
-            // Panning left after zoom
             map.once('moveend', function() {
-                var newCenterLatLng = map.unproject([centerLng - TILE_SIZE * 2, (TILE_SIZE * TILES_Y) / 2], MAX_ZOOM);
-                map.panTo(newCenterLatLng, {
-                    animate: true,
-                    duration: 4
-                });
                 adjustVolume();
+                isPanning = true;
             });
         }
     });
+
+    // Function to adjust pan based on cursor position
+    function panBasedOnCursor(e) {
+        if (!isPanning) return;
+
+        var mapCenter = map.getSize().x / 2;
+        var distanceFromCenter = e.clientX - mapCenter;
+        var screenWidth = map.getSize().x;
+
+        // Calculate pan speed: further from center = faster pan
+        var panFactor = distanceFromCenter / screenWidth;
+        panSpeed = Math.max(Math.min(panFactor, 1), -1);  // Clamp pan speed between -1 and 1
+
+        var currentCenter = map.getCenter();
+        var panAmount = panSpeed * 50;  // Adjust the multiplier for faster/slower pan
+
+        map.panBy([panAmount, 0], { animate: false });
+    }
+
+    // Attach event listener for continuous pan based on cursor position
+    document.addEventListener('mousemove', panBasedOnCursor);
 
     // Adjust for iOS or orientation changes
     function checkOrientation() {
