@@ -6,7 +6,7 @@
     <title>Panoramic Viewer</title>
 
     <!-- Leaflet and Plugins -->
-    <link relstylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
     <style>
@@ -107,7 +107,6 @@
     var cursorX = window.innerWidth / 2;
     var panInterval;
     var deadZone = 0.1; // 10% dead zone
-    var panMultiplier = 400; // Multiplier for faster panning at the edges
 
     var map = L.map('panorama', {
         minZoom: 2,
@@ -197,9 +196,9 @@
             return 0; // No panning in the dead zone
         }
 
-        // Normalize distance and calculate speed with panMultiplier
+        // Normalize distance and calculate speed
         var panFactor = (distanceFromCenter - Math.sign(distanceFromCenter) * deadZoneSize / 2) / (screenWidth / 2);
-        return Math.max(Math.min(panFactor * panMultiplier, panMultiplier), -panMultiplier);  // Adjusted pan speed multiplier
+        return Math.max(Math.min(panFactor, 1), -1);  // Clamp pan speed between -1 and 1
     }
 
     // Function to start continuous panning based on cursor position
@@ -209,9 +208,10 @@
         panInterval = setInterval(function() {
             if (isPanning) {
                 var panSpeed = calculatePanSpeed();
-                map.panBy([panSpeed, 0], { animate: false });
+                var panAmount = panSpeed * 200;  // Adjust for faster panning
+                map.panBy([panAmount, 0], { animate: false });
             }
-        }, 20);  // Shorter interval for smoother panning
+        }, 1);  // Adjust interval for smoother or faster panning
     }
 
     // Update cursor position on mouse move
