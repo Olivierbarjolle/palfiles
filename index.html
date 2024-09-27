@@ -104,6 +104,10 @@
     var FADE_DISTANCE = 5 * TILE_SIZE;
     var isPanning = false;
     var panSpeed = 0;
+    var cursorX = window.innerWidth / 2;
+    var panInterval;
+    var deadZone = 0.1; // 10% dead zone
+
     var map = L.map('panorama', {
         minZoom: 2,
         maxZoom: MAX_ZOOM,
@@ -175,30 +179,45 @@
             map.once('moveend', function() {
                 adjustVolume();
                 isPanning = true;
+                startPanLoop();
             });
         }
     });
 
-    // Function to adjust pan based on cursor position
-    function panBasedOnCursor(e) {
-        if (!isPanning) return;
+    // Function to calculate pan speed and direction
+    function calculatePanSpeed() {
+        var screenWidth = window.innerWidth;
+        var screenCenter = screenWidth / 2;
+        var distanceFromCenter = cursorX - screenCenter;
 
-        var mapCenter = map.getSize().x / 2;
-        var distanceFromCenter = e.clientX - mapCenter;
-        var screenWidth = map.getSize().x;
+        // Dead zone in the middle
+        var deadZoneSize = screenWidth * deadZone;
+        if (Math.abs(distanceFromCenter) < deadZoneSize / 2) {
+            return 0; // No panning in the dead zone
+        }
 
-        // Calculate pan speed: further from center = faster pan
-        var panFactor = distanceFromCenter / screenWidth;
-        panSpeed = Math.max(Math.min(panFactor, 1), -1);  // Clamp pan speed between -1 and 1
-
-        var currentCenter = map.getCenter();
-        var panAmount = panSpeed * 50;  // Adjust the multiplier for faster/slower pan
-
-        map.panBy([panAmount, 0], { animate: false });
+        // Normalize distance and calculate speed
+        var panFactor = (distanceFromCenter - Math.sign(distanceFromCenter) * deadZoneSize / 2) / (screenWidth / 2);
+        return Math.max(Math.min(panFactor, 1), -1);  // Clamp pan speed between -1 and 1
     }
 
-    // Attach event listener for continuous pan based on cursor position
-    document.addEventListener('mousemove', panBasedOnCursor);
+    // Function to start continuous panning based on cursor position
+    function startPanLoop() {
+        if (panInterval) clearInterval(panInterval);
+
+        panInterval = setInterval(function() {
+            if (isPanning) {
+                var panSpeed = calculatePanSpeed();
+                var panAmount = panSpeed * 100;  // Adjust for faster panning
+                map.panBy([panAmount, 0], { animate: false });
+            }
+        }, 50);  // Adjust interval for smoother or faster panning
+    }
+
+    // Update cursor position on mouse move
+    document.addEventListener('mousemove', function(e) {
+        cursorX = e.clientX;
+    });
 
     // Adjust for iOS or orientation changes
     function checkOrientation() {
