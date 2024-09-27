@@ -106,7 +106,9 @@
     var panSpeed = 0;
     var cursorX = window.innerWidth / 2;
     var panInterval;
-    var deadZone = 0.1; // 10% dead zone
+    var deadZone = 0.1; // 10% dead zone in the middle
+    var baseSpeed = 100; // Base speed multiplier for the panning
+    var speedZones = 6;  // Number of speed zones for smooth transitions
 
     var map = L.map('panorama', {
         minZoom: 2,
@@ -184,7 +186,7 @@
         }
     });
 
-    // Function to calculate pan speed and direction
+    // Function to calculate pan speed and direction with smooth transitions
     function calculatePanSpeed() {
         var screenWidth = window.innerWidth;
         var screenCenter = screenWidth / 2;
@@ -196,9 +198,23 @@
             return 0; // No panning in the dead zone
         }
 
-        // Normalize distance and calculate speed
-        var panFactor = (distanceFromCenter - Math.sign(distanceFromCenter) * deadZoneSize / 2) / (screenWidth / 2);
-        return Math.max(Math.min(panFactor, 1), -1);  // Clamp pan speed between -1 and 1
+        // Normalize distance and calculate speed using multiple zones for smooth transition
+        var zoneWidth = (screenWidth - deadZoneSize) / (2 * speedZones); // Width of each speed zone
+        var panFactor = 0;
+
+        for (var i = 1; i <= speedZones; i++) {
+            var zoneStart = (i - 1) * zoneWidth + deadZoneSize / 2;
+            var zoneEnd = i * zoneWidth + deadZoneSize / 2;
+
+            if (Math.abs(distanceFromCenter) >= zoneStart && Math.abs(distanceFromCenter) < zoneEnd) {
+                panFactor = i / speedZones;
+                break;
+            }
+        }
+
+        panFactor *= baseSpeed * Math.sign(distanceFromCenter);  // Pan speed is proportional to the distance from the center
+
+        return panFactor;  // Smooth speed between zones
     }
 
     // Function to start continuous panning based on cursor position
@@ -208,10 +224,9 @@
         panInterval = setInterval(function() {
             if (isPanning) {
                 var panSpeed = calculatePanSpeed();
-                var panAmount = panSpeed * 150;  // Adjust for faster panning
-                map.panBy([panAmount, 0], { animate: false });
+                map.panBy([panSpeed, 0], { animate: false });
             }
-        }, 1);  // Adjust interval for smoother or faster panning
+        }, 1);  // Short interval for ultra-smooth panning
     }
 
     // Update cursor position on mouse move
