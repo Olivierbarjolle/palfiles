@@ -208,7 +208,7 @@
         panInterval = setInterval(function() {
             if (isPanning) {
                 var panSpeed = calculatePanSpeed();
-                var panAmount = panSpeed * 200;  // Adjust for faster panning
+                var panAmount = panSpeed * 100;  // Adjust for faster panning
                 map.panBy([panAmount, 0], { animate: false });
             }
         }, 1);  // Adjust interval for smoother or faster panning
