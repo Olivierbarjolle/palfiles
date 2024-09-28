@@ -44,20 +44,6 @@
             transition: opacity 1.5s ease-in-out;
         }
 
-        .top-text {
-            top: 10px;
-            left: 10px;
-            text-align: left;
-            width: calc(100% - 20px);
-        }
-
-        .bottom-text {
-            right: 10px;
-            text-align: right;
-            width: calc(100% - 20px);
-            direction: rtl;
-            bottom: 10px;
-        }
 
         .fade-in {
             opacity: 1 !important; /* Make text visible */
@@ -107,7 +93,7 @@
     var cursorX = window.innerWidth / 2;
     var panInterval;
     var deadZone = 0.1; // 10% dead zone in the middle
-    var baseSpeed = 110; // Base speed multiplier for the panning
+    var baseSpeed = 100; // Base speed multiplier for the panning
     var speedZones = 12;  // Number of speed zones for smooth transitions
 
     var map = L.map('panorama', {
